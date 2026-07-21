@@ -37,6 +37,9 @@ import Button from '../ui/Button.astro';
     class="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[55%] lg:block"
     aria-hidden="true"
   >
+    <!-- Static fallback: always painted; the WebGL canvas (if the island's
+         guardrails allow it) mounts on top of this glow. -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_40%,rgba(201,162,39,0.16),rgba(22,41,78,0.25)_45%,transparent_75%)]"></div>
   </div>
 
   <div class="wrap pt-36 pb-14 sm:pb-20">
@@ -79,6 +82,8 @@ import Button from '../ui/Button.astro';
 </section>
 
 <script>
+  import '../../scripts/webgl/hero-island';
+
   // Attach video sources only when appropriate (spec §6): never on
   // save-data / 2G, never under reduced motion. Small screens get the
   // lighter rendition. Missing files fail silently — the poster remains.
