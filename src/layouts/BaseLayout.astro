@@ -44,9 +44,46 @@ const {
         }
       </style>
     </noscript>
+    <script is:inline>
+      // First-visit preloader gate. Runs before first paint so there is no
+      // content flash; skipped on repeat visits (session) and under
+      // reduced motion. The 4s timeout force-clears the overlay if the
+      // motion module never starts, so a failed script can't trap the page.
+      (function () {
+        try {
+          if (
+            sessionStorage.getItem('ka-preloaded') ||
+            matchMedia('(prefers-reduced-motion: reduce)').matches
+          ) {
+            return;
+          }
+          var root = document.documentElement;
+          root.classList.add('ka-preload');
+          setTimeout(function () {
+            var p = document.getElementById('preloader');
+            if (root.classList.contains('ka-preload') && (!p || !p.dataset.started)) {
+              root.classList.remove('ka-preload');
+              if (p) p.remove();
+            }
+          }, 4000);
+        } catch (e) {
+          /* storage unavailable — skip the preloader */
+        }
+      })();
+    </script>
     <slot name="head" />
   </head>
   <body class={bodyClass}>
+    <div id="preloader" class="preloader" aria-hidden="true">
+      <div class="preloader-panel"></div>
+      <div class="preloader-panel"></div>
+      <div class="preloader-panel"></div>
+      <div class="preloader-panel"></div>
+      <div class="preloader-panel"></div>
+      <p class="preloader-logo">
+        The <span class="text-gold-400">Karate</span> Attorney
+      </p>
+    </div>
     <a
       href="#main"
       class="sr-only-focusable fixed top-2 left-2 rounded-full bg-gold-400 font-bold text-navy-950"

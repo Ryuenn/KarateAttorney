@@ -22,6 +22,49 @@ if (!prefersReducedMotion) {
   gsap.ticker.add((time) => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
 
+  // First-visit preloader reveal (overlay exists only when the inline head
+  // script in BaseLayout added .ka-preload): wordmark fades in/out, then
+  // the navy panels slide up staggered, uncovering the page.
+  const root = document.documentElement;
+  const preloader = document.getElementById('preloader');
+  const preloading = root.classList.contains('ka-preload') && !!preloader;
+  let heroDelay = 0.15;
+
+  if (preloading && preloader) {
+    preloader.dataset.started = '1';
+    try {
+      sessionStorage.setItem('ka-preloaded', '1');
+    } catch {
+      /* storage unavailable — the overlay still clears below */
+    }
+    gsap
+      .timeline({
+        onComplete: () => {
+          preloader.remove();
+          root.classList.remove('ka-preload');
+        },
+      })
+      .to('.preloader-logo', { opacity: 1, duration: 0.45, ease: 'power2.out' })
+      .to('.preloader-logo', {
+        opacity: 0,
+        duration: 0.3,
+        delay: 0.35,
+        ease: 'power2.in',
+      })
+      .to(
+        preloader.querySelectorAll('.preloader-panel'),
+        {
+          yPercent: -100,
+          duration: 0.75,
+          ease: 'power4.inOut',
+          stagger: 0.06,
+        },
+        '-=0.05',
+      );
+    // Hero lines rise while the panels are mid-reveal.
+    heroDelay = 1.35;
+  }
+
   // Hero entrance: staggered rise for [data-hero-line] elements on load.
   const heroLines = document.querySelectorAll<HTMLElement>('[data-hero-line]');
   if (heroLines.length) {
@@ -31,7 +74,7 @@ if (!prefersReducedMotion) {
       duration: 1,
       ease: 'power3.out',
       stagger: 0.09,
-      delay: 0.15,
+      delay: heroDelay,
     });
   }
 

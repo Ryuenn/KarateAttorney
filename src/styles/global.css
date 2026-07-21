@@ -131,6 +131,53 @@
   backdrop-filter: blur(10px);
 }
 
+/* First-visit preloader (xnrgy-style panel reveal). Hidden unless the
+   inline head script adds .ka-preload — so it can never appear without
+   JS, on repeat visits in a session, or under prefers-reduced-motion.
+   The reveal animation itself lives in src/scripts/motion.ts. */
+.preloader {
+  display: none;
+}
+html.ka-preload {
+  overflow: hidden;
+}
+html.ka-preload .preloader {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+.preloader-panel {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 21vw;
+  background-color: var(--color-navy-950);
+}
+.preloader-panel:nth-child(even) {
+  background-color: var(--color-navy-900);
+}
+.preloader-panel:nth-child(1) { left: 0; }
+.preloader-panel:nth-child(2) { left: 20vw; }
+.preloader-panel:nth-child(3) { left: 40vw; }
+.preloader-panel:nth-child(4) { left: 60vw; }
+.preloader-panel:nth-child(5) { left: 80vw; }
+.preloader-logo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-inline: 1rem;
+  opacity: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(0.875rem, 2vw, 1.25rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--color-paper);
+}
+
 /* ------------------------------------------------------------------ */
 /* Utilities                                                           */
 /* ------------------------------------------------------------------ */
