@@ -22,6 +22,19 @@ if (!prefersReducedMotion) {
   gsap.ticker.add((time) => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
 
+  // Hero entrance: staggered rise for [data-hero-line] elements on load.
+  const heroLines = document.querySelectorAll<HTMLElement>('[data-hero-line]');
+  if (heroLines.length) {
+    gsap.from(heroLines, {
+      opacity: 0,
+      y: 36,
+      duration: 1,
+      ease: 'power3.out',
+      stagger: 0.09,
+      delay: 0.15,
+    });
+  }
+
   // Section reveals: any element with [data-reveal] fades/rises on entry.
   // Initial hidden state is set here (not in CSS) so content is always
   // visible without JS — a failed script can never blank the page.

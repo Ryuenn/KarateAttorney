@@ -1,0 +1,108 @@
+---
+/**
+ * Full-bleed video hero (spec §3 + §6 guardrails).
+ *
+ * - Poster paints first and is the LCP; video sources are attached by JS
+ *   only when the connection/motion/device allows, so the video can never
+ *   block first paint — and with JS disabled the poster simply stays.
+ * - Expected assets (not yet provided — see README asset list):
+ *     public/media/hero.mp4         compressed desktop loop
+ *     public/media/hero-mobile.mp4  lighter mobile rendition
+ *     public/media/hero-poster.svg  placeholder poster (swap for real frame)
+ * - #hero-3d is the mount point for the WebGL island (next slice); the
+ *   hero is fully functional without it.
+ */
+import { FIRM_URL, SITE } from '../../lib/site';
+import Button from '../ui/Button.astro';
+---
+
+<section class="on-dark relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-navy-950 text-paper">
+  <div class="absolute inset-0 -z-20" aria-hidden="true">
+    <video
+      id="hero-video"
+      class="h-full w-full object-cover opacity-70"
+      muted
+      autoplay
+      loop
+      playsinline
+      preload="none"
+      poster="/media/hero-poster.svg"
+      tabindex="-1"
+    ></video>
+    <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/45 to-navy-950/25"></div>
+  </div>
+
+  <div
+    id="hero-3d"
+    class="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[55%] lg:block"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="wrap pt-36 pb-14 sm:pb-20">
+    <p
+      data-hero-line
+      class="text-sm font-bold tracking-[0.25em] text-gold-300 uppercase"
+    >
+      {SITE.person} — {SITE.name}
+    </p>
+    <h1 data-hero-line class="text-display-2xl mt-4 max-w-5xl">
+      Trial lawyer.<br />Martial artist.<br />
+      <span class="text-gold-400">Speaker.</span>
+    </h1>
+    <p data-hero-line class="text-lede mt-6 max-w-xl text-navy-100">
+      [PLACEHOLDER: one-line identity statement / hero subline — final copy
+      from client]
+    </p>
+
+    <div data-hero-line class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <Button href="/speaking#request" variant="light" size="lg">
+        Book Ibrahim to Speak
+      </Button>
+      <Button href={FIRM_URL} variant="gold" size="lg" data-firm-link>
+        Injured? Hire Ibrahim →
+        <span class="sr-only">at The Awad Law Firm</span>
+      </Button>
+    </div>
+    <p data-hero-line class="mt-3 text-xs text-navy-200">
+      Legal cases are handled at The Awad Law Firm ·
+      <span lang="es">¿Lesionado? Visite The Awad Law Firm</span>
+    </p>
+  </div>
+
+  <div
+    class="pointer-events-none absolute bottom-6 left-1/2 hidden -translate-x-1/2 lg:block"
+    aria-hidden="true"
+  >
+    <div class="h-10 w-px animate-pulse bg-gradient-to-b from-transparent via-gold-300 to-transparent"></div>
+  </div>
+</section>
+
+<script>
+  // Attach video sources only when appropriate (spec §6): never on
+  // save-data / 2G, never under reduced motion. Small screens get the
+  // lighter rendition. Missing files fail silently — the poster remains.
+  const video = document.getElementById('hero-video') as HTMLVideoElement | null;
+
+  if (video) {
+    const nav = navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    };
+    const conn = nav.connection;
+    const slow = conn ? /(^|-)2g/.test(conn.effectiveType ?? '') : false;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!conn?.saveData && !slow && !reduced) {
+      const small = matchMedia('(max-width: 767px)').matches;
+      const source = document.createElement('source');
+      source.src = small ? '/media/hero-mobile.mp4' : '/media/hero.mp4';
+      source.type = 'video/mp4';
+      source.addEventListener('error', () => video.removeAttribute('src'));
+      video.append(source);
+      video.load();
+      video.play().catch(() => {
+        /* autoplay refused — poster stays, which is fine */
+      });
+    }
+  }
+</script>
