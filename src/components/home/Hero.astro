@@ -35,18 +35,18 @@ import Button from '../ui/Button.astro';
   <!-- Full-viewport span like the navbar — the wordmark scales with vw and
        must never be caged by the centered wrap, or it wraps on wide screens. -->
   <div class="relative flex flex-1 flex-col px-(--spacing-gutter) pt-20 pb-6 sm:pt-24 sm:pb-8">
+    <!-- xnrgyclub-style oversized staggered wordmark over the video.
+         mt-auto pins the kicker + headline cluster to the bottom of the
+         hero, clear of the navbar, with open video above. -->
     <p
       data-hero-line
-      class="text-[0.6875rem] font-bold tracking-[0.25em] text-gold-300 uppercase sm:text-sm"
+      class="mt-auto text-[0.6875rem] font-bold tracking-[0.25em] text-gold-300 uppercase sm:text-sm"
     >
       {SITE.person} — Trial lawyer · Martial artist · TEDx speaker
     </p>
 
-    <!-- xnrgyclub-style oversized staggered wordmark over the video -->
-    <!-- Both lines cluster at the bottom (justify-end) so the headline sits
-         low, clear of the navbar, with open video above it. -->
     <h1
-      class="mt-4 flex min-h-0 flex-1 flex-col justify-end gap-3 font-display font-black tracking-tight uppercase sm:gap-5"
+      class="mt-3 flex flex-col gap-3 font-display font-black tracking-tight uppercase sm:gap-5"
     >
       <span
         data-hero-line
