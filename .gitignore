@@ -16,6 +16,11 @@ pnpm-debug.log*
 .env
 .env.production
 
+# hero video master (174 MB — exceeds GitHub's file limit; the compressed
+# hero.mp4 / hero-mobile.mp4 renditions ARE committed and are regenerated
+# from this master via the ffmpeg commands in README.md)
+public/media/video-hero.mp4
+
 # macOS-specific files
 .DS_Store
 

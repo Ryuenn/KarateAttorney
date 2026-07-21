@@ -96,9 +96,25 @@ on the next build.
 3. Point DNS at the server through Cloudflare (proxy on). Recommended:
    cache static assets (`/_astro/*` is content-hashed and safe for
    long-lived caching), leave HTML uncached.
-4. Serve hero video files from `public/media/` (see asset list) — or move
-   them to Cloudflare R2/Stream later; only the two `<source>` URLs in
-   [Hero.astro](src/components/home/Hero.astro) would change.
+4. Hero video: the compressed renditions (`public/media/hero.mp4` desktop,
+   `hero-mobile.mp4` mobile) and poster (`hero-poster.jpg`) are committed
+   and deploy with the site. The 4K master (`video-hero.mp4`) is
+   gitignored (too large for GitHub); to regenerate renditions from a new
+   master:
+
+   ```sh
+   ffmpeg -y -i public/media/video-hero.mp4 -vf scale=1920:-2 -c:v libx264 \
+     -preset fast -crf 26 -an -pix_fmt yuv420p -movflags +faststart \
+     public/media/hero.mp4
+   ffmpeg -y -i public/media/video-hero.mp4 -vf scale=960:-2 -c:v libx264 \
+     -preset fast -crf 28 -an -pix_fmt yuv420p -movflags +faststart \
+     public/media/hero-mobile.mp4
+   ffmpeg -y -ss 1 -i public/media/video-hero.mp4 -frames:v 1 \
+     -vf scale=1920:-2 -q:v 3 public/media/hero-poster.jpg
+   ```
+
+   Moving them to Cloudflare R2/Stream later only changes the two
+   `<source>` URLs in [Hero.astro](src/components/home/Hero.astro).
 5. Turnstile: create the widget for `karateattorney.com` in the Cloudflare
    dashboard to get the site key + secret.
 
@@ -124,8 +140,8 @@ Everything marked `[PLACEHOLDER: …]` in the codebase, principally:
 - **Speaking**: reel video, TEDx "Beautiful Patience" YouTube ID, 1-line
   description per signature topic, testimonials (quote/name/role/org), past
   venues list
-- **Media**: hero video (desktop + mobile renditions) and a real poster
-  frame; photography (courtroom, training, speaking, community — no
+- **Media**: ~~hero video~~ (done — renditions generated from the provided
+  4K master); photography (courtroom, training, speaking, community — no
   children's faces/names); a 1200×630 Open Graph image
 - **Links**: Instagram/YouTube/TikTok/LinkedIn URLs; Palistory, Awad
   Academy, Team Karate Attorney URLs; newsletter provider
