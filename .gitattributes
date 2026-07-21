@@ -1,0 +1,7 @@
+# Normalize line endings: store LF in the repo regardless of OS checkout.
+* text=auto
+*.png binary
+*.jpg binary
+*.webp binary
+*.mp4 binary
+*.woff2 binary

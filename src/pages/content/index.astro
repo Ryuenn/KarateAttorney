@@ -74,7 +74,7 @@ const fmt = new Intl.DateTimeFormat('en-US', {
                 <span class="rounded-full bg-gold-100 px-2.5 py-1 text-gold-800">
                   {typeBadge[entry.data.type]}
                 </span>
-                <span class="text-ink/50">
+                <span class="text-ink/60">
                   {
                     HUB_CATEGORIES.find(
                       (c) => c.value === entry.data.category,
@@ -88,7 +88,7 @@ const fmt = new Intl.DateTimeFormat('en-US', {
               <p class="mt-2 flex-1 text-sm leading-relaxed text-ink/70">
                 {entry.data.description}
               </p>
-              <p class="mt-4 text-xs text-ink/50">{fmt.format(entry.data.date)}</p>
+              <p class="mt-4 text-xs text-ink/60">{fmt.format(entry.data.date)}</p>
             </a>
           </li>
         ))
