@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens (navy/gold palette, type scale, spacing) land here in the
+ * next slice via Tailwind v4 `@theme`.
+ */
