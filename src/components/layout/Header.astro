@@ -4,28 +4,28 @@ import { FIRM_URL, HEADER_NAV, NAV, SITE } from '../../lib/site';
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 const ctaClass =
-  'inline-flex items-center px-3.5 py-2.5 text-[0.6875rem] font-bold uppercase tracking-[0.15em] whitespace-nowrap transition-colors sm:text-xs';
+  'inline-flex items-center px-3.5 py-2.5 text-[0.6875rem] font-bold uppercase tracking-[0.15em] whitespace-nowrap transition-colors sm:px-5 sm:py-3 sm:text-sm';
 ---
 
 <header class="site-header on-dark text-paper">
   <!-- Full-viewport span (xnrgy-style): gutter padding only, no max-width
        wrap — logo sits at the left edge, CTAs at the right edge. -->
-  <div class="flex items-center justify-between gap-4 px-(--spacing-gutter) py-3">
+  <div class="flex items-center justify-between gap-4 px-(--spacing-gutter) py-3 sm:py-4">
     <a
       href="/"
-      class="font-display text-[0.8125rem] font-black tracking-[0.28em] uppercase whitespace-nowrap sm:text-sm"
+      class="font-display text-[0.8125rem] font-black tracking-[0.28em] uppercase whitespace-nowrap sm:text-lg"
       aria-label={`${SITE.name} — home`}
     >
       The <span class="text-gold-400">Karate</span> Attorney
     </a>
 
-    <nav aria-label="Primary" class="hidden items-center gap-7 lg:flex">
+    <nav aria-label="Primary" class="hidden items-center gap-8 lg:flex">
       {
         HEADER_NAV.map((item) => (
           <a
             href={item.href}
             aria-current={currentPath === item.href ? 'page' : undefined}
-            class="text-xs font-semibold tracking-[0.18em] uppercase text-navy-100 transition-colors hover:text-gold-300 aria-[current=page]:text-gold-400"
+            class="text-sm font-semibold tracking-[0.18em] uppercase whitespace-nowrap text-navy-100 transition-colors hover:text-gold-300 aria-[current=page]:text-gold-400"
           >
             {item.label}
           </a>
@@ -57,7 +57,7 @@ const ctaClass =
 
       <details id="site-menu" class="group relative">
         <summary
-          class="flex h-10 w-10 cursor-pointer list-none items-center justify-center border border-navy-100/40 transition-colors hover:border-gold-300 [&::-webkit-details-marker]:hidden"
+          class="flex h-10 w-10 cursor-pointer list-none items-center justify-center border border-navy-100/40 transition-colors hover:border-gold-300 sm:h-12 sm:w-12 [&::-webkit-details-marker]:hidden"
           aria-label="Open menu"
         >
           <span aria-hidden="true" class="relative block h-[10px] w-4">
