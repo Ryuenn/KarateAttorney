@@ -28,19 +28,12 @@ import Button from '../../components/ui/Button.astro';
 
 <script>
   // Primary KPI (spec §5/§6): fire the conversion exactly once per
-  // submission. The analytics layer listens for this event; it also pushes
-  // directly to any provider already present.
+  // submission, through the shared provider-agnostic tracker.
+  import { track } from '../../scripts/analytics';
+
   const KEY = 'ka-speaker-conversion-fired';
   if (!sessionStorage.getItem(KEY)) {
     sessionStorage.setItem(KEY, '1');
-    document.dispatchEvent(
-      new CustomEvent('ka:conversion', {
-        detail: { event: 'speaker_request_submitted' },
-      }),
-    );
-    window.plausible?.('speaker_request_submitted');
-    window.gtag?.('event', 'speaker_request_submitted', {
-      event_category: 'conversion',
-    });
+    track('speaker_request_submitted');
   }
 </script>

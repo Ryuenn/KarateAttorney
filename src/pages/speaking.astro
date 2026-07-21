@@ -1,7 +1,9 @@
 ---
 import SpeakerForm from '../components/speaking/SpeakerForm.astro';
+import JsonLd from '../components/seo/JsonLd.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { TOPICS } from '../lib/speaker-request';
+import { FIRM_URL, SITE } from '../lib/site';
 import Button from '../components/ui/Button.astro';
 
 const audiences = [
@@ -20,6 +22,28 @@ const presetTopics = TOPICS.filter((t) => t.value !== 'other');
   title="Speaking"
   description="[PLACEHOLDER: speaking meta description — book Ibrahim Awad for keynotes, khutbahs, workshops, and youth programs]"
 >
+  <Fragment slot="head">
+    <JsonLd
+      schema={{
+        '@type': 'Service',
+        serviceType: 'Public speaking',
+        name: 'Speaking engagements with Ibrahim Awad',
+        url: `${SITE.url}/speaking`,
+        provider: {
+          '@type': 'Person',
+          name: SITE.person,
+          alternateName: SITE.name,
+          url: SITE.url,
+          jobTitle: 'Trial lawyer',
+          worksFor: {
+            '@type': 'Organization',
+            name: 'The Awad Law Firm',
+            url: FIRM_URL,
+          },
+        },
+      }}
+    />
+  </Fragment>
   <section class="on-dark bg-navy-950 text-paper">
     <div class="wrap section-pad">
       <p class="text-sm font-bold tracking-[0.25em] text-gold-300 uppercase" data-hero-line>

@@ -3,6 +3,7 @@ import { Font } from 'astro:assets';
 import AnnouncementBar from '../components/layout/AnnouncementBar.astro';
 import Footer from '../components/layout/Footer.astro';
 import Header from '../components/layout/Header.astro';
+import Analytics from '../components/seo/Analytics.astro';
 import Seo from '../components/seo/Seo.astro';
 import '../styles/global.css';
 
@@ -25,6 +26,7 @@ const { title, description, noindex, bodyClass = '' } = Astro.props;
     <Seo title={title} description={description} noindex={noindex} />
     <Font cssVariable="--font-archivo" preload />
     <Font cssVariable="--font-inter" preload />
+    <Analytics />
     <slot name="head" />
   </head>
   <body class={bodyClass}>
@@ -40,6 +42,7 @@ const { title, description, noindex, bodyClass = '' } = Astro.props;
     <Footer />
     <script>
       import '../scripts/motion';
+      import '../scripts/analytics';
     </script>
   </body>
 </html>

@@ -1,7 +1,8 @@
 ---
 import Hero from '../components/home/Hero.astro';
+import JsonLd from '../components/seo/JsonLd.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { FIRM_URL } from '../lib/site';
+import { FIRM_URL, SITE } from '../lib/site';
 import Button from '../components/ui/Button.astro';
 
 const pillars = [
@@ -35,6 +36,22 @@ const pillars = [
   title="The Karate Attorney"
   description="[PLACEHOLDER: home meta description — Ibrahim Awad: trial lawyer, martial artist, TEDx speaker]"
 >
+  <Fragment slot="head">
+    <JsonLd
+      schema={{
+        '@type': 'Person',
+        name: SITE.person,
+        alternateName: SITE.name,
+        url: SITE.url,
+        jobTitle: 'Trial lawyer',
+        worksFor: {
+          '@type': 'Organization',
+          name: 'The Awad Law Firm',
+          url: FIRM_URL,
+        },
+      }}
+    />
+  </Fragment>
   <Hero />
 
   <section class="wrap section-pad" aria-labelledby="pillars-heading">

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /styleguide
+
+Sitemap: https://karateattorney.com/sitemap.xml

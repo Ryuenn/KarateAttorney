@@ -1,0 +1,17 @@
+---
+/**
+ * JSON-LD structured data (spec §6). Only emit real, confirmed facts —
+ * never placeholder values.
+ */
+interface Props {
+  schema: Record<string, unknown>;
+}
+const { schema } = Astro.props;
+const json = JSON.stringify(
+  { '@context': 'https://schema.org', ...schema },
+  null,
+  0,
+).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" set:html={json} is:inline></script>
