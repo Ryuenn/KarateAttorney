@@ -118,6 +118,20 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Components                                                          */
+/* ------------------------------------------------------------------ */
+
+/* Fixed header: transparent over the hero, solid once scrolled (class
+   toggled by Header.astro's script; <noscript> forces solid). */
+.site-header {
+  transition: background-color 0.3s var(--ease-smooth);
+}
+.site-header.is-solid {
+  background-color: color-mix(in srgb, var(--color-navy-950) 95%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+/* ------------------------------------------------------------------ */
 /* Utilities                                                           */
 /* ------------------------------------------------------------------ */
 

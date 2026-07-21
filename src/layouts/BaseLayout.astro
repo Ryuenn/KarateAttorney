@@ -13,9 +13,18 @@ interface Props {
   noindex?: boolean;
   /** Extra classes on <body> (e.g. dark page background). */
   bodyClass?: string;
+  /** Home hero: content flows under the transparent fixed header (no
+   * spacer). Pages without a full-bleed hero keep the navy spacer. */
+  heroOverlap?: boolean;
 }
 
-const { title, description, noindex, bodyClass = '' } = Astro.props;
+const {
+  title,
+  description,
+  noindex,
+  bodyClass = '',
+  heroOverlap = false,
+} = Astro.props;
 ---
 
 <html lang="en">
@@ -27,6 +36,14 @@ const { title, description, noindex, bodyClass = '' } = Astro.props;
     <Font cssVariable="--font-archivo" preload />
     <Font cssVariable="--font-inter" preload />
     <Analytics />
+    <noscript>
+      <style>
+        /* Without JS the scroll toggle can't run — keep the header solid. */
+        .site-header {
+          background-color: var(--color-navy-950);
+        }
+      </style>
+    </noscript>
     <slot name="head" />
   </head>
   <body class={bodyClass}>
@@ -36,8 +53,11 @@ const { title, description, noindex, bodyClass = '' } = Astro.props;
     >
       Skip to content
     </a>
-    <AnnouncementBar />
-    <Header />
+    <div class="fixed inset-x-0 top-0 z-50">
+      <AnnouncementBar />
+      <Header />
+    </div>
+    {!heroOverlap && <div class="h-24 bg-navy-950" aria-hidden="true"></div>}
     <main id="main"><slot /></main>
     <Footer />
     <script>

@@ -1,27 +1,29 @@
 ---
 import { FIRM_URL, HEADER_NAV, NAV, SITE } from '../../lib/site';
-import Button from '../ui/Button.astro';
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const ctaClass =
+  'inline-flex items-center px-3.5 py-2.5 text-[0.6875rem] font-bold uppercase tracking-[0.15em] whitespace-nowrap transition-colors sm:text-xs';
 ---
 
-<header class="on-dark sticky top-0 z-50 bg-navy-950/95 text-paper backdrop-blur supports-[backdrop-filter]:bg-navy-950/85">
+<header class="site-header on-dark text-paper">
   <div class="wrap flex items-center justify-between gap-4 py-3">
     <a
       href="/"
-      class="font-display text-lg font-extrabold tracking-tight whitespace-nowrap"
+      class="font-display text-[0.8125rem] font-black tracking-[0.28em] uppercase whitespace-nowrap sm:text-sm"
       aria-label={`${SITE.name} — home`}
     >
       The <span class="text-gold-400">Karate</span> Attorney
     </a>
 
-    <nav aria-label="Primary" class="hidden items-center gap-6 lg:flex">
+    <nav aria-label="Primary" class="hidden items-center gap-7 lg:flex">
       {
         HEADER_NAV.map((item) => (
           <a
             href={item.href}
             aria-current={currentPath === item.href ? 'page' : undefined}
-            class="text-sm font-semibold text-navy-100 transition-colors hover:text-gold-300 aria-[current=page]:text-gold-400"
+            class="text-xs font-semibold tracking-[0.18em] uppercase text-navy-100 transition-colors hover:text-gold-300 aria-[current=page]:text-gold-400"
           >
             {item.label}
           </a>
@@ -30,23 +32,30 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      <Button href="/speaking#request" size="sm" variant="light" class="whitespace-nowrap">
+      <a
+        href="/speaking#request"
+        class:list={[
+          ctaClass,
+          'border border-paper/70 hover:bg-paper hover:text-navy-950',
+        ]}
+      >
         <span class="hidden sm:inline">Book Ibrahim to Speak</span>
         <span class="sm:hidden">Book to Speak</span>
-      </Button>
-      <Button
+      </a>
+      <a
         href={FIRM_URL}
-        size="sm"
-        variant="gold"
         data-firm-link
-        class="whitespace-nowrap"
+        class:list={[
+          ctaClass,
+          'bg-gold-400 text-navy-950 hover:bg-gold-300',
+        ]}
       >
         Need a Lawyer?
-      </Button>
+      </a>
 
       <details id="site-menu" class="group relative">
         <summary
-          class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-navy-100/30 transition-colors hover:border-gold-300 [&::-webkit-details-marker]:hidden"
+          class="flex h-10 w-10 cursor-pointer list-none items-center justify-center border border-navy-100/40 transition-colors hover:border-gold-300 [&::-webkit-details-marker]:hidden"
           aria-label="Open menu"
         >
           <span aria-hidden="true" class="relative block h-[10px] w-4">
@@ -91,6 +100,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 </header>
 
 <script>
+  // Transparent-over-hero header: gain a solid background once scrolled.
+  // Without JS, a <noscript> style in BaseLayout keeps it solid always.
+  const header = document.querySelector('.site-header');
+  const syncHeader = () =>
+    header?.classList.toggle('is-solid', window.scrollY > 16);
+  syncHeader();
+  window.addEventListener('scroll', syncHeader, { passive: true });
+
   // Progressive enhancement for the <details> menu: close on Escape,
   // outside click, or link click. Without JS the menu still opens/closes.
   const menu = document.getElementById('site-menu') as HTMLDetailsElement | null;
