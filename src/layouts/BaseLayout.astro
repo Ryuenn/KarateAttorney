@@ -1,6 +1,5 @@
 ---
 import { Font } from 'astro:assets';
-import AnnouncementBar from '../components/layout/AnnouncementBar.astro';
 import Footer from '../components/layout/Footer.astro';
 import Header from '../components/layout/Header.astro';
 import Analytics from '../components/seo/Analytics.astro';
@@ -91,10 +90,9 @@ const {
       Skip to content
     </a>
     <div class="fixed inset-x-0 top-0 z-50">
-      <AnnouncementBar />
       <Header />
     </div>
-    {!heroOverlap && <div class="h-24 bg-navy-950" aria-hidden="true"></div>}
+    {!heroOverlap && <div class="h-16 bg-navy-950" aria-hidden="true"></div>}
     <main id="main"><slot /></main>
     <Footer />
     <script>
