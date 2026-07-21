@@ -1,6 +1,153 @@
 @import 'tailwindcss';
 
-/*
- * Design tokens (navy/gold palette, type scale, spacing) land here in the
- * next slice via Tailwind v4 `@theme`.
- */
+/* ------------------------------------------------------------------ */
+/* Design tokens — navy + gold brand core (§4 of the spec).           */
+/* Gold-on-navy pairs below are chosen to clear WCAG AA:              */
+/*   gold-400 on navy-950 ≈ 8.6:1 · paper on navy-900 ≈ 15:1          */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Palette */
+  --color-navy-50: #eff3f9;
+  --color-navy-100: #d8e0ef;
+  --color-navy-200: #afbedc;
+  --color-navy-300: #7b93c2;
+  --color-navy-400: #4a6ba6;
+  --color-navy-500: #2a4a85;
+  --color-navy-600: #1e3766;
+  --color-navy-700: #16294e;
+  --color-navy-800: #0f1d38;
+  --color-navy-900: #0a1428;
+  --color-navy-950: #060d1a;
+
+  --color-gold-50: #fcf8ec;
+  --color-gold-100: #f8f0d9;
+  --color-gold-200: #f0dfa3;
+  --color-gold-300: #e5c96e;
+  --color-gold-400: #d9b54a;
+  --color-gold-500: #c9a227;
+  --color-gold-600: #a9861c;
+  --color-gold-700: #866910;
+  --color-gold-800: #5f4a0b;
+  --color-gold-900: #3d2f07;
+
+  --color-ink: #0b0f17;
+  --color-paper: #faf8f4;
+
+  /* Typography — Astro's <Font> component injects --font-archivo /
+     --font-inter with self-hosted files + tuned fallbacks. */
+  --font-display: var(--font-archivo, 'Archivo'), 'Arial', sans-serif;
+  --font-body: var(--font-inter, 'Inter'), 'Arial', sans-serif;
+
+  /* Fluid display scale (clamp between mobile and desktop) */
+  --text-display-2xl: clamp(2.75rem, 1.5rem + 6.5vw, 7rem);
+  --text-display-2xl--line-height: 0.98;
+  --text-display-2xl--letter-spacing: -0.02em;
+  --text-display-2xl--font-weight: 800;
+
+  --text-display-xl: clamp(2.25rem, 1.35rem + 4vw, 4.75rem);
+  --text-display-xl--line-height: 1.02;
+  --text-display-xl--letter-spacing: -0.018em;
+  --text-display-xl--font-weight: 800;
+
+  --text-display-lg: clamp(1.75rem, 1.2rem + 2.6vw, 3.25rem);
+  --text-display-lg--line-height: 1.08;
+  --text-display-lg--letter-spacing: -0.014em;
+  --text-display-lg--font-weight: 750;
+
+  --text-display-md: clamp(1.375rem, 1.1rem + 1.4vw, 2.125rem);
+  --text-display-md--line-height: 1.15;
+  --text-display-md--letter-spacing: -0.01em;
+  --text-display-md--font-weight: 700;
+
+  --text-lede: clamp(1.0625rem, 1rem + 0.5vw, 1.375rem);
+  --text-lede--line-height: 1.55;
+
+  /* Motion */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Layout rhythm */
+  --spacing-gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --spacing-section: clamp(4.5rem, 6rem + 4vw, 9rem);
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: var(--color-gold-400);
+    color: var(--color-navy-950);
+  }
+
+  /* Visible, consistent focus for keyboard users (WCAG AA) */
+  :focus-visible {
+    outline: 3px solid var(--color-gold-500);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .on-dark :focus-visible,
+  [data-theme='dark'] :focus-visible {
+    outline-color: var(--color-gold-300);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilities                                                           */
+/* ------------------------------------------------------------------ */
+
+/* Page gutter + max-width wrapper */
+@utility wrap {
+  margin-inline: auto;
+  width: min(100% - 2 * var(--spacing-gutter), 80rem);
+}
+
+/* Vertical rhythm for page sections */
+@utility section-pad {
+  padding-block: var(--spacing-section);
+}
+
+/* Screen-reader-only (for labels that must exist but not render) */
+@utility sr-only-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  &:focus-visible {
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    clip-path: none;
+    z-index: 100;
+  }
+}
