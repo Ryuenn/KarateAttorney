@@ -16,7 +16,9 @@ import { FIRM_URL, SITE } from '../../lib/site';
 import Button from '../ui/Button.astro';
 ---
 
-<section class="on-dark relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-navy-950 text-paper">
+<!-- min-height subtracts the announcement bar + header stack so the CTA row
+     stays above the fold on mobile (spec §3 non-negotiable). -->
+<section class="on-dark relative isolate flex min-h-[calc(100svh-6.25rem)] flex-col overflow-hidden bg-navy-950 text-paper">
   <div class="absolute inset-0 -z-20" aria-hidden="true">
     <video
       id="hero-video"
@@ -29,7 +31,7 @@ import Button from '../ui/Button.astro';
       poster="/media/hero-poster.svg"
       tabindex="-1"
     ></video>
-    <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/45 to-navy-950/25"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/40 to-navy-950/35"></div>
   </div>
 
   <div
@@ -42,42 +44,47 @@ import Button from '../ui/Button.astro';
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_40%,rgba(201,162,39,0.16),rgba(22,41,78,0.25)_45%,transparent_75%)]"></div>
   </div>
 
-  <div class="wrap pt-36 pb-14 sm:pb-20">
+  <div class="wrap relative flex flex-1 flex-col pt-8 pb-6 sm:pt-10 sm:pb-8">
     <p
       data-hero-line
-      class="text-sm font-bold tracking-[0.25em] text-gold-300 uppercase"
+      class="text-[0.6875rem] font-bold tracking-[0.25em] text-gold-300 uppercase sm:text-sm"
     >
-      {SITE.person} — {SITE.name}
+      {SITE.person} — Trial lawyer · Martial artist · TEDx speaker · Khateeb
     </p>
-    <h1 data-hero-line class="text-display-2xl mt-4 max-w-5xl">
-      Trial lawyer.<br />Martial artist.<br />
-      <span class="text-gold-400">Speaker.</span>
+
+    <!-- xnrgyclub-style oversized staggered wordmark over the video -->
+    <h1
+      class="mt-4 flex min-h-0 flex-1 flex-col justify-between font-display font-black tracking-tight uppercase"
+    >
+      <span
+        data-hero-line
+        class="block text-[clamp(3.25rem,12.5vw,12rem)] leading-[0.85]"
+      >
+        The Karate
+      </span>
+      <span
+        data-hero-line
+        class="block self-end text-right text-[clamp(3.25rem,12.5vw,12rem)] leading-[0.85]"
+      >
+        Attorney<span class="text-gold-400">.</span>
+      </span>
     </h1>
-    <p data-hero-line class="text-lede mt-6 max-w-xl text-navy-100">
-      [PLACEHOLDER: one-line identity statement / hero subline — final copy
-      from client]
-    </p>
 
-    <div data-hero-line class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-      <Button href="/speaking#request" variant="light" size="lg">
-        Book Ibrahim to Speak
-      </Button>
-      <Button href={FIRM_URL} variant="gold" size="lg" data-firm-link>
-        Injured? Hire Ibrahim →
-        <span class="sr-only">at The Awad Law Firm</span>
-      </Button>
+    <div class="mt-6 flex flex-col gap-4 sm:mt-8 sm:flex-row sm:items-end sm:justify-between">
+      <div data-hero-line class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <Button href="/speaking#request" variant="light" size="lg">
+          Book Ibrahim to Speak
+        </Button>
+        <Button href={FIRM_URL} variant="gold" size="lg" data-firm-link>
+          Injured? Hire Ibrahim →
+          <span class="sr-only">at The Awad Law Firm</span>
+        </Button>
+      </div>
+      <p data-hero-line class="text-xs text-navy-200 sm:max-w-xs sm:text-right">
+        Legal cases are handled at The Awad Law Firm ·
+        <span lang="es">¿Lesionado? Visite The Awad Law Firm</span>
+      </p>
     </div>
-    <p data-hero-line class="mt-3 text-xs text-navy-200">
-      Legal cases are handled at The Awad Law Firm ·
-      <span lang="es">¿Lesionado? Visite The Awad Law Firm</span>
-    </p>
-  </div>
-
-  <div
-    class="pointer-events-none absolute bottom-6 left-1/2 hidden -translate-x-1/2 lg:block"
-    aria-hidden="true"
-  >
-    <div class="h-10 w-px animate-pulse bg-gradient-to-b from-transparent via-gold-300 to-transparent"></div>
   </div>
 </section>
 

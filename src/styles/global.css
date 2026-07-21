@@ -68,7 +68,7 @@
 
   /* Layout rhythm */
   --spacing-gutter: clamp(1.25rem, 4vw, 2.5rem);
-  --spacing-section: clamp(4.5rem, 6rem + 4vw, 9rem);
+  --spacing-section: clamp(2.75rem, 2rem + 2.5vw, 5rem);
 }
 
 /* ------------------------------------------------------------------ */
