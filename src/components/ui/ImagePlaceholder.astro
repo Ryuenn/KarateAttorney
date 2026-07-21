@@ -1,0 +1,23 @@
+---
+/**
+ * Sized stand-in for photography that hasn't been provided (spec §4
+ * imagery mix). Swap for <Image> from astro:assets once real photos exist.
+ */
+interface Props {
+  label: string;
+  /** CSS aspect-ratio, e.g. "16/9", "4/5". */
+  ratio?: string;
+  class?: string;
+}
+const { label, ratio = '16/9', class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={[
+    'grid place-items-center rounded-2xl border border-dashed border-navy-300 bg-navy-50 p-6 text-center',
+    className,
+  ]}
+  style={`aspect-ratio: ${ratio}`}
+>
+  <p class="text-sm text-ink/60">[PLACEHOLDER: {label}]</p>
+</div>

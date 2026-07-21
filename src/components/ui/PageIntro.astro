@@ -1,0 +1,21 @@
+---
+/** Dark intro band used at the top of inner pages. */
+interface Props {
+  kicker: string;
+  title: string;
+}
+const { kicker, title } = Astro.props;
+---
+
+<section class="on-dark bg-navy-950 text-paper">
+  <div class="wrap section-pad">
+    <p class="text-sm font-bold tracking-[0.25em] text-gold-300 uppercase" data-hero-line>
+      {kicker}
+    </p>
+    <h1 class="text-display-xl mt-4 max-w-4xl" data-hero-line>{title}</h1>
+    <div class="text-lede mt-6 max-w-2xl text-navy-100" data-hero-line>
+      <slot />
+    </div>
+    <div data-hero-line><slot name="actions" /></div>
+  </div>
+</section>

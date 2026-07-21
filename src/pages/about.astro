@@ -1,0 +1,76 @@
+---
+import ImagePlaceholder from '../components/ui/ImagePlaceholder.astro';
+import PageIntro from '../components/ui/PageIntro.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+
+const chapters = [
+  {
+    title: 'Palestinian-American roots',
+    body: '[PLACEHOLDER: chapter — family origins, heritage, and what Palestinian memory means to Ibrahim]',
+    image: 'family/heritage photo — no children identifiable',
+  },
+  {
+    title: 'Building the firm',
+    body: '[PLACEHOLDER: chapter — founding The Awad Law Firm, what trial work taught him]',
+    image: 'courtroom / professional photo',
+  },
+  {
+    title: 'The martial-arts journey',
+    body: '[PLACEHOLDER: chapter — how training shaped the man and the nickname]',
+    image: 'gi-and-gloves training photo',
+  },
+  {
+    title: 'Faith at the center',
+    body: '[PLACEHOLDER: chapter — becoming a khateeb, faith as the throughline]',
+    image: 'speaking / masjid photo',
+  },
+  {
+    title: 'Family & community',
+    body: '[PLACEHOLDER: chapter — family life and community — keep children’s names/faces/details out per site policy]',
+    image: 'community photo',
+  },
+];
+---
+
+<BaseLayout
+  title="My Story"
+  description="[PLACEHOLDER: about meta description — the story of Ibrahim Awad, The Karate Attorney]"
+>
+  <PageIntro kicker="My Story" title="The whole story, one thread.">
+    [PLACEHOLDER: about-page intro — 2–3 sentences framing the narrative]
+  </PageIntro>
+
+  <section class="wrap section-pad space-y-20">
+    {
+      chapters.map((c, i) => (
+        <div
+          class:list={[
+            'grid items-center gap-10 lg:grid-cols-2',
+            i % 2 === 1 && 'lg:[&>*:first-child]:order-2',
+          ]}
+        >
+          <div data-reveal>
+            <h2 class="text-display-lg">{c.title}</h2>
+            <p class="mt-5 leading-relaxed text-ink/75">{c.body}</p>
+          </div>
+          <ImagePlaceholder label={c.image} ratio="4/3" data-reveal />
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="on-dark bg-navy-950 text-paper">
+    <div class="wrap section-pad text-center">
+      <h2 class="text-display-lg" data-reveal>Bring this story to your stage.</h2>
+      <div class="mt-8 flex flex-wrap justify-center gap-3" data-reveal>
+        <Button href="/speaking#request" variant="gold" size="lg">
+          Book Ibrahim to Speak
+        </Button>
+        <Button href="/martial-artist" variant="outline" size="lg" class="text-paper">
+          The Martial Artist →
+        </Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

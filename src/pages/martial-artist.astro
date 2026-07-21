@@ -1,0 +1,73 @@
+---
+import ImagePlaceholder from '../components/ui/ImagePlaceholder.astro';
+import PageIntro from '../components/ui/PageIntro.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { VENTURES } from '../lib/site';
+import Button from '../components/ui/Button.astro';
+---
+
+<BaseLayout
+  title="The Martial Artist"
+  description="[PLACEHOLDER: martial-artist meta description — training, Team Karate Attorney, and the ring-to-courtroom philosophy]"
+>
+  <PageIntro kicker="The Martial Artist" title="Keep your hands up.">
+    [PLACEHOLDER: martial-artist intro — the discipline behind the nickname]
+  </PageIntro>
+
+  <section class="wrap section-pad">
+    <div class="grid items-center gap-10 lg:grid-cols-2">
+      <div data-reveal>
+        <h2 class="text-display-lg">The training story</h2>
+        <p class="mt-5 leading-relaxed text-ink/75">
+          [PLACEHOLDER: 2–3 paragraphs — martial-arts journey: how it started,
+          the arts trained, what the mat continues to teach.]
+        </p>
+      </div>
+      <ImagePlaceholder label="gi-and-gloves training photo" ratio="4/3" data-reveal />
+    </div>
+  </section>
+
+  <section class="on-dark bg-navy-900 text-paper">
+    <div class="wrap section-pad">
+      <div class="grid items-center gap-10 lg:grid-cols-2">
+        <ImagePlaceholder
+          label="ring / sparring photo"
+          ratio="4/3"
+          class="border-navy-600 bg-navy-800 [&_p]:text-navy-200"
+          data-reveal
+        />
+        <div data-reveal>
+          <h2 class="text-display-lg">From the ring to the courtroom</h2>
+          <p class="mt-5 leading-relaxed text-navy-100">
+            [PLACEHOLDER: the &ldquo;Keep Your Hands Up&rdquo; philosophy —
+            how fight discipline translates into trial work and life: guard
+            up, breathe, answer back.]
+          </p>
+          <div class="mt-8">
+            <Button href="/speaking#request" variant="gold">
+              Book this message for your event
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section-pad">
+    <div class="grid items-center gap-10 lg:grid-cols-2">
+      <div data-reveal>
+        <h2 class="text-display-lg">Team Karate Attorney</h2>
+        <p class="mt-5 leading-relaxed text-ink/75">
+          [PLACEHOLDER: what Team Karate Attorney is — the team, the training
+          community, how to join or follow.]
+        </p>
+        <div class="mt-8">
+          <Button href={VENTURES.teamKarateAttorney} variant="primary" rel="noopener">
+            Team Karate Attorney →
+          </Button>
+        </div>
+      </div>
+      <ImagePlaceholder label="Team Karate Attorney group photo" ratio="16/9" data-reveal />
+    </div>
+  </section>
+</BaseLayout>

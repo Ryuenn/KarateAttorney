@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/ui/Button.astro';
+---
+
+<BaseLayout
+  title="Message sent"
+  description="Your message has been sent."
+  noindex
+>
+  <section class="wrap section-pad">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="text-sm font-bold tracking-[0.25em] text-gold-600 uppercase">
+        Contact
+      </p>
+      <h1 class="text-display-xl mt-4">Message received.</h1>
+      <p class="text-lede mt-6 text-ink/70">
+        Thanks for reaching out — someone will get back to you soon.
+      </p>
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        <Button href="/">Back to home</Button>
+        <Button href="/content" variant="outline">Explore the Content Hub</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
