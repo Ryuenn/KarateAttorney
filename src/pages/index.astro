@@ -1,25 +1,19 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Placeholder home body — the video hero + dual CTA slice replaces this.
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>The Karate Attorney — Ibrahim Awad</title>
-    <meta
-      name="description"
-      content="[PLACEHOLDER: meta description — set in SEO slice]"
-    />
-  </head>
-  <body>
-    <main class="grid min-h-svh place-items-center p-8 text-center">
-      <div>
-        <h1 class="text-4xl font-bold">The Karate Attorney</h1>
-        <p class="mt-4">
-          [PLACEHOLDER: site under construction — baseline scaffold]
-        </p>
-      </div>
-    </main>
-  </body>
-</html>
+<BaseLayout
+  title="The Karate Attorney"
+  description="[PLACEHOLDER: home meta description — Ibrahim Awad: trial lawyer, martial artist, speaker]"
+>
+  <section class="wrap section-pad">
+    <h1 class="text-display-2xl max-w-4xl">
+      The Karate Attorney
+    </h1>
+    <p class="text-lede mt-6 max-w-2xl" data-reveal>
+      [PLACEHOLDER: home hero under construction — replaced in the hero slice]
+    </p>
+  </section>
+</BaseLayout>

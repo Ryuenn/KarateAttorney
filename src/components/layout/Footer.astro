@@ -1,0 +1,151 @@
+---
+import { FIRM_URL, NAV, SITE, SOCIALS, VENTURES } from '../../lib/site';
+
+const newsletterAction = import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '';
+const year = new Date().getFullYear();
+
+const ventureLinks = [
+  { label: 'The Awad Law Firm', href: FIRM_URL, firm: true },
+  { label: 'Palistory', href: VENTURES.palistory, firm: false },
+  { label: 'Awad Academy', href: VENTURES.awadAcademy, firm: false },
+  {
+    label: 'Team Karate Attorney',
+    href: VENTURES.teamKarateAttorney,
+    firm: false,
+  },
+];
+---
+
+<footer class="on-dark bg-navy-950 text-navy-100">
+  <div class="wrap section-pad">
+    <div class="grid gap-12 lg:grid-cols-[2fr_1fr_1fr_1.5fr]">
+      <div>
+        <p class="font-display text-2xl font-extrabold text-paper">
+          The <span class="text-gold-400">Karate</span> Attorney
+        </p>
+        <p class="mt-3 max-w-sm text-sm leading-relaxed">
+          {SITE.tagline}
+        </p>
+        <p class="mt-6 text-sm">
+          <a
+            href={FIRM_URL}
+            data-firm-link
+            class="font-semibold text-gold-300 underline-offset-4 hover:underline"
+          >
+            Injured? Hire Ibrahim → The Awad Law Firm
+          </a>
+          <span lang="es" class="mt-1 block text-navy-200">
+            ¿Lesionado? Visite The Awad Law Firm
+          </span>
+        </p>
+      </div>
+
+      <nav aria-label="Site pages">
+        <h2 class="font-display text-sm font-bold tracking-widest text-navy-300 uppercase">
+          Explore
+        </h2>
+        <ul class="mt-4 space-y-2 text-sm">
+          {
+            NAV.map((item) => (
+              <li>
+                <a href={item.href} class="transition-colors hover:text-gold-300">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-label="Ventures and firm">
+        <h2 class="font-display text-sm font-bold tracking-widest text-navy-300 uppercase">
+          Elsewhere
+        </h2>
+        <ul class="mt-4 space-y-2 text-sm">
+          {
+            ventureLinks.map((v) => (
+              <li>
+                <a
+                  href={v.href}
+                  data-firm-link={v.firm || undefined}
+                  rel="noopener"
+                  class="transition-colors hover:text-gold-300"
+                >
+                  {v.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <h2 class="mt-8 font-display text-sm font-bold tracking-widest text-navy-300 uppercase">
+          Follow
+        </h2>
+        <ul class="mt-4 space-y-2 text-sm">
+          {
+            SOCIALS.map((s) => (
+              <li>
+                <a href={s.href} rel="noopener" class="transition-colors hover:text-gold-300">
+                  {s.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="font-display text-sm font-bold tracking-widest text-navy-300 uppercase">
+          Newsletter
+        </h2>
+        <p class="mt-4 text-sm leading-relaxed">
+          [PLACEHOLDER: newsletter pitch — one sentence on what subscribers
+          get]
+        </p>
+        {
+          newsletterAction ? (
+            <form
+              action={newsletterAction}
+              method="post"
+              class="mt-4 flex max-w-sm gap-2"
+            >
+              <label class="sr-only" for="newsletter-email">
+                Email address
+              </label>
+              <input
+                id="newsletter-email"
+                type="email"
+                name="email"
+                required
+                autocomplete="email"
+                placeholder="you@example.com"
+                class="min-w-0 flex-1 rounded-full border border-navy-600 bg-navy-900 px-4 py-2.5 text-sm text-paper placeholder:text-navy-300"
+              />
+              <button
+                type="submit"
+                class="rounded-full bg-gold-400 px-5 py-2.5 text-sm font-bold text-navy-950 transition-colors hover:bg-gold-300"
+              >
+                Join
+              </button>
+            </form>
+          ) : (
+            <p class="mt-4 rounded-xl border border-dashed border-navy-600 p-4 text-xs text-navy-300">
+              Newsletter signup is disabled until a provider is configured —
+              set <code>PUBLIC_NEWSLETTER_ACTION</code> (form POST endpoint of
+              the chosen provider) to enable this form.
+            </p>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="mt-16 flex flex-col gap-2 border-t border-navy-800 pt-8 text-xs text-navy-300 sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} {SITE.person} · {SITE.name}. All rights reserved.</p>
+      <p>
+        Legal representation is provided through
+        <a href={FIRM_URL} data-firm-link class="text-gold-300 underline-offset-2 hover:underline">
+          The Awad Law Firm</a
+        >.
+      </p>
+    </div>
+  </div>
+</footer>

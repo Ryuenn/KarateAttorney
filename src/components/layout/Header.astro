@@ -1,0 +1,113 @@
+---
+import { FIRM_URL, HEADER_NAV, NAV, SITE } from '../../lib/site';
+import Button from '../ui/Button.astro';
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class="on-dark sticky top-0 z-50 bg-navy-950/95 text-paper backdrop-blur supports-[backdrop-filter]:bg-navy-950/85">
+  <div class="wrap flex items-center justify-between gap-4 py-3">
+    <a
+      href="/"
+      class="font-display text-lg font-extrabold tracking-tight whitespace-nowrap"
+      aria-label={`${SITE.name} — home`}
+    >
+      The <span class="text-gold-400">Karate</span> Attorney
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-6 lg:flex">
+      {
+        HEADER_NAV.map((item) => (
+          <a
+            href={item.href}
+            aria-current={currentPath === item.href ? 'page' : undefined}
+            class="text-sm font-semibold text-navy-100 transition-colors hover:text-gold-300 aria-[current=page]:text-gold-400"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2 sm:gap-3">
+      <Button href="/speaking#request" size="sm" variant="light" class="whitespace-nowrap">
+        <span class="hidden sm:inline">Book Ibrahim to Speak</span>
+        <span class="sm:hidden">Book to Speak</span>
+      </Button>
+      <Button
+        href={FIRM_URL}
+        size="sm"
+        variant="gold"
+        data-firm-link
+        class="whitespace-nowrap"
+      >
+        Need a Lawyer?
+      </Button>
+
+      <details id="site-menu" class="group relative">
+        <summary
+          class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-navy-100/30 transition-colors hover:border-gold-300 [&::-webkit-details-marker]:hidden"
+          aria-label="Open menu"
+        >
+          <span aria-hidden="true" class="relative block h-[10px] w-4">
+            <span class="absolute top-0 left-0 h-0.5 w-full bg-current transition-transform group-open:translate-y-[4px] group-open:rotate-45"></span>
+            <span class="absolute bottom-0 left-0 h-0.5 w-full bg-current transition-transform group-open:-translate-y-[4px] group-open:-rotate-45"></span>
+          </span>
+        </summary>
+        <div class="absolute top-[calc(100%+0.75rem)] right-0 z-50 w-[min(20rem,calc(100vw-2*var(--spacing-gutter)))] rounded-2xl border border-navy-700 bg-navy-900 p-6 shadow-2xl">
+          <nav aria-label="All pages">
+            <ul class="space-y-1">
+              {
+                NAV.map((item) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      aria-current={currentPath === item.href ? 'page' : undefined}
+                      class="block rounded-lg px-3 py-2 font-display text-lg font-bold transition-colors hover:bg-navy-800 hover:text-gold-300 aria-[current=page]:text-gold-400"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+          <div class="mt-4 border-t border-navy-700 pt-4">
+            <a
+              href={FIRM_URL}
+              data-firm-link
+              class="block rounded-lg px-3 py-2 text-sm font-semibold text-gold-300 hover:bg-navy-800"
+            >
+              Injured? The Awad Law Firm →
+              <span lang="es" class="mt-0.5 block text-xs font-normal text-navy-200">
+                ¿Lesionado? Visite The Awad Law Firm
+              </span>
+            </a>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Progressive enhancement for the <details> menu: close on Escape,
+  // outside click, or link click. Without JS the menu still opens/closes.
+  const menu = document.getElementById('site-menu') as HTMLDetailsElement | null;
+  if (menu) {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.open) {
+        menu.open = false;
+        menu.querySelector('summary')?.focus();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (menu.open && e.target instanceof Node && !menu.contains(e.target)) {
+        menu.open = false;
+      }
+    });
+    menu.querySelectorAll('a').forEach((a) =>
+      a.addEventListener('click', () => (menu.open = false)),
+    );
+  }
+</script>

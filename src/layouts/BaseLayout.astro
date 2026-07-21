@@ -1,0 +1,45 @@
+---
+import { Font } from 'astro:assets';
+import AnnouncementBar from '../components/layout/AnnouncementBar.astro';
+import Footer from '../components/layout/Footer.astro';
+import Header from '../components/layout/Header.astro';
+import Seo from '../components/seo/Seo.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  /** Extra classes on <body> (e.g. dark page background). */
+  bodyClass?: string;
+}
+
+const { title, description, noindex, bodyClass = '' } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#060d1a" />
+    <Seo title={title} description={description} noindex={noindex} />
+    <Font cssVariable="--font-archivo" preload />
+    <Font cssVariable="--font-inter" preload />
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <a
+      href="#main"
+      class="sr-only-focusable fixed top-2 left-2 rounded-full bg-gold-400 font-bold text-navy-950"
+    >
+      Skip to content
+    </a>
+    <AnnouncementBar />
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>
