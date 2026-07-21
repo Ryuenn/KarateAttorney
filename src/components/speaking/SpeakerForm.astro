@@ -1,0 +1,284 @@
+---
+/**
+ * Speaker Request form (spec §5). Single-column, mobile-first, plain HTML
+ * POST so it works without JS; a small script adds conditional fields
+ * (virtual hides location) and date-flexible behavior. Honeypot + Turnstile
+ * included; the server re-validates everything.
+ */
+import {
+  AGE_RANGES,
+  AUDIENCE_SIZES,
+  BUDGET_RANGES,
+  ENGAGEMENT_TYPES,
+  FORMATS,
+  ORG_TYPES,
+  TOPICS,
+} from '../../lib/speaker-request';
+
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+
+const inputClass =
+  'w-full rounded-xl border border-navy-200 bg-white px-4 py-3 text-ink placeholder:text-ink/40 focus:border-navy-500';
+const labelClass = 'mb-1.5 block text-sm font-semibold text-navy-900';
+const legendClass = 'font-display text-display-md';
+---
+
+<section
+  id="request"
+  class="scroll-mt-24 bg-navy-50"
+  aria-labelledby="request-heading"
+>
+  <div class="wrap section-pad">
+    <div class="mx-auto max-w-2xl">
+      <h2 id="request-heading" class="text-display-lg" data-reveal>
+        Request Ibrahim as your speaker
+      </h2>
+      <p class="text-lede mt-4 text-ink/70" data-reveal>
+        Tell us about your event — you&rsquo;ll get a confirmation right away
+        and a personal follow-up soon after.
+      </p>
+
+      <!-- Populated client-side from ?error= after a server-rejected post
+           (this page is prerendered, so the server can't template it in) -->
+      <div
+        id="request-error"
+        role="alert"
+        hidden
+        class="mt-6 rounded-xl border border-red-300 bg-red-50 p-4 text-sm font-medium text-red-900"
+      >
+      </div>
+
+      <form
+        method="post"
+        action="/api/speaker-request"
+        class="mt-10 space-y-10"
+        novalidate={false}
+      >
+        <!-- Honeypot: hidden from real users, tempting to bots -->
+        <div class="hidden" aria-hidden="true">
+          <label>
+            Website
+            <input type="text" name="website" tabindex="-1" autocomplete="off" />
+          </label>
+        </div>
+
+        <fieldset class="space-y-5">
+          <legend class={legendClass}>Your organization</legend>
+          <div>
+            <label class={labelClass} for="orgName">Organization name</label>
+            <input id="orgName" name="orgName" required maxlength="200" class={inputClass} />
+          </div>
+          <div>
+            <label class={labelClass} for="orgType">Organization type</label>
+            <select id="orgType" name="orgType" required class={inputClass}>
+              {ORG_TYPES.map((o) => <option value={o.value}>{o.label}</option>)}
+            </select>
+          </div>
+        </fieldset>
+
+        <fieldset class="space-y-5">
+          <legend class={legendClass}>Contact person</legend>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label class={labelClass} for="contactName">Name</label>
+              <input id="contactName" name="contactName" required autocomplete="name" class={inputClass} />
+            </div>
+            <div>
+              <label class={labelClass} for="contactRole">Role</label>
+              <input id="contactRole" name="contactRole" autocomplete="organization-title" class={inputClass} />
+            </div>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label class={labelClass} for="contactEmail">Email</label>
+              <input id="contactEmail" type="email" name="contactEmail" required autocomplete="email" class={inputClass} />
+            </div>
+            <div>
+              <label class={labelClass} for="contactPhone">Phone</label>
+              <input id="contactPhone" type="tel" name="contactPhone" required autocomplete="tel" class={inputClass} />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="space-y-5">
+          <legend class={legendClass}>The event</legend>
+          <div>
+            <label class={labelClass} for="eventName">Event name</label>
+            <input id="eventName" name="eventName" required maxlength="200" class={inputClass} />
+          </div>
+          <div>
+            <label class={labelClass} for="eventDates">Date or dates</label>
+            <input
+              id="eventDates"
+              name="eventDates"
+              placeholder="e.g. March 14, 2027 — or a range"
+              class={inputClass}
+            />
+            <label class="mt-2.5 flex items-center gap-2 text-sm font-medium">
+              <input type="checkbox" name="dateFlexible" id="dateFlexible" class="h-4 w-4 accent-gold-500" />
+              We&rsquo;re flexible on dates
+            </label>
+          </div>
+          <div>
+            <span class={labelClass}>Format</span>
+            <div class="flex gap-6" id="format-group">
+              {
+                FORMATS.map((f, i) => (
+                  <label class="flex items-center gap-2 text-sm font-medium">
+                    <input
+                      type="radio"
+                      name="format"
+                      value={f.value}
+                      required
+                      checked={i === 0}
+                      class="h-4 w-4 accent-gold-500"
+                    />
+                    {f.label}
+                  </label>
+                ))
+              }
+            </div>
+          </div>
+          <div id="location-field">
+            <label class={labelClass} for="location">Location (city, state)</label>
+            <input id="location" name="location" placeholder="e.g. Atlanta, GA" class={inputClass} />
+          </div>
+          <div>
+            <label class={labelClass} for="engagementType">Engagement type</label>
+            <select id="engagementType" name="engagementType" required class={inputClass}>
+              {ENGAGEMENT_TYPES.map((o) => <option value={o.value}>{o.label}</option>)}
+            </select>
+          </div>
+        </fieldset>
+
+        <fieldset class="space-y-5">
+          <legend class={legendClass}>The audience</legend>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label class={labelClass} for="audienceSize">Expected size</label>
+              <select id="audienceSize" name="audienceSize" required class={inputClass}>
+                {AUDIENCE_SIZES.map((o) => <option value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <label class={labelClass} for="audienceAge">Age range</label>
+              <select id="audienceAge" name="audienceAge" required class={inputClass}>
+                {AGE_RANGES.map((o) => <option value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class={labelClass} for="audienceDescription">
+              Tell us about the audience <span class="font-normal text-ink/50">(optional)</span>
+            </label>
+            <textarea id="audienceDescription" name="audienceDescription" rows="3" maxlength="1000" class={inputClass}></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset class="space-y-5">
+          <legend class={legendClass}>The talk</legend>
+          <div>
+            <label class={labelClass} for="topic">Requested topic</label>
+            <select id="topic" name="topic" required class={inputClass}>
+              {TOPICS.map((o) => <option value={o.value}>{o.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label class={labelClass} for="budget">
+              Honorarium / budget range <span class="font-normal text-ink/50">(optional)</span>
+            </label>
+            <select id="budget" name="budget" class={inputClass}>
+              {BUDGET_RANGES.map((o) => <option value={o.value}>{o.label}</option>)}
+            </select>
+            <p class="mt-2 text-sm text-ink/60">
+              Budget should never stop you from asking — community requests are
+              welcome.
+            </p>
+          </div>
+          <div>
+            <label class={labelClass} for="notes">
+              Anything else Ibrahim should know?
+              <span class="font-normal text-ink/50">(optional)</span>
+            </label>
+            <textarea id="notes" name="notes" rows="4" maxlength="3000" class={inputClass}></textarea>
+          </div>
+        </fieldset>
+
+        {
+          turnstileSiteKey ? (
+            <div
+              class="cf-turnstile"
+              data-sitekey={turnstileSiteKey}
+              data-theme="light"
+            />
+          ) : (
+            <p class="rounded-xl border border-dashed border-navy-300 p-4 text-xs text-ink/60">
+              Spam protection is not active: set
+              <code>PUBLIC_TURNSTILE_SITE_KEY</code> and
+              <code>TURNSTILE_SECRET_KEY</code> to enable Cloudflare Turnstile.
+            </p>
+          )
+        }
+
+        <button
+          type="submit"
+          class="w-full rounded-full bg-navy-900 px-8 py-4 font-display text-lg font-bold text-paper transition-colors hover:bg-navy-700 sm:w-auto"
+        >
+          Send speaker request
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+{turnstileSiteKey && (
+  <script
+    is:inline
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer></script>
+)}
+
+<script>
+  // Show a human message when the server bounced a submission (?error=...).
+  const messages: Record<string, string> = {
+    validation:
+      'Some fields were missing or invalid — please review the form and submit again.',
+    turnstile:
+      'The spam check could not verify your submission — please try again.',
+    delivery:
+      'Something went wrong sending your request. Please try again in a few minutes, or reach out via the contact page.',
+    'bad-request': 'The submission could not be read — please try again.',
+  };
+  const code = new URLSearchParams(location.search).get('error');
+  const banner = document.getElementById('request-error');
+  if (code && banner) {
+    banner.textContent = messages[code] ?? messages['bad-request'];
+    banner.hidden = false;
+  }
+
+  // Conditional fields: virtual events hide the physical-location input
+  // (and drop its soft requirement); flexible dates relax the date input.
+  const locationField = document.getElementById('location-field');
+  const locationInput = document.getElementById('location') as HTMLInputElement | null;
+  const formatGroup = document.getElementById('format-group');
+
+  const applyFormat = () => {
+    const selected = formatGroup?.querySelector<HTMLInputElement>(
+      'input[name="format"]:checked',
+    )?.value;
+    const virtual = selected === 'virtual';
+    locationField?.classList.toggle('hidden', virtual);
+    if (locationInput) locationInput.required = !virtual;
+  };
+  formatGroup?.addEventListener('change', applyFormat);
+  applyFormat();
+
+  const dates = document.getElementById('eventDates') as HTMLInputElement | null;
+  const flexible = document.getElementById('dateFlexible') as HTMLInputElement | null;
+  const applyFlexible = () => {
+    if (dates && flexible) dates.required = !flexible.checked;
+  };
+  flexible?.addEventListener('change', applyFlexible);
+  applyFlexible();
+</script>
