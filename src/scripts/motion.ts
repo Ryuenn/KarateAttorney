@@ -56,11 +56,9 @@ if (!prefersReducedMotion) {
 
   if (preloading && preloader) {
     preloader.dataset.started = '1';
-    try {
-      sessionStorage.setItem('ka-preloaded', '1');
-    } catch {
-      /* storage unavailable — the overlay still clears below */
-    }
+    // Logo fades in and holds while the four columns slide away —
+    // alternating up/down, staggered in random order (xnrgy-style);
+    // the logo fades near the end, floating over the half-revealed page.
     gsap
       .timeline({
         onComplete: () => {
@@ -72,24 +70,23 @@ if (!prefersReducedMotion) {
         },
       })
       .to('.preloader-logo', { opacity: 1, duration: 0.45, ease: 'power2.out' })
-      .to('.preloader-logo', {
-        opacity: 0,
-        duration: 0.3,
-        delay: 0.35,
-        ease: 'power2.in',
-      })
       .to(
         preloader.querySelectorAll('.preloader-panel'),
         {
-          yPercent: -100,
-          duration: 0.75,
+          yPercent: (i: number) => (i % 2 === 0 ? -100 : 100),
+          duration: 0.9,
           ease: 'power4.inOut',
-          stagger: 0.06,
+          stagger: { each: 0.12, from: 'random' },
         },
-        '-=0.05',
+        '+=0.25',
+      )
+      .to(
+        '.preloader-logo',
+        { opacity: 0, duration: 0.35, ease: 'power2.in' },
+        '-=0.6',
       );
-    // Hero lines rise while the panels are mid-reveal.
-    heroDelay = 1.35;
+    // Hero lines rise while the columns are mid-reveal.
+    heroDelay = 1.2;
   } else {
     startReveals();
   }

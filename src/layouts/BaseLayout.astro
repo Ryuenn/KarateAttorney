@@ -44,14 +44,15 @@ const {
       </style>
     </noscript>
     <script is:inline>
-      // First-visit preloader gate. Runs before first paint so there is no
-      // content flash; skipped on repeat visits (session) and under
-      // reduced motion. The 4s timeout force-clears the overlay if the
-      // motion module never starts, so a failed script can't trap the page.
+      // Opening-animation gate. Runs before first paint so there is no
+      // content flash. Plays on every load of the home page (the "opening
+      // the site" moment); inner pages skip it, as does reduced motion.
+      // The 4s timeout force-clears the overlay if the motion module never
+      // starts, so a failed script can't trap the page.
       (function () {
         try {
           if (
-            sessionStorage.getItem('ka-preloaded') ||
+            location.pathname !== '/' ||
             matchMedia('(prefers-reduced-motion: reduce)').matches
           ) {
             return;
@@ -66,7 +67,7 @@ const {
             }
           }, 4000);
         } catch (e) {
-          /* storage unavailable — skip the preloader */
+          /* matchMedia unavailable — skip the preloader */
         }
       })();
     </script>
@@ -74,13 +75,19 @@ const {
   </head>
   <body class={bodyClass}>
     <div id="preloader" class="preloader" aria-hidden="true">
-      <div class="preloader-panel"></div>
-      <div class="preloader-panel"></div>
-      <div class="preloader-panel"></div>
-      <div class="preloader-panel"></div>
-      <div class="preloader-panel"></div>
+      {
+        /* 4 full-height columns — each slides out vertically (alternating
+           direction) in random order, xnrgy-style (see motion.ts).
+           0.5vw oversize hides sub-pixel seams between columns. */
+        Array.from({ length: 4 }).map((_, i) => (
+          <div
+            class="preloader-panel"
+            style={`left:${i * 25}vw; top:0; width:25.5vw; height:100%;`}
+          />
+        ))
+      }
       <p class="preloader-logo">
-        The <span class="text-gold-400">Karate</span> Attorney
+        <span>The <span class="text-gold-400">Karate</span> Attorney</span>
       </p>
     </div>
     <a

@@ -149,19 +149,12 @@ html.ka-preload .preloader {
 }
 .preloader-panel {
   position: absolute;
-  top: 0;
-  height: 100%;
-  width: 21vw;
   background-color: var(--color-navy-950);
+  will-change: transform;
 }
 .preloader-panel:nth-child(even) {
   background-color: var(--color-navy-900);
 }
-.preloader-panel:nth-child(1) { left: 0; }
-.preloader-panel:nth-child(2) { left: 20vw; }
-.preloader-panel:nth-child(3) { left: 40vw; }
-.preloader-panel:nth-child(4) { left: 60vw; }
-.preloader-panel:nth-child(5) { left: 80vw; }
 .preloader-logo {
   position: absolute;
   inset: 0;
