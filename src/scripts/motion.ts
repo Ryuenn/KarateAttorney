@@ -30,6 +30,30 @@ if (!prefersReducedMotion) {
   const preloading = root.classList.contains('ka-preload') && !!preloader;
   let heroDelay = 0.15;
 
+  // Section reveals: any element with [data-reveal] fades/rises on entry.
+  // Initial hidden state is set here (not in CSS) so content is always
+  // visible without JS — a failed script can never blank the page.
+  // Elements already inside the first viewport get a visible entrance
+  // cascade instead of triggering (and finishing) during page paint.
+  const startReveals = () => {
+    let inViewCount = 0;
+    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+      const inView =
+        el.getBoundingClientRect().top < window.innerHeight * 0.88;
+      const delay =
+        parseFloat(el.dataset.revealDelay ?? '0') +
+        (inView ? 0.15 + inViewCount++ * 0.08 : 0);
+      gsap.from(el, {
+        opacity: 0,
+        y: 28,
+        duration: 0.9,
+        delay,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+      });
+    });
+  };
+
   if (preloading && preloader) {
     preloader.dataset.started = '1';
     try {
@@ -42,6 +66,9 @@ if (!prefersReducedMotion) {
         onComplete: () => {
           preloader.remove();
           root.classList.remove('ka-preload');
+          // Reveals are created only now, so nothing plays hidden
+          // beneath the overlay.
+          startReveals();
         },
       })
       .to('.preloader-logo', { opacity: 1, duration: 0.45, ease: 'power2.out' })
@@ -63,6 +90,8 @@ if (!prefersReducedMotion) {
       );
     // Hero lines rise while the panels are mid-reveal.
     heroDelay = 1.35;
+  } else {
+    startReveals();
   }
 
   // Hero entrance: staggered rise for [data-hero-line] elements on load.
@@ -77,20 +106,6 @@ if (!prefersReducedMotion) {
       delay: heroDelay,
     });
   }
-
-  // Section reveals: any element with [data-reveal] fades/rises on entry.
-  // Initial hidden state is set here (not in CSS) so content is always
-  // visible without JS — a failed script can never blank the page.
-  document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
-    gsap.from(el, {
-      opacity: 0,
-      y: 28,
-      duration: 0.9,
-      delay: parseFloat(el.dataset.revealDelay ?? '0'),
-      ease: 'power3.out',
-      scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-    });
-  });
 
   // Let islands (e.g. the WebGL hero) hook into the same scroll instance.
   document.dispatchEvent(new CustomEvent('ka:motion-ready'));
