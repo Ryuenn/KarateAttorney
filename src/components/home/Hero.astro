@@ -8,9 +8,7 @@
  * - Expected assets (not yet provided — see README asset list):
  *     public/media/hero.mp4         compressed desktop loop
  *     public/media/hero-mobile.mp4  lighter mobile rendition
- *     public/media/hero-poster.svg  placeholder poster (swap for real frame)
- * - #hero-3d is the mount point for the WebGL island (next slice); the
- *   hero is fully functional without it.
+ *     public/media/hero-poster.jpg  poster frame (the LCP image)
  */
 import { FIRM_URL, SITE } from '../../lib/site';
 import Button from '../ui/Button.astro';
@@ -32,16 +30,6 @@ import Button from '../ui/Button.astro';
       tabindex="-1"
     ></video>
     <div class="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/40 to-navy-950/35"></div>
-  </div>
-
-  <div
-    id="hero-3d"
-    class="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[55%] lg:block"
-    aria-hidden="true"
-  >
-    <!-- Static fallback: always painted; the WebGL canvas (if the island's
-         guardrails allow it) mounts on top of this glow. -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_40%,rgba(201,162,39,0.16),rgba(22,41,78,0.25)_45%,transparent_75%)]"></div>
   </div>
 
   <div class="wrap relative flex flex-1 flex-col pt-20 pb-6 sm:pt-24 sm:pb-8">
@@ -89,8 +77,6 @@ import Button from '../ui/Button.astro';
 </section>
 
 <script>
-  import '../../scripts/webgl/hero-island';
-
   // Attach video sources only when appropriate (spec §6): never on
   // save-data / 2G, never under reduced motion. Small screens get the
   // lighter rendition. Missing files fail silently — the poster remains.

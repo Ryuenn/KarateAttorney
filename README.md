@@ -23,8 +23,6 @@ Full spec: [karate-attorney-build-prompt.md](karate-attorney-build-prompt.md).
   (`@theme` block: navy/gold palette, fluid type scale, motion/rhythm tokens)
 - **Lenis** + **GSAP ScrollTrigger** — [src/scripts/motion.ts](src/scripts/motion.ts);
   fully skipped under `prefers-reduced-motion`, content never depends on JS
-- **OGL** WebGL hero — [src/scripts/webgl/](src/scripts/webgl/): tiny gatekeeper
-  dynamic-imports the scene chunk only when device/connection/motion allow
 - **Content Collections** (Markdown) — the Content Hub, see “Authoring” below
 - **Resend** (email) + **Cloudflare Turnstile** (spam) + CRM webhook on the
   speaker form; all optional in dev with logged fallbacks
@@ -127,8 +125,9 @@ on the next build.
   a failed script can never hide content.
 - The hero poster is the LCP; video sources attach client-side only on fast
   connections (never on save-data/2G), lighter rendition on small screens.
-- The WebGL chunk loads after `load` + idle, pauses offscreen/hidden, caps
-  DPR at 2, and never renders on low-memory or non-WebGL devices.
+- The 3D WebGL hero element was removed at the owner's request
+  (2026-07-22); it lives in git history (`src/scripts/webgl/`, dep `ogl`)
+  if it's ever wanted back.
 
 ## Asset & content checklist (needed from the client)
 
