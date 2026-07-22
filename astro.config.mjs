@@ -31,6 +31,16 @@ export default defineConfig({
       subsets: ['latin'],
       fallbacks: ['Arial', 'sans-serif'],
     },
+    {
+      // Elegant serif for the classic law-firm variant (Homepage 3).
+      provider: fontProviders.google(),
+      name: 'Cormorant Garamond',
+      cssVariable: '--font-cormorant',
+      weights: ['400 600'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['Georgia', 'serif'],
+    },
   ],
   vite: {
     plugins: [tailwindcss()],

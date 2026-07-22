@@ -15,6 +15,8 @@ interface Props {
   /** Home hero: content flows under the transparent fixed header (no
    * spacer). Pages without a full-bleed hero keep the navy spacer. */
   heroOverlap?: boolean;
+  /** Hide the shared site Header + Footer (page supplies its own chrome). */
+  bareChrome?: boolean;
 }
 
 const {
@@ -23,6 +25,7 @@ const {
   noindex,
   bodyClass = '',
   heroOverlap = false,
+  bareChrome = false,
 } = Astro.props;
 ---
 
@@ -103,12 +106,20 @@ const {
     >
       Skip to content
     </a>
-    <div class="fixed inset-x-0 top-0 z-50">
-      <Header />
-    </div>
-    {!heroOverlap && <div class="h-16 bg-navy-950 sm:h-20" aria-hidden="true"></div>}
+    {
+      !bareChrome && (
+        <div class="fixed inset-x-0 top-0 z-50">
+          <Header />
+        </div>
+      )
+    }
+    {
+      !bareChrome && !heroOverlap && (
+        <div class="h-16 bg-navy-950 sm:h-20" aria-hidden="true" />
+      )
+    }
     <main id="main"><slot /></main>
-    <Footer />
+    {!bareChrome && <Footer />}
     <script>
       import '../scripts/motion';
       import '../scripts/analytics';

@@ -49,6 +49,7 @@
      --font-inter with self-hosted files + tuned fallbacks. */
   --font-display: var(--font-archivo, 'Archivo'), 'Arial', sans-serif;
   --font-body: var(--font-inter, 'Inter'), 'Arial', sans-serif;
+  --font-serif: var(--font-cormorant, 'Cormorant Garamond'), 'Georgia', serif;
 
   /* Fluid display scale (clamp between mobile and desktop) */
   --text-display-2xl: clamp(2.75rem, 1.5rem + 6.5vw, 7rem);
