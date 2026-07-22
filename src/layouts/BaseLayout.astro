@@ -50,14 +50,16 @@ const {
     </noscript>
     <script is:inline>
       // Opening-animation gate. Runs before first paint so there is no
-      // content flash. Plays on every load of the home page (the "opening
-      // the site" moment); inner pages skip it, as does reduced motion.
-      // The 4s timeout force-clears the overlay if the motion module never
-      // starts, so a failed script can't trap the page.
+      // content flash. Plays on every load of a homepage variant (the
+      // "opening the site" moment); other pages skip it, as does reduced
+      // motion. The 4s timeout force-clears the overlay if the motion
+      // module never starts, so a failed script can't trap the page.
       (function () {
         try {
+          var path = location.pathname.replace(/\/$/, '') || '/';
+          var homepages = ['/', '/homepage-2', '/homepage-3'];
           if (
-            location.pathname !== '/' ||
+            homepages.indexOf(path) === -1 ||
             matchMedia('(prefers-reduced-motion: reduce)').matches
           ) {
             return;
@@ -92,7 +94,7 @@ const {
         ))
       }
       <p class="preloader-logo">
-        <span>The <span class="text-gold-400">Karate</span> Attorney</span>
+        <span>The <span class="text-(--accent)">Karate</span> Attorney</span>
       </p>
     </div>
     <a
