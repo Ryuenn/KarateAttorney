@@ -5,28 +5,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { FIRM_URL, SITE } from '../lib/site';
 import Button from '../components/ui/Button.astro';
 
+// Homepage-variant phase: inner pages are removed for now, so pillar
+// cards point at '#' until the page set returns (see git history).
 const pillars = [
   {
     title: 'The Attorney',
-    href: '/attorney',
+    href: '#',
     blurb:
       '[PLACEHOLDER: 1–2 sentences — trial lawyer, founder of The Awad Law Firm]',
   },
   {
     title: 'The Martial Artist',
-    href: '/martial-artist',
+    href: '#',
     blurb:
       '[PLACEHOLDER: 1–2 sentences — training story, Team Karate Attorney]',
   },
   {
     title: 'The Speaker',
-    href: '/speaking',
+    href: '#',
     blurb:
       '[PLACEHOLDER: 1–2 sentences — TEDx, khutbahs, keynotes, youth programs]',
   },
   {
     title: 'Faith & Community',
-    href: '/faith',
+    href: '#',
     blurb: '[PLACEHOLDER: 1–2 sentences — faith, Team Fajr, community work]',
   },
 ];
@@ -93,10 +95,10 @@ const pillars = [
           masjids, Islamic schools, MSAs, conferences, and beyond.
         </p>
         <div class="mt-9 flex flex-wrap gap-3">
-          <Button href="/speaking#request" variant="gold" size="lg">
+          <Button href="#" variant="gold" size="lg">
             Book Ibrahim to Speak
           </Button>
-          <Button href="/speaking" variant="outline" size="lg" class="text-paper">
+          <Button href="#" variant="outline" size="lg" class="text-paper">
             Explore topics
           </Button>
         </div>
@@ -132,7 +134,7 @@ const pillars = [
           reflections in one place.
         </p>
       </div>
-      <Button href="/content" variant="primary">Visit the Content Hub</Button>
+      <Button href="#" variant="primary">Visit the Content Hub</Button>
     </div>
   </section>
 </BaseLayout>

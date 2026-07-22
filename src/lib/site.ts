@@ -29,26 +29,20 @@ export const SOCIALS = [
   { label: 'LinkedIn', href: '[PLACEHOLDER: LinkedIn URL]' },
 ] as const;
 
-/** Primary nav (subset shown in the header bar; full list in menu + footer). */
+/**
+ * Homepage-variant exploration phase (owner request, 2026-07-22): the site
+ * is temporarily reduced to three homepage design candidates. The full
+ * page set (about/speaking/content/contact/…) lives in git history and
+ * returns once a direction is chosen.
+ */
 export const NAV = [
-  { label: 'My Story', href: '/about' },
-  { label: 'Speaking', href: '/speaking' },
-  { label: 'The Attorney', href: '/attorney' },
-  { label: 'The Martial Artist', href: '/martial-artist' },
-  { label: 'Faith & Community', href: '/faith' },
-  { label: 'Ventures', href: '/ventures' },
-  { label: 'Giving Back', href: '/giving' },
-  { label: 'Content Hub', href: '/content' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Homepage 1', href: '/' },
+  { label: 'Homepage 2', href: '/homepage-2' },
+  { label: 'Homepage 3', href: '/homepage-3' },
 ] as const;
 
 /** Nav items pinned in the desktop header bar. */
-export const HEADER_NAV = [
-  { label: 'My Story', href: '/about' },
-  { label: 'Speaking', href: '/speaking' },
-  { label: 'Content', href: '/content' },
-  { label: 'Contact', href: '/contact' },
-] as const;
+export const HEADER_NAV = NAV;
 
 /**
  * Marker attribute for every outbound firm-site link. The analytics layer
