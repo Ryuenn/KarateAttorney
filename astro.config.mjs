@@ -1,14 +1,14 @@
 // @ts-check
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
 
-// Static-first hybrid: pages prerender by default; server routes (e.g. the
-// speaker-request endpoint) opt out with `export const prerender = false`.
+// Static-first hybrid on Vercel: pages prerender to static HTML; the two
+// form endpoints (prerender=false) deploy as Vercel serverless functions.
 export default defineConfig({
   site: 'https://karateattorney.com',
   output: 'static',
-  adapter: node({ mode: 'standalone' }),
+  adapter: vercel(),
   // Self-hosted at build time via Astro's fonts API — no runtime Google
   // requests. Both faces are swappable placeholders until the client signs
   // off on final brand typography.
