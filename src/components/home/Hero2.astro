@@ -1,0 +1,83 @@
+---
+/**
+ * Homepage 2 hero — "Lunaria"-style layout.
+ * Same full-bleed video treatment and behavior as Homepage 1 (shared
+ * scripts/hero-video), but with a lower-left intro + underlined text link
+ * and one oversized full-width wordmark pinned to the bottom.
+ */
+import { FIRM_URL } from '../../lib/site';
+---
+
+<section class="on-dark relative isolate flex min-h-svh flex-col overflow-hidden bg-navy-950 text-paper">
+  <div class="absolute inset-0 -z-20" aria-hidden="true">
+    <video
+      id="hero-video"
+      class="h-full w-full object-cover"
+      muted
+      autoplay
+      loop
+      playsinline
+      preload="none"
+      poster="/media/hero-poster.jpg"
+      tabindex="-1"></video>
+    <!-- Light, mostly-bottom scrim so the wordmark reads while the top of
+         the video stays clear (matching the reference). -->
+    <div class="absolute inset-0 bg-gradient-to-t from-navy-950/75 via-transparent to-navy-950/25"></div>
+  </div>
+
+  <div class="relative flex flex-1 flex-col px-(--spacing-gutter) pt-20 pb-5 sm:pt-24 sm:pb-7">
+    <!-- Lower-left intro + underlined text link -->
+    <div class="mt-auto max-w-xl">
+      <p data-hero-line class="text-sm font-medium text-paper/90 sm:text-base">
+        Your glow begins here.{' '}
+        <span class="text-paper/70">Welcome to The Karate Attorney.</span>
+      </p>
+      {/* TODO: relink to the speaker funnel once pages return */}
+      <a
+        data-hero-line
+        href="#"
+        class="mt-3 inline-block text-2xl font-medium tracking-tight underline decoration-1 underline-offset-[6px] transition-colors hover:text-gold-300 sm:text-3xl"
+      >
+        Book an Appointment
+      </a>
+    </div>
+
+    <!-- Oversized wordmark, sized by JS to fill the viewport width edge to
+         edge (like the reference). The clamp() is a no-JS/pre-fit fallback. -->
+    <h1
+      id="hero2-wordmark"
+      data-hero-line
+      class="mt-6 origin-left font-display text-[clamp(2.5rem,13vw,13rem)] leading-[0.82] font-black tracking-[-0.03em] whitespace-nowrap uppercase sm:mt-8"
+    >
+      Karate Attorney
+    </h1>
+  </div>
+</section>
+
+<script>
+  import '../../scripts/hero-video';
+
+  // Fit the wordmark to the available width so it spans edge to edge on any
+  // viewport (matching the reference), independent of character count.
+  const wm = document.getElementById('hero2-wordmark');
+  const container = wm?.parentElement;
+  if (wm && container) {
+    const fit = () => {
+      wm.style.fontSize = '';
+      const available = container.clientWidth;
+      const current = wm.scrollWidth;
+      if (current > 0) {
+        const base = parseFloat(getComputedStyle(wm).fontSize);
+        wm.style.fontSize = `${(base * available) / current}px`;
+      }
+    };
+    fit();
+    // Refit after web fonts load (metrics change) and on resize.
+    document.fonts?.ready.then(fit);
+    let raf = 0;
+    addEventListener('resize', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(fit);
+    });
+  }
+</script>

@@ -82,30 +82,5 @@ import Button from '../ui/Button.astro';
 </section>
 
 <script>
-  // Attach video sources only when appropriate (spec §6): never on
-  // save-data / 2G, never under reduced motion. Small screens get the
-  // lighter rendition. Missing files fail silently — the poster remains.
-  const video = document.getElementById('hero-video') as HTMLVideoElement | null;
-
-  if (video) {
-    const nav = navigator as Navigator & {
-      connection?: { saveData?: boolean; effectiveType?: string };
-    };
-    const conn = nav.connection;
-    const slow = conn ? /(^|-)2g/.test(conn.effectiveType ?? '') : false;
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!conn?.saveData && !slow && !reduced) {
-      const small = matchMedia('(max-width: 767px)').matches;
-      const source = document.createElement('source');
-      source.src = small ? '/media/hero-mobile.mp4' : '/media/hero.mp4';
-      source.type = 'video/mp4';
-      source.addEventListener('error', () => video.removeAttribute('src'));
-      video.append(source);
-      video.load();
-      video.play().catch(() => {
-        /* autoplay refused — poster stays, which is fine */
-      });
-    }
-  }
+  import '../../scripts/hero-video';
 </script>
