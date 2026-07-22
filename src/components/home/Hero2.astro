@@ -1,11 +1,32 @@
 ---
 /**
- * Homepage 2 hero — "Lunaria"-style layout.
+ * Homepage 2 hero — left-aligned editorial layout.
  * Same full-bleed video treatment and behavior as Homepage 1 (shared
- * scripts/hero-video), but with a lower-left intro + underlined text link
- * and one oversized full-width wordmark pinned to the bottom.
+ * scripts/hero-video): kicker, big stacked THE / KARATE / ATTORNEY.
+ * headline, three-line subhead, two CTAs, and a bottom feature row.
  */
 import { FIRM_URL } from '../../lib/site';
+
+const ctaBase =
+  'inline-flex items-center justify-center gap-2.5 rounded-md px-6 py-4 text-sm font-bold uppercase tracking-[0.12em] whitespace-nowrap transition-colors';
+
+const features = [
+  {
+    title: 'Trial Lawyer',
+    sub: 'Courtroom advocate',
+    icon: 'columns',
+  },
+  {
+    title: 'Martial Artist',
+    sub: 'Discipline. Focus. Respect.',
+    icon: 'belt',
+  },
+  {
+    title: 'TEDx Speaker',
+    sub: 'Ideas worth sharing',
+    icon: 'mic',
+  },
+];
 ---
 
 <section class="on-dark relative isolate flex min-h-svh flex-col overflow-hidden bg-navy-950 text-paper">
@@ -20,64 +41,129 @@ import { FIRM_URL } from '../../lib/site';
       preload="none"
       poster="/media/hero-poster.jpg"
       tabindex="-1"></video>
-    <!-- Light, mostly-bottom scrim so the wordmark reads while the top of
-         the video stays clear (matching the reference). -->
-    <div class="absolute inset-0 bg-gradient-to-t from-navy-950/75 via-transparent to-navy-950/25"></div>
+    <!-- Left-weighted scrim: dark on the left so the copy reads, clearing
+         toward the right where the subject sits. -->
+    <div class="absolute inset-0 bg-gradient-to-r from-navy-950/95 via-navy-950/70 to-navy-950/30"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-navy-950/40"></div>
   </div>
 
-  <div class="relative flex flex-1 flex-col px-(--spacing-gutter) pt-20 pb-5 sm:pt-24 sm:pb-7">
-    <!-- Lower-left intro + underlined text link -->
-    <div class="mt-auto max-w-xl">
-      <p data-hero-line class="text-sm font-medium text-paper/90 sm:text-base">
-        Your glow begins here.{' '}
-        <span class="text-paper/70">Welcome to The Karate Attorney.</span>
-      </p>
-      {/* TODO: relink to the speaker funnel once pages return */}
-      <a
+  <div class="relative flex flex-1 flex-col px-(--spacing-gutter) pt-24 pb-8 sm:pt-28">
+    <div class="mt-auto max-w-3xl">
+      <p
         data-hero-line
-        href="#"
-        class="mt-3 inline-block text-2xl font-medium tracking-tight underline decoration-1 underline-offset-[6px] transition-colors hover:text-gold-300 sm:text-3xl"
+        class="text-xs font-bold tracking-[0.22em] text-gold-400 uppercase sm:text-sm"
       >
-        Book an Appointment
-      </a>
+        Trial Lawyer · Martial Artist · TEDx Speaker
+      </p>
+
+      <h1
+        data-hero-line
+        class="mt-5 font-display text-[clamp(2.75rem,8vw,7rem)] leading-[0.92] font-black tracking-[-0.02em] uppercase"
+      >
+        The<br />Karate<br />Attorney<span class="text-gold-400">.</span>
+      </h1>
+
+      <div class="mt-6 h-1 w-16 bg-gold-400" data-hero-line></div>
+
+      <p
+        data-hero-line
+        class="mt-6 text-lg leading-snug font-medium text-paper/90 sm:text-xl"
+      >
+        Winning in the courtroom.<br />
+        Growing through discipline.<br />
+        Inspiring excellence on and off the mat.
+      </p>
+
+      <div
+        data-hero-line
+        class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
+      >
+        {/* TODO: relink to the speaker funnel once pages return */}
+        <a href="#" class:list={[ctaBase, 'bg-gold-400 text-navy-950 hover:bg-gold-300']}>
+          <svg
+            class="h-4 w-4 shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="3" y="4" width="18" height="17" rx="2.5"></rect>
+            <path d="M16 2.5v3.5M8 2.5v3.5M3 9.5h18"></path>
+          </svg>
+          Book Ibrahim to Speak
+        </a>
+        <a
+          href={FIRM_URL}
+          data-firm-link
+          class:list={[ctaBase, 'border border-paper/60 text-paper hover:bg-paper hover:text-navy-950']}
+        >
+          <svg
+            class="h-4 w-4 shrink-0 text-gold-400"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="3.4" r="1.7"></circle>
+            <rect x="4" y="4.6" width="16" height="1.7" rx="0.85"></rect>
+            <rect x="11.15" y="4.6" width="1.7" height="14.4" rx="0.85"></rect>
+            <path d="M5 5.8 1.3 12a3.7 3.7 0 0 0 7.4 0L5 5.8Z"></path>
+            <path d="M19 5.8 15.3 12a3.7 3.7 0 0 0 7.4 0L19 5.8Z"></path>
+            <rect x="7.5" y="19" width="9" height="2" rx="1"></rect>
+          </svg>
+          Need Legal Help?
+        </a>
+      </div>
     </div>
 
-    <!-- Oversized wordmark, sized by JS to fill the viewport width edge to
-         edge (like the reference). The clamp() is a no-JS/pre-fit fallback. -->
-    <h1
-      id="hero2-wordmark"
+    <!-- Bottom feature row -->
+    <div
       data-hero-line
-      class="mt-6 origin-left font-display text-[clamp(2.5rem,13vw,13rem)] leading-[0.82] font-black tracking-[-0.03em] whitespace-nowrap uppercase sm:mt-8"
+      class="mt-12 flex flex-col gap-6 border-t border-paper/15 pt-6 lg:flex-row lg:items-center lg:justify-between"
     >
-      Karate Attorney
-    </h1>
+      <ul class="grid gap-6 sm:grid-cols-3 lg:flex lg:gap-10">
+        {
+          features.map((f) => (
+            <li class="flex items-center gap-3">
+              <span class="text-gold-400" aria-hidden="true">
+                {f.icon === 'columns' && (
+                  <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9 12 4l9 5M4 9v8m4-8v8m4-8v8m4-8v8m4-8v8M3 21h18M3 17h18" />
+                  </svg>
+                )}
+                {f.icon === 'belt' && (
+                  <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 10h18v4H3zM8 14l-2 6m10-6 2 6M9 12h6" />
+                  </svg>
+                )}
+                {f.icon === 'mic' && (
+                  <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="2" width="6" height="12" rx="3" />
+                    <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
+                  </svg>
+                )}
+              </span>
+              <span>
+                <span class="block text-sm font-bold tracking-[0.12em] uppercase">
+                  {f.title}
+                </span>
+                <span class="block text-xs text-paper/60">{f.sub}</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="text-sm text-paper/70 lg:text-right">
+        Legal cases are handled at The Awad Law Firm<br />
+        <span lang="es">¿Lesionado? Visite The Awad Law Firm</span>
+      </p>
+    </div>
   </div>
 </section>
 
 <script>
   import '../../scripts/hero-video';
-
-  // Fit the wordmark to the available width so it spans edge to edge on any
-  // viewport (matching the reference), independent of character count.
-  const wm = document.getElementById('hero2-wordmark');
-  const container = wm?.parentElement;
-  if (wm && container) {
-    const fit = () => {
-      wm.style.fontSize = '';
-      const available = container.clientWidth;
-      const current = wm.scrollWidth;
-      if (current > 0) {
-        const base = parseFloat(getComputedStyle(wm).fontSize);
-        wm.style.fontSize = `${(base * available) / current}px`;
-      }
-    };
-    fit();
-    // Refit after web fonts load (metrics change) and on resize.
-    document.fonts?.ready.then(fit);
-    let raf = 0;
-    addEventListener('resize', () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(fit);
-    });
-  }
 </script>
