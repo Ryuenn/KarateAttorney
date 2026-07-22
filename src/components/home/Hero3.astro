@@ -6,7 +6,8 @@
  */
 import { Image } from 'astro:assets';
 import heroPhoto from '../../assets/homepage-3-hero.png';
-import { FIRM_URL } from '../../lib/site';
+import karateLogo from '../../assets/karate-logo.png';
+import { FIRM_URL, SITE } from '../../lib/site';
 
 const navLinks = [
   { label: 'Home', href: '/homepage-3' },
@@ -42,22 +43,18 @@ const cards = [
   <header class="on-dark">
     <!-- Top tier: logo + cart + consultation CTA -->
     <div class="wrap flex items-center justify-between gap-3 py-4 sm:py-5">
-      <a href="/homepage-3" class="flex items-center gap-2 sm:gap-3" aria-label="The Karate Attorney — home">
-        <svg class="h-7 w-7 shrink-0 text-gold-400 sm:h-9 sm:w-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M4 8h16M6 8v10M18 8v10M4 18h16M9 8v10M15 8v10M12 3 5 8h14z" />
-        </svg>
-        <span class="font-display text-base font-black tracking-[0.12em] whitespace-nowrap sm:text-2xl sm:tracking-[0.15em]">
-          KARATE<span class="text-gold-400">ATTORNEY</span>
-        </span>
+      <a href="/homepage-3" class="shrink-0" aria-label={`${SITE.name} — home`}>
+        <Image
+          src={karateLogo}
+          alt={SITE.name}
+          widths={[120, 200]}
+          sizes="(max-width: 640px) 100px, 130px"
+          class="h-9 w-auto sm:h-12"
+          loading="eager"
+        />
       </a>
 
       <div class="flex items-center gap-4 sm:gap-6">
-        <a href="#" class="hidden items-center gap-2 text-sm text-navy-100 hover:text-gold-300 md:flex">
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" />
-          </svg>
-          Cart (0)
-        </a>
         <a
           href="#"
           class="rounded-sm bg-gold-400 px-4 py-2.5 text-xs font-semibold whitespace-nowrap text-navy-950 transition-colors hover:bg-gold-300 sm:px-6 sm:py-3 sm:text-sm"
