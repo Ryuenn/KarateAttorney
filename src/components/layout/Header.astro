@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import karateLogo from '../../assets/karate-logo.png';
 import { FIRM_URL, HEADER_NAV, NAV, SITE } from '../../lib/site';
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -11,12 +13,15 @@ const ctaClass =
   <!-- Full-viewport span (xnrgy-style): gutter padding only, no max-width
        wrap — logo sits at the left edge, CTAs at the right edge. -->
   <div class="flex items-center justify-between gap-4 px-(--spacing-gutter) py-3 sm:py-4">
-    <a
-      href="/"
-      class="font-display text-[0.8125rem] font-black tracking-[0.28em] uppercase whitespace-nowrap sm:text-lg"
-      aria-label={`${SITE.name} — home`}
-    >
-      The <span class="text-gold-400">Karate</span> Attorney
+    <a href="/" class="shrink-0" aria-label={`${SITE.name} — home`}>
+      <Image
+        src={karateLogo}
+        alt={SITE.name}
+        widths={[120, 200]}
+        sizes="(max-width: 640px) 100px, 130px"
+        class="h-9 w-auto sm:h-12"
+        loading="eager"
+      />
     </a>
 
     <nav aria-label="Primary" class="hidden items-center gap-8 lg:flex">
