@@ -30,6 +30,18 @@
   --color-gold-800: #5f4a0b;
   --color-gold-900: #3d2f07;
 
+  /* Azure — accent used only on the Homepage 2 variant (colorway swap). */
+  --color-azure-50: #eef5fd;
+  --color-azure-100: #d7e8fb;
+  --color-azure-200: #aecff6;
+  --color-azure-300: #7fb2ef;
+  --color-azure-400: #4f90e4;
+  --color-azure-500: #2f74d4;
+  --color-azure-600: #205bb0;
+  --color-azure-700: #19478a;
+  --color-azure-800: #143766;
+  --color-azure-900: #0f2748;
+
   --color-ink: #0b0f17;
   --color-paper: #faf8f4;
 
