@@ -102,6 +102,19 @@
     color: var(--color-ink);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+
+    /* Per-page accent (defaults to gold). A page can swap the whole site
+       chrome to another colorway by adding `theme-azure` to <body>. */
+    --accent: var(--color-gold-400);
+    --accent-strong: var(--color-gold-300);
+    --accent-muted: var(--color-gold-300);
+    --accent-ink: var(--color-navy-950);
+  }
+  body.theme-azure {
+    --accent: var(--color-azure-500);
+    --accent-strong: var(--color-azure-400);
+    --accent-muted: var(--color-azure-300);
+    --accent-ink: var(--color-paper);
   }
 
   h1,
