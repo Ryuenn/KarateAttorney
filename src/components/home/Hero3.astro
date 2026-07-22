@@ -5,7 +5,8 @@
  * provided homepage-3 hero photo of Ibrahim. Navy + gold colorway.
  */
 import { Image } from 'astro:assets';
-import heroPhoto from '../../assets/homepage-3-hero.png';
+import cutoutPerson from '../../assets/cutout-person.png';
+import heroBg from '../../assets/hero-bg.png';
 import karateLogo from '../../assets/karate-logo.png';
 import { FIRM_URL, SITE } from '../../lib/site';
 
@@ -39,8 +40,24 @@ const cards = [
 ---
 
 <div class="overflow-x-clip bg-navy-900 text-paper">
-  <!-- ============ Two-tier navbar ============ -->
-  <header class="on-dark">
+  <!-- ===== Shared backdrop: hero-image covers the navbar + hero as one. ===== -->
+  <div class="relative isolate">
+    <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div class="absolute inset-0 bg-navy-900"></div>
+      <Image
+        src={heroBg}
+        alt=""
+        widths={[1200, 1672]}
+        sizes="100vw"
+        class="absolute inset-0 h-full w-full object-cover object-right"
+        loading="eager"
+      />
+      <!-- Left fade so the copy stays readable over the columns. -->
+      <div class="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/70 to-navy-900/20"></div>
+    </div>
+
+    <!-- ============ Two-tier navbar ============ -->
+    <header class="on-dark">
     <!-- Top tier: logo + cart + consultation CTA -->
     <div class="wrap flex items-center justify-between gap-3 py-4 sm:py-5">
       <a href="/homepage-3" class="shrink-0" aria-label={`${SITE.name} — home`}>
@@ -110,26 +127,19 @@ const cards = [
     </div>
   </header>
 
-  <!-- ============ Hero ============ -->
-  <section class="relative">
-    <!-- Hero band: bounded so the photo stays inside it and the cards below
-         can overlap its bottom edge (reference layout). -->
-    <div class="relative isolate overflow-hidden">
-      <div class="absolute inset-0 -z-10" aria-hidden="true">
-        <div class="absolute inset-0 bg-navy-900"></div>
-        <Image
-          src={heroPhoto}
-          alt="Ibrahim Awad — The Karate Attorney"
-          widths={[900, 1400, 1774]}
-          sizes="(max-width: 1024px) 100vw, 60vw"
-          class="absolute inset-y-0 right-0 h-full w-full object-cover object-right lg:w-[62%]"
-          loading="eager"
-        />
-        <!-- Left fade so the copy stays readable over the photo -->
-        <div class="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/85 to-transparent lg:via-navy-900/40"></div>
-      </div>
+    <!-- ============ Hero ============ -->
+    <section class="relative">
+      <!-- Cutout person sits over the shared backdrop, anchored bottom-right. -->
+      <Image
+        src={cutoutPerson}
+        alt="Ibrahim Awad — The Karate Attorney"
+        widths={[600, 900, 1080]}
+        sizes="(max-width: 1024px) 60vw, 46vw"
+        class="pointer-events-none absolute right-0 bottom-0 z-0 hidden h-[92%] w-auto object-contain object-bottom sm:block lg:right-[3%]"
+        loading="eager"
+      />
 
-      <div class="wrap pt-14 pb-40 sm:pt-16 lg:pb-48">
+      <div class="wrap relative z-[1] pt-14 pb-40 sm:pt-16 lg:pb-48">
         <div class="max-w-xl">
           <!-- gold decorative mark -->
           <div class="flex items-center gap-2" data-reveal>
@@ -159,10 +169,13 @@ const cards = [
           </a>
         </div>
       </div>
-    </div>
+    </section>
+  </div>
+  <!-- ===== end shared backdrop ===== -->
 
-    <!-- ============ Practice-area cards ============ -->
-    <!-- Pulled up to overlap the hero band's bottom edge. -->
+  <!-- ============ Practice-area cards ============ -->
+  <!-- Pulled up to overlap the hero band's bottom edge. -->
+  <section class="relative">
     <div class="wrap relative z-10 -mt-28 pb-20 sm:-mt-32">
       <ul class="grid gap-5 sm:grid-cols-3">
         {
