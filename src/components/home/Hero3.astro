@@ -5,7 +5,6 @@
  * provided homepage-3 hero photo of Ibrahim. Navy + gold colorway.
  */
 import { Image } from 'astro:assets';
-import cutoutPerson from '../../assets/cutout-person.png';
 import heroBg from '../../assets/hero-bg.png';
 import karateLogo from '../../assets/karate-logo.png';
 import { FIRM_URL, SITE } from '../../lib/site';
@@ -154,12 +153,14 @@ const cards = [
 
     <!-- ============ Hero ============ -->
     <section class="relative">
-      <!-- Cutout person sits over the shared backdrop, anchored bottom-right. -->
-      <Image
-        src={cutoutPerson}
+      <!-- Cutout person sits over the shared backdrop, anchored bottom-right.
+           Served from /public (person.png), so a plain <img> rather than
+           astro:assets <Image>. -->
+      <img
+        src="/person.png"
         alt="Ibrahim Awad — The Karate Attorney"
-        widths={[600, 900, 1080]}
-        sizes="(max-width: 1024px) 60vw, 46vw"
+        width="1772"
+        height="2167"
         class="pointer-events-none absolute right-[6%] bottom-0 z-0 hidden h-[108%] w-auto object-contain object-bottom sm:block lg:right-[10%]"
         loading="eager"
       />
