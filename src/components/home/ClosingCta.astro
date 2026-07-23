@@ -1,0 +1,66 @@
+---
+/**
+ * Homepage 1 §4 — closing CTA band.
+ *
+ * Sits between the paper Services band and the navy Footer, so it runs
+ * light and hands off to the footer's dark ground. Carries the same
+ * oversized uppercase type as every other section head, but at page-turn
+ * scale — the headline is the section, with the two routes beneath it.
+ */
+import { FIRM_URL } from '../../lib/site';
+import Button from '../ui/Button.astro';
+---
+
+<section class="bg-paper text-ink">
+  <div class="wrap section-pad">
+    <div class="border-t border-ink/15 pt-12 sm:pt-16">
+      <p class="flex items-center gap-4" data-reveal>
+        <span class="h-px w-12 bg-ink/20 sm:w-16" aria-hidden="true"></span>
+        <span class="text-xs tracking-[0.18em] lowercase text-(--accent) sm:text-sm">
+          Start here
+        </span>
+      </p>
+
+      <h2
+        class="mt-6 font-display text-[clamp(2.25rem,8vw,6rem)] leading-[0.9] font-extrabold tracking-tight uppercase"
+        data-reveal
+      >
+        Let's Build<br />The Case<span class="text-(--accent)">.</span>
+      </h2>
+
+      <div class="mt-10 grid gap-10 border-t border-ink/10 pt-10 lg:grid-cols-2 lg:gap-16">
+        <div data-reveal>
+          <h3 class="font-display text-xl font-semibold tracking-tight">
+            Book Ibrahim to speak
+          </h3>
+          <p class="mt-3 max-w-md text-sm leading-relaxed text-ink/65">
+            Keynotes, conferences, Friday khutbahs, and youth events — from
+            a main-stage talk to an intimate room. Tell me the audience, the
+            date, and what you want them to walk away with, and we will take
+            it from there.
+          </p>
+          {/* TODO: relink to the speaker funnel once pages return */}
+          <Button href="#" variant="primary" size="lg" class="mt-6">
+            Book Ibrahim to Speak
+          </Button>
+        </div>
+
+        <div data-reveal data-reveal-delay="0.08">
+          <h3 class="font-display text-xl font-semibold tracking-tight">
+            Injured? Hire Ibrahim
+          </h3>
+          <p class="mt-3 max-w-md text-sm leading-relaxed text-ink/65">
+            Legal matters are handled at The Awad Law Firm.
+            <span lang="es" class="mt-1 block">
+              ¿Lesionado? Visite The Awad Law Firm.
+            </span>
+          </p>
+          <Button href={FIRM_URL} variant="gold" size="lg" class="mt-6" data-firm-link>
+            Injured? Hire Ibrahim →
+            <span class="sr-only">at The Awad Law Firm</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

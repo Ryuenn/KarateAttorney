@@ -17,6 +17,9 @@ interface Props {
   heroOverlap?: boolean;
   /** Hide the shared site Header + Footer (page supplies its own chrome). */
   bareChrome?: boolean;
+  /** Pin the footer to the bottom and let the last section scroll up to
+   * reveal it (osvald-style curtain lift). Opt-in per page. */
+  footerReveal?: boolean;
 }
 
 const {
@@ -26,6 +29,7 @@ const {
   bodyClass = '',
   heroOverlap = false,
   bareChrome = false,
+  footerReveal = false,
 } = Astro.props;
 ---
 
@@ -118,8 +122,23 @@ const {
         <div class="h-16 bg-navy-950 sm:h-20" aria-hidden="true" />
       )
     }
-    <main id="main"><slot /></main>
-    {!bareChrome && <Footer />}
+    <main id="main" class={footerReveal ? 'footer-reveal-main' : undefined}>
+      <slot />
+    </main>
+    {
+      /* The footer renders unless bareChrome hides all shared chrome — but
+         footerReveal opts a page back into the shared footer (with the
+         curtain-reveal wrapper) even when it supplies its own header, as
+         Homepage 3 does. */
+      (footerReveal || !bareChrome) &&
+        (footerReveal ? (
+          <div class="footer-reveal">
+            <Footer />
+          </div>
+        ) : (
+          <Footer />
+        ))
+    }
     <script>
       import '../scripts/motion';
       import '../scripts/analytics';

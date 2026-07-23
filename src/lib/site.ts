@@ -8,7 +8,7 @@ export const SITE = {
   person: 'Ibrahim Awad',
   url: 'https://karateattorney.com',
   tagline:
-    '[PLACEHOLDER: one-line identity statement — e.g. trial lawyer · martial artist · speaker]',
+    'Trial lawyer, martial artist, and speaker — the same discipline in the courtroom, on the mat, and on the stage.',
 } as const;
 
 /** The law-firm site every legal-intent visitor must be routed to. */

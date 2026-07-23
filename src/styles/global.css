@@ -157,6 +157,153 @@
   backdrop-filter: blur(10px);
 }
 
+/* Homepage scroll-cover reveal: the hero stays pinned while the sections
+   below scroll up over it (osvald-style overlay reveal).
+
+   The hero sticks to the top of the viewport at z-index 0; .hero-cover is
+   lifted to z-index 1 so it — and the footer, which follows it in flow —
+   paints above the pinned hero as it scrolls past. The hero's own
+   `overflow-hidden` is fine here because the sticky wrapper is the
+   scroll-positioned element, not the section itself.
+
+   `height: 100svh` on the wrapper (matching the hero's own min-h-svh) is
+   what lets the covering content start scrolling immediately, rather than
+   the hero occupying flow height twice. */
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100svh;
+}
+.hero-cover {
+  position: relative;
+  z-index: 1;
+}
+/* Without the footer-reveal effect, the footer is a sibling of <main> and
+   would scroll underneath the pinned hero at the page end — so it is lifted
+   in its own right. When footer-reveal IS on, <main> itself is the opaque
+   z-index:1 layer that covers the hero, and the footer must instead stay at
+   z-index 0 so main can uncover it — so this rule is skipped for that case. */
+body:has(.hero-sticky):not(:has(.footer-reveal)) > footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* The sticky hero's containing block is <main>; without this it would
+   unstick at the end of <main> rather than staying pinned for the whole
+   scroll. Leaving <main> as a non-stacking, non-clipping block keeps the
+   hero pinned across the full document. */
+body:has(.hero-sticky) > main {
+  overflow: visible;
+}
+
+/* A pinned element can't be scrolled past by assistive tech that ignores
+   the overlay, and the parallax below is decorative — reduced motion gets
+   an ordinary stacked page. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-sticky {
+    position: static;
+    height: auto;
+  }
+}
+
+/* Footer curtain-reveal (osvald-style): the footer is pinned to the bottom
+   of the viewport at a low z-index, and the page content above it — lifted
+   into its own stacking context and given a solid background — scrolls up
+   to uncover it, as if a curtain lifts off the footer.
+
+   Requirements that make it robust:
+   - The footer wrapper sticks to the BOTTOM; its own height is the reveal
+     distance, so it must be at least tall enough to be worth revealing.
+   - The main content sits above it (z-index 1) with an opaque background so
+     the footer stays hidden until the content clears it.
+   - <body>/<main> must not clip, or the sticky footer can't stay put. */
+body:has(.footer-reveal) {
+  /* A stacking context on body keeps the two z-layers predictable. */
+  position: relative;
+}
+.footer-reveal {
+  position: sticky;
+  bottom: 0;
+  z-index: 0;
+}
+.footer-reveal-main {
+  position: relative;
+  z-index: 1;
+  /* Opaque so the pinned footer never shows through the content above it.
+     Navy (not paper) so that during the hero cover-reveal at the TOP, any
+     sub-pixel seam between the pinned hero and the section sliding over it
+     shows navy — matching both — instead of a bright paper flash. The paper
+     sections paint their own background on top of this regardless. */
+  background-color: var(--color-navy-950);
+}
+
+/* Reduced motion: no curtain. The footer just follows content in flow. */
+@media (prefers-reduced-motion: reduce) {
+  .footer-reveal {
+    position: static;
+  }
+}
+
+/* Split-headline testimonials. The pinned stage and card travel are driven
+   by JS (motion.ts), which sets the stage height from measured content. So
+   the default here is the *fallback*: an ordinary stacked section that is
+   fully readable with no JS and under reduced motion. The `.ka-split` class
+   is added by motion.ts only once the effect is actually wired up. */
+[data-split-stage] > div {
+  position: static;
+  height: auto;
+  overflow: visible;
+  display: block;
+  padding-block: var(--spacing-section);
+}
+/* Fallback: the decorative split halves are hidden entirely and the real
+   heading carries the section, so the words can never land on the quotes. */
+[data-split-stage] > div > [aria-hidden='true'] {
+  display: none;
+}
+/* Fallback: the header sits in normal flow above the cards, not absolutely
+   positioned (which only makes sense inside the pinned viewport). */
+[data-split-header] {
+  position: static;
+  margin-bottom: 2.5rem;
+}
+
+html.ka-split [data-split-stage] > div {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  /* Shift the centred headline/cards up toward the pinned header so the
+     band between the header rule and the words is tighter — but only
+     modestly, or the first card (which starts high) lands on the words.
+     Positive bottom padding on a flex-centred child pulls content upward. */
+  padding-top: 0;
+  padding-bottom: clamp(3rem, 9vh, 6rem);
+}
+/* With the effect live the header is pinned at the top of the stage. */
+html.ka-split [data-split-header] {
+  position: absolute;
+  margin-bottom: 0;
+}
+html.ka-split [data-split-stage] > div > [aria-hidden='true'] {
+  display: flex;
+  position: absolute;
+}
+/* With the effect live, the split halves render the words — so the real
+   heading stays in the accessibility tree but out of sight. */
+html.ka-split [data-split-heading] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* First-visit preloader (xnrgy-style panel reveal). Hidden unless the
    inline head script adds .ka-preload — so it can never appear without
    JS, on repeat visits in a session, or under prefers-reduced-motion.

@@ -1,14 +1,34 @@
 ---
+import ClosingCta from '../components/home/ClosingCta.astro';
 import Hero2 from '../components/home/Hero2.astro';
+import Measure from '../components/home/Measure.astro';
+import SelectedWork from '../components/home/SelectedWork.astro';
+import Services from '../components/home/Services.astro';
+import Testimonials from '../components/home/Testimonials.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Same below-hero section set as Homepage 1, but the azure colorway
+// (theme-azure on <body>) flows through the section accents automatically —
+// the sections use the --accent design tokens, not hardcoded gold.
 ---
 
 <BaseLayout
   title="Homepage 2"
   description="Homepage design variant 2 (in progress)."
   heroOverlap
+  footerReveal
   noindex
   bodyClass="theme-azure"
 >
-  <Hero2 />
+  <div class="hero-sticky">
+    <Hero2 />
+  </div>
+
+  <div class="hero-cover">
+    <SelectedWork />
+    <Services />
+    <Measure />
+    <Testimonials />
+    <ClosingCta />
+  </div>
 </BaseLayout>

@@ -104,6 +104,199 @@ if (!prefersReducedMotion) {
     });
   }
 
+  // Homepage scroll-cover polish. The pinning itself is CSS (.hero-sticky
+  // in global.css) so the effect works without JS; this only adds the depth
+  // cues — the hero dims and eases back slightly as the next section
+  // travels over it, instead of sitting flat behind the overlay.
+  const heroSticky = document.querySelector<HTMLElement>('.hero-sticky');
+  const heroCover = document.querySelector<HTMLElement>('.hero-cover');
+  // Animate the hero's inner section, never .hero-sticky itself — a
+  // transform on the sticky box shrinks it about its own centre, which
+  // pushes its top edge down and visibly unpins it from the header.
+  const heroInner = heroSticky?.firstElementChild as HTMLElement | null;
+  if (heroInner && heroCover) {
+    gsap.to(heroInner, {
+      scale: 0.94,
+      opacity: 0.35,
+      transformOrigin: '50% 30%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: heroCover,
+        // Runs across the first screenful of cover travel: begins as the
+        // covering section reaches the fold, completes once it has fully
+        // taken the viewport.
+        start: 'top bottom',
+        end: 'top top',
+        scrub: 0.4,
+      },
+    });
+  }
+
+  // Split-headline testimonials. The two headline halves start closed and
+  // push apart horizontally while the card column scrolls up through the
+  // gap between them, with the whole stage pinned by `position: sticky`.
+  const stage = document.querySelector<HTMLElement>('[data-split-stage]');
+  const track = document.querySelector<HTMLElement>('[data-split-track]');
+  const splitLeft = document.querySelector<HTMLElement>('[data-split-left]');
+  const splitRight = document.querySelector<HTMLElement>('[data-split-right]');
+
+  // Below this width there is no room for the (large) headline either side
+  // of the card column — the words would collide with the quotes — so
+  // narrower screens keep the plain stacked section instead. The threshold
+  // is tied to the headline size: bigger type needs a wider viewport.
+  const splitFits = window.matchMedia('(min-width: 1280px)').matches;
+
+  if (splitFits && stage && track && splitLeft && splitRight) {
+    // Switches the stage from the stacked fallback to the pinned layout.
+    // The section header is pinned at the top of the stage (see global.css),
+    // so it travels with the headline instead of drifting a screen away.
+    document.documentElement.classList.add('ka-split');
+
+    // Card travel geometry, measured (not assumed) so it survives the
+    // pinned container's padding/centring. The column starts a little below
+    // the fold and travels up until the LAST card has just cleared the top.
+    //
+    //   startY : y offset that puts the first card just below the fold
+    //   endY   : y offset at which the track's bottom edge reaches the top
+    //            (plus a small margin so the last card fully exits)
+    //
+    // trackRestBottom is where the track's bottom sits with no transform, in
+    // viewport coordinates — read once the stage is pinned. endY is then the
+    // negative offset that lifts that bottom edge to just above the fold.
+    // The stage height (scroll budget) is sized to exactly this travel, so
+    // the last card clears the screen the instant the pin releases and
+    // scrolling on lands straight in the next section — no empty gap.
+
+    // The pinned container (the sticky box) is the track's offset parent
+    // chain; the track's bottom *within* that box is constant no matter
+    // where the page is scrolled. Measuring bottom-relative-to-pin gives a
+    // stable "rest bottom" free of both the scroll position and any y tween.
+    const pinBox = stage.firstElementChild as HTMLElement;
+    const trackRestBottom = () => {
+      const y = (gsap.getProperty(track, 'y') as number) || 0;
+      const tb = track.getBoundingClientRect().bottom;
+      const pb = pinBox.getBoundingClientRect().top;
+      return tb - pb - y; // track bottom relative to pin top, untransformed
+    };
+    // The track's untransformed TOP, relative to the pin top. (Its bottom
+    // minus its own height.) Used to place the whole column just below the
+    // fold at the start, so the FIRST card enters from the bottom edge
+    // rather than appearing already stacked mid-screen.
+    const trackRestTop = () => trackRestBottom() - track.scrollHeight;
+
+    // Start: the track's top edge sits a touch below the fold, so the first
+    // card rises up into view from the very bottom.
+    const startY = () => window.innerHeight - trackRestTop() + 24;
+    // End: the track's bottom (last card) still at the FOLD, not fully above
+    // it — so as the pin releases, the last card exits through the top
+    // exactly while the next section rises in from the bottom. Ending it
+    // fully cleared instead would leave an empty viewport scrolling past.
+    const endY = () => window.innerHeight - trackRestBottom();
+    const cardTravel = () => startY() - endY();
+
+    // Pin duration = stageHeight - viewport, and the card tween is scrubbed
+    // across it (end: 'bottom bottom'). We want that duration to equal the
+    // card travel, so the pin releases exactly as the last card exits — and
+    // because the sticky box is only as tall as the viewport, the next
+    // section sits immediately below, with no empty trailing scroll.
+    const sizeStage = () => {
+      stage.style.height = `${window.innerHeight + cardTravel()}px`;
+    };
+    sizeStage();
+
+    // Open targets, computed per side so the layout is *balanced*, not just
+    // symmetric about the viewport centre. The two words differ in width
+    // ("What They" ≠ "Said.") and the card column may not be exactly
+    // centred, so equal outward travel leaves unequal gaps. Instead each
+    // word is placed to leave the same inner margin beside the cards; the
+    // outer margins then come out equal too, since word + inner-gap is the
+    // same on both sides. A cap keeps the outer edge off the screen edge.
+    const CARD_MARGIN = 40; // desired px between each word and the card column
+
+    // Returns { left, right } — the x delta each half animates to. Left is
+    // negative (moves left), right positive.
+    const splitTargets = () => {
+      const t = track.getBoundingClientRect();
+      const lx = gsap.getProperty(splitLeft, 'x') as number;
+      const rx = gsap.getProperty(splitRight, 'x') as number;
+      const l = splitLeft.getBoundingClientRect();
+      const r = splitRight.getBoundingClientRect();
+
+      // Rest (untransformed) inner edges.
+      const lRestRight = l.right - lx;
+      const rRestLeft = r.left - rx;
+
+      // Target inner edges: one CARD_MARGIN outside each card edge.
+      const lTargetRight = t.left - CARD_MARGIN;
+      const rTargetLeft = t.right + CARD_MARGIN;
+
+      let left = lTargetRight - lRestRight; // ≤ 0
+      let right = rTargetLeft - rRestLeft; // ≥ 0
+
+      // Keep both outer edges at least this far from the screen edge; if
+      // one side would overshoot, pull both back equally so they stay
+      // balanced rather than one word hugging the glass.
+      const EDGE = 48;
+      const lRestLeft = l.left - lx;
+      const rRestRight = r.right - rx;
+      const leftOuter = lRestLeft + left; // resulting left edge of left word
+      const rightOuter = rRestRight + right; // resulting right edge of right word
+      const overLeft = EDGE - leftOuter; // >0 if too far left
+      const overRight = rightOuter - (window.innerWidth - EDGE); // >0 if too far right
+      const pullback = Math.max(0, overLeft, overRight);
+      left += pullback;
+      right -= pullback;
+
+      return { left: Math.min(0, left), right: Math.max(0, right) };
+    };
+
+    gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: stage,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.5,
+          invalidateOnRefresh: true,
+        },
+      })
+      // Phase 1 — the halves part outward from centre. Opens quickly (over
+      // the first ~fifth of the stage) so the words are fully apart before
+      // the first card climbs to the headline row, avoiding a brief frame
+      // where a card sits on top of the still-closed words.
+      .fromTo(
+        splitLeft,
+        { x: 0 },
+        { x: () => splitTargets().left, ease: 'power2.out', duration: 0.2 },
+        0,
+      )
+      .fromTo(
+        splitRight,
+        { x: 0 },
+        { x: () => splitTargets().right, ease: 'power2.out', duration: 0.2 },
+        0,
+      )
+      // Phase 2 — the column travels up through the opened gap. Starts just
+      // below the fold so the first card enters after the split opens, and
+      // ends with the last card exactly cleared off the top. Because the
+      // stage height is sized to this same travel, the tween reaches its end
+      // as the pin releases — so scrolling on lands straight in the next
+      // section with no empty gap.
+      .fromTo(
+        track,
+        { y: () => startY() },
+        { y: () => endY(), ease: 'none', duration: 1 },
+        0,
+      );
+
+    // Re-measure on resize: the stage height and split distance are both
+    // viewport-derived, so a stale value would mistime the whole sequence.
+    window.addEventListener('resize', () => {
+      sizeStage();
+      ScrollTrigger.refresh();
+    });
+  }
+
   // Let islands (e.g. the WebGL hero) hook into the same scroll instance.
   document.dispatchEvent(new CustomEvent('ka:motion-ready'));
 }

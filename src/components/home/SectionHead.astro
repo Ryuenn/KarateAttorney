@@ -1,0 +1,59 @@
+---
+/**
+ * Editorial section header used across the Homepage 1 below-hero sections.
+ *
+ * Reference layout (architecture-portfolio style): a short rule + lowercase
+ * kicker on one line, then an oversized uppercase display title with a
+ * right-aligned meta string trailing it, closed by a full-width hairline.
+ * The title and meta share a baseline row on desktop and stack on mobile.
+ */
+interface Props {
+  kicker: string;
+  title: string;
+  /** Trailing meta line, e.g. "Archive / Speaking / 2026". */
+  meta?: string;
+  /** Renders for dark surfaces when true (default), light when false. */
+  dark?: boolean;
+  class?: string;
+}
+
+const { kicker, title, meta, dark = true, class: className = '' } = Astro.props;
+
+const kickerColor = dark ? 'text-(--accent-strong)' : 'text-(--accent)';
+const titleColor = dark ? 'text-paper' : 'text-ink';
+const metaColor = dark ? 'text-navy-200' : 'text-ink/55';
+const ruleColor = dark ? 'bg-white/25' : 'bg-ink/20';
+---
+
+<header class:list={['flex flex-col', className]}>
+  <p class="flex items-center gap-4" data-reveal>
+    <span class:list={['h-px w-12 sm:w-16', ruleColor]} aria-hidden="true"></span>
+    <span class:list={['text-xs tracking-[0.18em] lowercase sm:text-sm', kickerColor]}>
+      {kicker}
+    </span>
+  </p>
+
+  <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+    <h2
+      class:list={[
+        'font-display text-[clamp(2rem,6.2vw,4.5rem)] leading-[0.95] font-extrabold tracking-tight uppercase',
+        titleColor,
+      ]}
+      data-reveal
+    >
+      {title}
+    </h2>
+    {
+      meta && (
+        <p
+          class:list={['shrink-0 text-xs sm:pb-2 sm:text-right', metaColor]}
+          data-reveal
+        >
+          {meta}
+        </p>
+      )
+    }
+  </div>
+
+  <span class:list={['mt-5 h-px w-full', ruleColor]} aria-hidden="true"></span>
+</header>

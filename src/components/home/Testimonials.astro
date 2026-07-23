@@ -1,0 +1,188 @@
+---
+/**
+ * Homepage 1 §5 — "What Were / They Said?" split-headline testimonials.
+ *
+ * Scroll effect (osvald-style): the two headline halves sit centred and
+ * closed, then push apart horizontally as the section is scrolled, while a
+ * single column of testimonial cards travels up through the gap between
+ * them. The headline is pinned for the duration so the cards read as
+ * passing *through* the words.
+ *
+ * Structure matters for the effect: the halves and the card column share
+ * one grid cell so they overlap, and the cards sit at a higher z-index than
+ * the left half but the headline is not clipped — see motion.ts.
+ */
+import SectionHead from './SectionHead.astro';
+
+// IMPORTANT — these are illustrative SAMPLE testimonials, written to show
+// the intended voice and to make the layout real. Do NOT publish them as
+// genuine client statements: for an attorney, presenting invented quotes or
+// named clients as real is false advertising and a bar-rules problem. Swap
+// each for an actual, consented quote (with the reviewer's real name and
+// role) before launch. The `sample: true` flag drives the on-page notice.
+const sampleNotice = true;
+
+const testimonials = [
+  {
+    quote:
+      'He treated my case like it was the only one he had. Every call was returned, every question answered in plain English, and I never once felt like a file number. When it mattered, he was ready to fight.',
+    name: 'Injury client',
+    role: 'Sample testimonial',
+  },
+  {
+    quote:
+      'Our audience is not easy to move, and he had the whole room leaning in. Funny, sharp, and genuinely useful — people were still quoting the talk in the hallway an hour later.',
+    name: 'Event organiser',
+    role: 'Sample testimonial',
+  },
+  {
+    quote:
+      'My son walked in shy and unsure of himself. A year later he carries himself differently — more focused, more respectful, more confident. That is not just karate; that is good teaching.',
+    name: 'Parent of a student',
+    role: 'Sample testimonial',
+  },
+  {
+    quote:
+      'Prepared, composed, and relentless when the case called for it. He does the unglamorous work most people skip, and it shows the moment he stands up to speak.',
+    name: 'Co-counsel',
+    role: 'Sample testimonial',
+  },
+  {
+    quote:
+      'His khutbah met people where they are — honest about the struggle, but full of hope. The community talked about it for weeks. A rare voice that speaks to the heart and the mind at once.',
+    name: 'Community leader',
+    role: 'Sample testimonial',
+  },
+  {
+    quote:
+      'After my accident I was overwhelmed and honestly a little scared. He explained every step, kept his word on the timeline, and treated me like a person — not a payout. I would send anyone I love to him.',
+    name: 'Injury client',
+    role: 'Sample testimonial',
+  },
+  {
+    quote:
+      'I have shared a lot of stages, and few speakers leave a room this changed. He is authentic, disciplined, and impossible to look away from. Our attendees rated his session the highest of the day.',
+    name: 'Conference host',
+    role: 'Sample testimonial',
+  },
+  {
+    quote:
+      'He came on the show expecting a quick chat and gave us an hour that people are still messaging me about. Thoughtful, grounded, and never once phoning it in. A guest you want back.',
+    name: 'Podcast host',
+    role: 'Sample testimonial',
+  },
+  {
+    quote:
+      'I have referred clients to plenty of attorneys. Ibrahim is one of the few I trust without a second thought — he prepares harder, communicates better, and actually cares how the person comes out the other side.',
+    name: 'Referring attorney',
+    role: 'Sample testimonial',
+  },
+  {
+    quote:
+      'My daughter found her confidence on that mat. The respect and self-control she learned there show up at home and at school. This is character work dressed up as karate, and it is exactly what she needed.',
+    name: 'Parent of a student',
+    role: 'Sample testimonial',
+  },
+];
+---
+
+<section class="bg-paper text-ink" data-split-section>
+  <!-- Pinned stage. The height is what the scroll effect is scrubbed over:
+       the split open + the travel of the card column. The section header
+       lives INSIDE the sticky viewport (pinned at its top) so it never
+       drifts a screen away from the headline during the scroll. -->
+  <div class="relative" data-split-stage>
+    {/* Sticky/pinned presentation is applied by the .ka-split class (see
+        global.css) so this degrades to a plain stacked list without JS. */}
+    <div>
+      <!-- Section header, pinned at the top of the stage. A paper backdrop
+           (fading to transparent) lets the card column scroll cleanly
+           underneath it rather than colliding with the heading. -->
+      <div
+        class="absolute inset-x-0 top-0 z-20 bg-gradient-to-b from-paper from-70% via-paper to-transparent pb-12"
+        data-split-header
+      >
+        {/* Extra top padding clears the fixed site navbar so the kicker is
+            never tucked behind it. */}
+        <div class="wrap pt-28 sm:pt-32">
+          <SectionHead
+            kicker="Testimonials"
+            title="In Their Words"
+            meta="Clients / Audiences / Students"
+            dark={false}
+          />
+          {
+            sampleNotice && (
+              <p class="mt-4 text-xs text-ink/45">
+                Sample testimonials shown for layout — replace with real,
+                consented client quotes before launch.
+              </p>
+            )
+          }
+        </div>
+      </div>
+
+      <!-- Headline halves — overlaid on the card column so they can slide
+           apart symmetrically without reflowing the cards between them. -->
+      <div
+        class="pointer-events-none inset-0 z-0 flex items-center justify-center"
+        aria-hidden="true"
+      >
+        {/* Words sit centred and near-touching at rest; motion.ts drives
+            them outward to an explicit, capped inset (never the screen
+            edge) and back. A tiny gap keeps them from overlapping at x: 0. */}
+        <div class="flex items-center justify-center gap-4">
+          <span
+            data-split-left
+            class="shrink-0 font-display text-[clamp(2rem,5.5vw,4.75rem)] leading-none font-semibold tracking-tight whitespace-nowrap"
+          >
+            What They
+          </span>
+          <span
+            data-split-right
+            class="shrink-0 font-display text-[clamp(2rem,5.5vw,4.75rem)] leading-none font-semibold tracking-tight whitespace-nowrap"
+          >
+            Said.
+          </span>
+        </div>
+      </div>
+
+      {/* The real heading. Visible in the stacked fallback (where the
+          decorative split halves are hidden) and screen-reader-only once
+          the pinned effect takes over and the halves render the words. */}
+      <h2
+        class="mb-10 text-center font-display text-[clamp(1.75rem,5vw,3rem)] leading-tight font-semibold tracking-tight"
+        data-split-heading
+      >
+        What They Said
+      </h2>
+
+      <!-- Card column travels vertically through the gap. -->
+      <div class="relative z-10 mx-auto w-[min(26rem,78vw)]">
+        <ul class="flex flex-col gap-5" data-split-track>
+          {
+            testimonials.map((t) => (
+              <li class="rounded-lg bg-navy-50 p-6 sm:p-8">
+                <p class="text-sm leading-relaxed text-ink/80 sm:text-base">
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <div class="mt-8 flex items-end justify-between gap-6">
+                  <div>
+                    <p class="font-display text-sm font-semibold">5/5</p>
+                    <p class="text-(--accent)" aria-label="Rated 5 out of 5">
+                      <span aria-hidden="true">★★★★★</span>
+                    </p>
+                  </div>
+                  <div class="text-right text-xs text-ink/55">
+                    <p class="font-semibold text-ink/75">{t.name}</p>
+                    <p>{t.role}</p>
+                  </div>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

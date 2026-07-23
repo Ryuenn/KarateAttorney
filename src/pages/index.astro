@@ -1,18 +1,24 @@
 ---
+import ClosingCta from '../components/home/ClosingCta.astro';
 import Hero from '../components/home/Hero.astro';
+import Measure from '../components/home/Measure.astro';
+import SelectedWork from '../components/home/SelectedWork.astro';
+import Services from '../components/home/Services.astro';
+import Testimonials from '../components/home/Testimonials.astro';
 import JsonLd from '../components/seo/JsonLd.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { FIRM_URL, SITE } from '../lib/site';
 
-// Homepage-variant phase: hero only. The former below-hero sections
-// (pillars, speaking band, firm-routing band, hub teaser) live in git
-// history and return once a design direction is chosen.
+// Below-hero sections follow the editorial reference direction: alternating
+// navy/paper bands, oversized uppercase section heads with a kicker rule and
+// trailing meta line, and offset cards whose captions overlap the image.
 ---
 
 <BaseLayout
   title="The Karate Attorney"
-  description="[PLACEHOLDER: home meta description — Ibrahim Awad: trial lawyer, martial artist, TEDx speaker]"
+  description="Ibrahim Awad — trial lawyer, martial artist, and TEDx speaker. The discipline of the mat, the fight of the courtroom, and talks that move an audience. Injury cases handled through The Awad Law Firm."
   heroOverlap
+  footerReveal
 >
   <Fragment slot="head">
     <JsonLd
@@ -30,5 +36,19 @@ import { FIRM_URL, SITE } from '../lib/site';
       }}
     />
   </Fragment>
-  <Hero />
+  {/* Scroll-cover reveal: the hero is pinned by `position: sticky` at the
+      top of the page while the sections below — lifted into their own
+      stacking context by .hero-cover — scroll up and over it. Pure CSS, so
+      it degrades to a normal stacked page without JS. */}
+  <div class="hero-sticky">
+    <Hero />
+  </div>
+
+  <div class="hero-cover">
+    <SelectedWork />
+    <Services />
+    <Measure />
+    <Testimonials />
+    <ClosingCta />
+  </div>
 </BaseLayout>

@@ -1,0 +1,80 @@
+---
+/**
+ * Homepage 1 §2 — "From First Call To Verdict".
+ *
+ * The light counterpart to SelectedWork (the reference alternates a black
+ * band into a paper band at exactly this point). Numbered rows rather than
+ * cards: each row is a full-width hairline-separated band whose heading
+ * shifts right on hover, so the list reads as a sequence, not a grid.
+ */
+import SectionHead from './SectionHead.astro';
+
+const steps = [
+  {
+    n: '01',
+    title: 'Speaking & Keynotes',
+    body: 'Part trial lawyer, part martial artist, part person of faith — the talk pulls from all three. Audiences leave with a story they remember and one idea they can actually use on Monday morning: that discipline, not luck, is what carries you through the moments that matter.',
+    tags: ['Keynote', 'TEDx', 'Khutbah'],
+  },
+  {
+    n: '02',
+    title: 'Trial Representation',
+    body: 'Every case is prepared as if it will be tried, because that is what earns a fair result. You get a lawyer who returns the call, explains the plan in plain language, and is not afraid to stand in front of a jury. Legal matters are handled through The Awad Law Firm.',
+    tags: ['Injury', 'Jury Trial', 'Consultation'],
+  },
+  {
+    n: '03',
+    title: 'Martial Arts Instruction',
+    body: 'Technique is the easy part to teach. What I care about is the character underneath it — the respect, focus, and quiet confidence that a student carries off the mat and into the rest of their life. Discipline first, skill second, and self-respect running through all of it.',
+    tags: ['Karate', 'Youth', 'Seminar'],
+  },
+  {
+    n: '04',
+    title: 'Media & Collaboration',
+    body: 'Podcasts, panels, and partnerships that reach beyond the courtroom and the dojo. If the conversation is about justice, discipline, faith, or the discipline it takes to hold all three together, it is a conversation worth having — bring the mic.',
+    tags: ['Podcast', 'Panel', 'Press'],
+  },
+];
+---
+
+<section class="bg-paper text-ink">
+  <div class="wrap section-pad">
+    <SectionHead
+      kicker="Our service"
+      title="From First Call To Verdict"
+      meta="Practice / Platform / Podium"
+      dark={false}
+    />
+
+    <ul class="mt-12">
+      {
+        steps.map((s) => (
+          <li class="group border-b border-ink/10" data-reveal>
+            <div class="grid gap-4 py-8 sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] sm:items-start sm:gap-10 sm:py-10">
+              <span class="font-display text-sm font-bold tracking-[0.2em] text-(--accent) sm:pt-2">
+                {s.n}
+              </span>
+
+              <h3 class="font-display text-[clamp(1.5rem,3.2vw,2.5rem)] leading-tight font-semibold tracking-tight transition-transform duration-300 ease-(--ease-smooth) group-hover:translate-x-2">
+                {s.title}
+              </h3>
+
+              <div>
+                <p class="max-w-md text-sm leading-relaxed text-ink/65">
+                  {s.body}
+                </p>
+                <ul class="mt-5 flex flex-wrap gap-2">
+                  {s.tags.map((t) => (
+                    <li class="rounded-full border border-ink/15 px-3 py-1 text-xs text-ink/60">
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
