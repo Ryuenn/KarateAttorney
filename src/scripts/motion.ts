@@ -313,35 +313,49 @@ if (!prefersReducedMotion) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const stageEl = arenasSection?.querySelector<HTMLElement>('.ka-arenas-stage');
+  const arenaTrack = arenasSection?.querySelector<HTMLElement>('[data-arena-track]');
 
-  if (arenasSection && stageEl && arenaCards.length > 1 && !reduceMotion) {
+  if (arenasSection && stageEl && arenaTrack && arenaCards.length > 1 && !reduceMotion) {
     document.documentElement.classList.add('ka-arenas');
 
-    const setActive = (idx: number) => {
-      const clamped = Math.max(0, Math.min(arenaCards.length - 1, idx));
-      arenaCards.forEach((card, i) =>
-        card.classList.toggle('is-active', i === clamped),
-      );
-    };
-    setActive(0);
+    // Masked-window stepper (reference behaviour): the white window is a fixed
+    // height that clips the card track inside it, so the next card is hidden
+    // below the mask until the track slides up to reveal it — nothing shows
+    // outside the white frame. The pin is pure CSS `position: sticky` on the
+    // stage (Lenis drives real document scroll, so the wheel is never
+    // captured, cursor position irrelevant).
+    //
+    // Each card fills exactly one window height (--ka-card-h). Scrolling
+    // translates the track up by (cardHeight × progress × (cards-1)), so each
+    // screenful advances exactly one card cleanly into the window.
+    let cardH = 0;
+    const steps = arenaCards.length - 1;
 
-    // Canonical pin: ScrollTrigger pins the (viewport-tall) stage and manages
-    // its own pin spacing. The scroll budget is (cards - 1) screenfuls, so
-    // each card gets one screen of dwell before the next swaps in. `end` is a
-    // function so it re-resolves to the live viewport height on refresh.
+    const measure = () => {
+      const vh = window.innerHeight;
+      // Window height: a comfortable share of the viewport (leaves room for
+      // the side labels and the pinned frame breathing space).
+      cardH = Math.min(vh * 0.68, 560);
+      arenasSection.style.setProperty('--ka-card-h', `${cardH}px`);
+      // Scroll budget: one screenful per transition between cards.
+      arenasSection.style.height = `${vh * arenaCards.length}px`;
+    };
+    measure();
+
+    const render = (progress: number) => {
+      // Translate up by whole card heights across the scroll; the track moves
+      // from 0 (card 0 shown) to -(cardH × steps) (last card shown).
+      gsap.set(arenaTrack, { y: -cardH * steps * progress });
+    };
+    render(0);
+
     ScrollTrigger.create({
-      trigger: stageEl,
+      trigger: arenasSection,
       start: 'top top',
-      end: () => '+=' + window.innerHeight * (arenaCards.length - 1),
-      pin: true,
-      pinSpacing: true,
-      anticipatePin: 1,
+      end: 'bottom bottom',
       invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        // Map scroll progress (0→1) onto the card indices. The 0.999 guard
-        // keeps progress===1 from overshooting to an out-of-range index.
-        setActive(Math.floor(self.progress * arenaCards.length * 0.999));
-      },
+      onRefreshInit: measure,
+      onUpdate: (self) => render(self.progress),
     });
 
     window.addEventListener('resize', () => ScrollTrigger.refresh());

@@ -398,61 +398,53 @@ html.ka-split [data-split-heading] {
 .ka-arenas-section {
   padding-block: var(--spacing-section);
 }
-.ka-arenas-deck {
+.ka-arenas-track {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-section);
 }
 
-/* Pinned stepper live: motion.ts pins the stage (via ScrollTrigger) for one
-   screenful per card; the deck becomes a fixed-size stack and JS toggles
-   which card is visible. The stage is a viewport-tall, flex-centred box —
-   ScrollTrigger handles the pinning, so no `position: sticky` here (that
-   would double-pin and fight the JS). */
+/* Live stepper: a FIXED white window (mask) with the card track scrolling
+   INSIDE it, so the next card is never visible outside the white frame — it
+   slides up into view from within, exactly like the reference. The pin is
+   pure CSS `position: sticky` on the stage (Lenis drives real document
+   scroll, so the wheel is never captured). motion.ts sizes the section tall
+   and translates the track by (cardHeight × progress).
+     --ka-card-h : the window/card height, set from JS after measuring. */
 html.ka-arenas .ka-arenas-section {
   padding-block: 0;
 }
 html.ka-arenas .ka-arenas-stage {
+  position: sticky;
+  top: 0;
   height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-/* The deck is the positioning context for the absolutely-stacked cards, and
-   it must have a height for `align-items: center` on the stage to place it in
-   the middle. The cards define its size via the tallest one, so give it a
-   relative min-height and let the active card set the visible height. */
-html.ka-arenas .ka-arenas-deck {
-  position: relative;
-  display: grid;
-  gap: 0;
-  place-items: center;
+/* The white window: fixed height = one card, clips the track inside it. */
+html.ka-arenas .ka-arenas-window {
+  height: var(--ka-card-h, 34rem);
+  overflow: hidden;
 }
+html.ka-arenas .ka-arenas-track {
+  will-change: transform;
+}
+/* Each card fills exactly the window height, so one card shows at a time and
+   the next is fully hidden below the mask until the track slides up. */
 html.ka-arenas .ka-arenas-card {
-  /* All cards occupy the same grid cell so they stack; only the active one is
-     shown. Using grid-stacking (not position:absolute) lets the tallest card
-     size the deck naturally, so nothing is clipped. */
-  grid-area: 1 / 1;
-  width: min(100% - 2 * var(--spacing-gutter), 32rem);
-  opacity: 0;
-  transform: translateY(1.5rem) scale(0.98);
-  transition:
-    opacity 0.5s var(--ease-smooth),
-    transform 0.5s var(--ease-smooth);
-  pointer-events: none;
-}
-html.ka-arenas .ka-arenas-card.is-active {
-  opacity: 1;
-  transform: none;
-  /* Deliberately NOT re-enabling pointer-events: the card has no interactive
-     content, and keeping it pointer-events:none lets wheel/touch scroll pass
-     straight through to Lenis — otherwise scrolling stalls while the cursor
-     is over the card. */
+  height: var(--ka-card-h, 34rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: none;
 }
 @media (prefers-reduced-motion: reduce) {
+  html.ka-arenas .ka-arenas-window {
+    height: auto;
+    overflow: visible;
+  }
   html.ka-arenas .ka-arenas-card {
-    transition: opacity 0.3s linear;
-    transform: none;
+    height: auto;
   }
 }
 

@@ -54,42 +54,45 @@ const total = String(arenas.length).padStart(2, '0');
       [Keep scrolling]
     </span>
 
-    {/* Card deck: each panel is a full card. In the stacked fallback they
-        follow one another; once .ka-arenas is live they stack absolutely and
-        only the active one is shown. */}
-    <div class="ka-arenas-deck mx-auto w-full max-w-lg px-(--spacing-gutter)">
-      {
-        arenas.map((a, i) => (
-          <article
-            class="ka-arenas-card bg-white px-6 py-8 text-center shadow-xl sm:px-10 sm:py-10"
-            data-arena-card
-            data-arena-index={i}
-            data-reveal
-          >
-            <p class="font-mono text-xs tracking-[0.15em] text-ink/60 sm:text-sm">
-              <span class="text-ink">{String(i + 1).padStart(2, '0')}</span>
-              <span class="mx-2">—</span>
-              <span>{total}</span>
-            </p>
+    {/* Fixed white window (mask). Once .ka-arenas is live this is a
+        fixed-height box with overflow:hidden — the card track scrolls INSIDE
+        it, so the next card is never visible outside the white frame (it
+        slides up into view from within). In the no-JS fallback the mask has
+        no fixed height and the cards simply stack and read normally. */}
+    <div class="ka-arenas-window mx-auto w-full max-w-md bg-white shadow-xl">
+      <div class="ka-arenas-track" data-arena-track>
+        {
+          arenas.map((a, i) => (
+            <article
+              class="ka-arenas-card px-6 py-8 text-center sm:px-8 sm:py-10"
+              data-arena-card
+              data-reveal
+            >
+              <p class="font-mono text-xs tracking-[0.15em] text-ink/60">
+                <span class="text-ink">{String(i + 1).padStart(2, '0')}</span>
+                <span class="mx-2">—</span>
+                <span>{total}</span>
+              </p>
 
-            <h3 class="mx-auto mt-4 max-w-[16ch] font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.05] font-normal tracking-tight uppercase">
-              {a.title}
-            </h3>
+              <h3 class="mx-auto mt-3 max-w-[16ch] font-display text-[clamp(1.375rem,2.6vw,2rem)] leading-[1.05] font-normal tracking-tight uppercase">
+                {a.title}
+              </h3>
 
-            <img
-              src={a.img}
-              alt={a.alt}
-              class="mx-auto mt-6 max-h-[34vh] w-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+              <img
+                src={a.img}
+                alt={a.alt}
+                class="mx-auto mt-5 max-h-[24vh] w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
 
-            <p class="mx-auto mt-6 max-w-md font-mono text-xs leading-relaxed text-ink/75 sm:text-sm">
-              {a.body}
-            </p>
-          </article>
-        ))
-      }
+              <p class="mx-auto mt-5 max-w-md font-mono text-xs leading-relaxed text-ink/75">
+                {a.body}
+              </p>
+            </article>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
