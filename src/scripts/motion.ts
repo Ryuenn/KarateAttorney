@@ -335,7 +335,7 @@ if (!prefersReducedMotion) {
       const vh = window.innerHeight;
       // Window height: a comfortable share of the viewport (leaves room for
       // the side labels and the pinned frame breathing space).
-      cardH = Math.min(vh * 0.68, 560);
+      cardH = Math.min(vh * 0.82, 700);
       arenasSection.style.setProperty('--ka-card-h', `${cardH}px`);
       // Scroll budget: one screenful per transition between cards.
       arenasSection.style.height = `${vh * arenaCards.length}px`;

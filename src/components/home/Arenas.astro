@@ -15,20 +15,20 @@ const arenas = [
   {
     title: 'The Courtroom',
     img: '/ibrahim-4.png',
-    alt: 'Ibrahim Awad in the courtroom',
-    body: 'Where preparation meets pressure. Insurance companies bank on lawyers who would rather settle than try a case — Ibrahim built his practice on the opposite instinct, and carries an injury claim to a jury when the offer falls short.',
+    alt: 'Ibrahim Awad presenting, mic in hand',
+    body: 'Where preparation meets pressure. Whether addressing a jury or a room, Ibrahim commands it the same way — calm, prepared, and direct. Insurance companies bank on lawyers who would rather settle than try a case; he built his practice on the opposite instinct.',
   },
   {
     title: 'The Mat',
     img: '/kickin.JPG',
-    alt: 'Ibrahim Awad training karate',
-    body: 'Where the discipline was forged. Karate taught him that composure is a skill you drill until it holds when everything is on the line — the same calm he brings to a case and to a stage.',
+    alt: 'Ibrahim Awad training on the heavy bag',
+    body: 'Where the discipline was forged. Long before any courtroom, it was the bag, the gloves, and the reps — drilling composure until it holds when everything is on the line. The same calm he now brings to a case and to a stage was earned here, one round at a time.',
   },
   {
     title: 'The Stage',
     img: '/stage.png',
-    alt: 'Ibrahim Awad speaking to an audience',
-    body: 'Where the lessons are shared. From TEDx to the boardroom, Ibrahim speaks on discipline, resilience, and turning pressure into performance — the throughline of the mat and the courtroom, spoken aloud.',
+    alt: 'Ibrahim Awad — TEDx Talk "On Beautiful Patience", TEDxOcala',
+    body: 'Where the lessons are shared. In his TEDxOcala talk, "On Beautiful Patience," Ibrahim turns discipline and resilience into a message an audience can carry — the throughline of the mat and the courtroom, spoken aloud.',
   },
 ];
 
@@ -59,34 +59,34 @@ const total = String(arenas.length).padStart(2, '0');
         it, so the next card is never visible outside the white frame (it
         slides up into view from within). In the no-JS fallback the mask has
         no fixed height and the cards simply stack and read normally. */}
-    <div class="ka-arenas-window mx-auto w-full max-w-md bg-white shadow-xl">
+    <div class="ka-arenas-window mx-auto w-full max-w-xl bg-white shadow-xl">
       <div class="ka-arenas-track" data-arena-track>
         {
           arenas.map((a, i) => (
             <article
-              class="ka-arenas-card px-6 py-8 text-center sm:px-8 sm:py-10"
+              class="ka-arenas-card px-8 py-10 text-center sm:px-12 sm:py-12"
               data-arena-card
               data-reveal
             >
-              <p class="font-mono text-xs tracking-[0.15em] text-ink/60">
+              <p class="font-mono text-sm tracking-[0.15em] text-ink/60">
                 <span class="text-ink">{String(i + 1).padStart(2, '0')}</span>
                 <span class="mx-2">—</span>
                 <span>{total}</span>
               </p>
 
-              <h3 class="mx-auto mt-3 max-w-[16ch] font-display text-[clamp(1.375rem,2.6vw,2rem)] leading-[1.05] font-normal tracking-tight uppercase">
+              <h3 class="mx-auto mt-4 max-w-[16ch] font-display text-[clamp(1.75rem,3.4vw,2.75rem)] leading-[1.05] font-normal tracking-tight uppercase">
                 {a.title}
               </h3>
 
               <img
                 src={a.img}
                 alt={a.alt}
-                class="mx-auto mt-5 max-h-[24vh] w-full object-cover"
+                class="mx-auto mt-7 max-h-[34vh] w-full object-cover"
                 loading="lazy"
                 decoding="async"
               />
 
-              <p class="mx-auto mt-5 max-w-md font-mono text-xs leading-relaxed text-ink/75">
+              <p class="mx-auto mt-7 max-w-lg font-mono text-sm leading-relaxed text-ink/75">
                 {a.body}
               </p>
             </article>
