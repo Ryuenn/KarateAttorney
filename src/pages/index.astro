@@ -1,10 +1,11 @@
 ---
-import ClosingCta from '../components/home/ClosingCta.astro';
+import Arenas from '../components/home/Arenas.astro';
 import Hero from '../components/home/Hero.astro';
 import EvolvingEnergy from '../components/home/EvolvingEnergy.astro';
 import Introduction from '../components/home/Introduction.astro';
-import Measure from '../components/home/Measure.astro';
-import Testimonials from '../components/home/Testimonials.astro';
+import MeasureMotion from '../components/home/MeasureMotion.astro';
+import Method from '../components/home/Method.astro';
+import FloatingCta from '../components/layout/FloatingCta.astro';
 import JsonLd from '../components/seo/JsonLd.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { FIRM_URL, SITE } from '../lib/site';
@@ -47,8 +48,10 @@ import { FIRM_URL, SITE } from '../lib/site';
   <div class="hero-cover">
     <Introduction />
     <EvolvingEnergy />
-    <Measure />
-    <Testimonials />
-    <ClosingCta />
+    <Arenas />
+    <Method />
+    <MeasureMotion />
   </div>
+
+  <FloatingCta />
 </BaseLayout>

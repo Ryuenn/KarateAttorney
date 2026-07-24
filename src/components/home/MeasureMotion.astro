@@ -1,0 +1,79 @@
+---
+/**
+ * Homepage 1 — "Measure Motion" split section (xnrgy "Our Promise" reference).
+ *
+ * Same split construction as EvolvingEnergy: a full-bleed image on the left
+ * and a dark navy panel on the right, the panel lifted with a negative top
+ * margin so it overlaps up into the previous (Method) section — the
+ * reference's offset seam. Panel carries a mono kicker, a big headline, two
+ * mono paragraphs, and a solid "Contact" CTA.
+ *
+ * Themed as Ibrahim's promise: progress measured by discipline and outcome,
+ * not noise.
+ */
+import { FIRM_URL } from '../../lib/site';
+---
+
+<section class="relative">
+  <div class="grid lg:grid-cols-2 lg:items-stretch">
+    <!-- Left: full-bleed image (no gutter, edge to edge). -->
+    <div class="relative min-h-[22rem] lg:min-h-[42rem]">
+      <img
+        src="/temp2.png"
+        alt="[PLACEHOLDER] Ibrahim Awad in motion"
+        class="absolute inset-0 h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <!-- Right: dark navy panel, lifted with a negative top margin so it
+         overlaps up into the previous section — the reference's offset seam.
+         The extra top padding recentres content against the photo's height. -->
+    <div
+      class="on-dark relative z-10 flex flex-col justify-center bg-navy-950 px-(--spacing-gutter) py-16 text-paper sm:px-12 lg:-mt-24 lg:py-16 lg:pt-[10rem] lg:pr-20 lg:pl-28"
+    >
+      <div class="max-w-md">
+        <p
+          class="font-mono text-sm font-bold tracking-[0.2em] text-(--accent-muted) uppercase"
+          data-reveal
+        >
+          Our Promise
+        </p>
+
+        <h2
+          class="mt-6 font-display text-[clamp(2.5rem,5vw,4rem)] leading-[0.98] font-normal tracking-[-0.02em] uppercase"
+          data-reveal
+        >
+          Measure<br />What Matters
+        </h2>
+
+        <p
+          class="mt-10 font-mono text-[15px] leading-relaxed text-navy-100"
+          data-reveal
+        >
+          In a world that measures a case by its speed and a fighter by their
+          record, Ibrahim measures something harder to see: whether the person
+          across the table was truly heard, truly prepared for, truly fought
+          for. Progress is not the fastest settlement. It is the right outcome,
+          earned the hard way.
+        </p>
+
+        <p class="mt-6 font-mono text-[15px] leading-relaxed text-navy-100" data-reveal>
+          We do not measure how loud the win is.<br />
+          We measure whether it was worth the fight.
+        </p>
+
+        <div class="mt-12" data-reveal>
+          <a
+            href={FIRM_URL}
+            data-firm-link
+            class="inline-flex items-center justify-center rounded-none bg-(--accent) px-8 py-4 font-mono text-sm font-normal tracking-[0.1em] text-(--accent-ink) uppercase transition-colors hover:bg-(--accent-strong)"
+          >
+            Contact Ibrahim
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

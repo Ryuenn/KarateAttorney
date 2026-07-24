@@ -302,6 +302,51 @@ if (!prefersReducedMotion) {
     });
   }
 
+  // "Three Arenas" scroll-stepper. The section is pinned for one screenful
+  // per card; as it scrolls, the active card swaps 01 → 02 → 03. Without this
+  // (no JS / reduced motion) the cards render stacked and readable — see the
+  // `.ka-arenas` rules in global.css, added here only once wired.
+  const arenasSection = document.querySelector<HTMLElement>('[data-arenas]');
+  const arenaCards = arenasSection
+    ? Array.from(arenasSection.querySelectorAll<HTMLElement>('[data-arena-card]'))
+    : [];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const stageEl = arenasSection?.querySelector<HTMLElement>('.ka-arenas-stage');
+
+  if (arenasSection && stageEl && arenaCards.length > 1 && !reduceMotion) {
+    document.documentElement.classList.add('ka-arenas');
+
+    const setActive = (idx: number) => {
+      const clamped = Math.max(0, Math.min(arenaCards.length - 1, idx));
+      arenaCards.forEach((card, i) =>
+        card.classList.toggle('is-active', i === clamped),
+      );
+    };
+    setActive(0);
+
+    // Canonical pin: ScrollTrigger pins the (viewport-tall) stage and manages
+    // its own pin spacing. The scroll budget is (cards - 1) screenfuls, so
+    // each card gets one screen of dwell before the next swaps in. `end` is a
+    // function so it re-resolves to the live viewport height on refresh.
+    ScrollTrigger.create({
+      trigger: stageEl,
+      start: 'top top',
+      end: () => '+=' + window.innerHeight * (arenaCards.length - 1),
+      pin: true,
+      pinSpacing: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        // Map scroll progress (0→1) onto the card indices. The 0.999 guard
+        // keeps progress===1 from overshooting to an out-of-range index.
+        setActive(Math.floor(self.progress * arenaCards.length * 0.999));
+      },
+    });
+
+    window.addEventListener('resize', () => ScrollTrigger.refresh());
+  }
+
   // Let islands (e.g. the WebGL hero) hook into the same scroll instance.
   document.dispatchEvent(new CustomEvent('ka:motion-ready'));
 }

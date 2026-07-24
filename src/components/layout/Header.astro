@@ -9,7 +9,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 // outlined + one solid royal-blue, uppercase with wide tracking. Shared base;
 // the outline vs. fill treatment is applied per-button below.
 const ctaClass =
-  'inline-flex items-center gap-2 rounded-none px-4 py-2.5 font-mono text-xs font-normal uppercase tracking-[0.1em] whitespace-nowrap transition-colors sm:px-6 sm:py-3 sm:text-sm';
+  'inline-flex items-center gap-2 rounded-none px-3 py-2.5 font-mono text-[0.6875rem] font-normal uppercase tracking-[0.08em] whitespace-nowrap transition-colors sm:px-4 sm:text-xs xl:px-5 xl:tracking-[0.1em] 2xl:px-6 2xl:py-3 2xl:text-sm';
 ---
 
 <header class="site-header on-dark text-paper">
@@ -29,15 +29,17 @@ const ctaClass =
     </a>
 
     {/* Right-hand band: nav links + CTAs read as one continuous, evenly
-        spaced group (ref layout). ml-auto pushes the whole band right. */}
-    <div class="ml-auto flex items-center gap-5 xl:gap-7">
-      <nav aria-label="Primary" class="hidden items-center gap-5 lg:flex xl:gap-7">
+        spaced group (ref layout). ml-auto pushes the whole band right. Gaps
+        and type scale up with width so the 8 links + 2 CTAs never overflow on
+        narrower (MacBook ~1440px) screens. */}
+    <div class="ml-auto flex items-center gap-3 xl:gap-5 2xl:gap-7">
+      <nav aria-label="Primary" class="hidden items-center gap-4 lg:flex xl:gap-5 2xl:gap-7">
         {
           HEADER_NAV.map((item) => (
             <a
               href={item.href}
               aria-current={currentPath === item.href ? 'page' : undefined}
-              class="font-mono text-sm font-normal tracking-[0.1em] uppercase whitespace-nowrap text-paper transition-colors hover:text-(--accent-muted) aria-[current=page]:text-(--accent-muted)"
+              class="font-mono text-xs font-normal tracking-[0.08em] uppercase whitespace-nowrap text-paper transition-colors hover:text-(--accent-muted) aria-[current=page]:text-(--accent-muted) xl:text-[0.8125rem] xl:tracking-[0.1em] 2xl:text-sm"
             >
               {item.label}
             </a>
@@ -56,7 +58,7 @@ const ctaClass =
         ]}
       >
         <svg
-          class="hidden h-[18px] w-[18px] shrink-0 sm:block"
+          class="hidden h-[18px] w-[18px] shrink-0 sm:block lg:hidden 2xl:block"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -84,7 +86,7 @@ const ctaClass =
         ]}
       >
         <svg
-          class="hidden h-[18px] w-[18px] shrink-0 sm:block"
+          class="hidden h-[18px] w-[18px] shrink-0 sm:block lg:hidden 2xl:block"
           viewBox="0 0 24 24"
           fill="currentColor"
           aria-hidden="true"
@@ -104,11 +106,31 @@ const ctaClass =
 </header>
 
 <script>
-  // Transparent-over-hero header: gain a solid background once scrolled.
-  // Without JS, a <noscript> style in BaseLayout keeps it solid always.
+  // Header scroll behaviour:
+  //  1. Transparent-over-hero → solid background once scrolled (unchanged).
+  //  2. Hide-on-scroll-down / show-on-scroll-up: the bar slides out of view
+  //     while scrolling down and returns the moment the user scrolls up.
+  // Without JS, a <noscript> style in BaseLayout keeps it solid + visible.
   const header = document.querySelector('.site-header');
-  const syncHeader = () =>
-    header?.classList.toggle('is-solid', window.scrollY > 16);
+  let lastY = window.scrollY;
+  // Small threshold so tiny scroll jitters don't flicker the bar; the bar
+  // also always shows near the very top of the page.
+  const DELTA = 6;
+  const SHOW_ABOVE = 120;
+
+  const syncHeader = () => {
+    const y = window.scrollY;
+
+    // (1) Solid background once past the hero fold.
+    header?.classList.toggle('is-solid', y > 16);
+
+    // (2) Direction-based hide/show.
+    if (Math.abs(y - lastY) > DELTA) {
+      const scrollingDown = y > lastY;
+      header?.classList.toggle('is-hidden', scrollingDown && y > SHOW_ABOVE);
+      lastY = y;
+    }
+  };
   syncHeader();
   window.addEventListener('scroll', syncHeader, { passive: true });
 </script>

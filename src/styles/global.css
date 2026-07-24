@@ -137,6 +137,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Prevent stray horizontal scrolling (and the white gutter it exposes)
+       from any element that overshoots the viewport width — e.g. the
+       full-bleed / negative-margin sections. `clip` (not `hidden`) stops the
+       sideways scroll WITHOUT creating a scroll container, so it doesn't
+       break the sticky-pinned hero or the Arenas scroll-stepper. */
+    overflow-x: clip;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -191,13 +197,43 @@
 /* Components                                                          */
 /* ------------------------------------------------------------------ */
 
+/* Floating lower-left CTA (xnrgy reference): hidden while the hero is in
+   view, slides up + fades in once scrolled past it. The .is-hidden class is
+   added by FloatingCta.astro's script only when JS + IntersectionObserver
+   are available — so without JS the button just stays visible. */
+.floating-cta {
+  transition:
+    opacity 0.4s var(--ease-smooth),
+    transform 0.4s var(--ease-smooth),
+    background-color 0.2s var(--ease-smooth);
+}
+.floating-cta.is-hidden {
+  opacity: 0;
+  transform: translateY(1rem);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-cta {
+    transition: opacity 0.2s linear;
+  }
+  .floating-cta.is-hidden {
+    transform: none;
+  }
+}
+
 /* Fixed header: transparent over the hero, solid once scrolled (class
    toggled by Header.astro's script; <noscript> forces solid). */
 .site-header {
   transition:
     background-color 0.3s var(--ease-smooth),
-    border-color 0.3s var(--ease-smooth);
+    border-color 0.3s var(--ease-smooth),
+    transform 0.35s var(--ease-smooth);
   border-bottom: 1px solid transparent;
+}
+/* Hide-on-scroll-down: the bar slides up out of view; scrolling up returns
+   it. Class toggled by Header.astro's script (direction-aware). */
+.site-header.is-hidden {
+  transform: translateY(-100%);
 }
 .site-header.is-solid {
   /* Near-black solid bar (xnrgy reference) once scrolled off the hero. */
@@ -351,6 +387,73 @@ html.ka-split [data-split-heading] {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* "Three Arenas" scroll-stepper (xnrgy clubs reference).
+
+   Default = the fallback: an ordinary stacked section. Each card follows the
+   next in normal flow and is fully readable with no JS and under reduced
+   motion. motion.ts adds `.ka-arenas` to <html> only once the pinned stepper
+   is actually wired up (JS + ScrollTrigger + wide enough viewport). */
+.ka-arenas-section {
+  padding-block: var(--spacing-section);
+}
+.ka-arenas-deck {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-section);
+}
+
+/* Pinned stepper live: motion.ts pins the stage (via ScrollTrigger) for one
+   screenful per card; the deck becomes a fixed-size stack and JS toggles
+   which card is visible. The stage is a viewport-tall, flex-centred box —
+   ScrollTrigger handles the pinning, so no `position: sticky` here (that
+   would double-pin and fight the JS). */
+html.ka-arenas .ka-arenas-section {
+  padding-block: 0;
+}
+html.ka-arenas .ka-arenas-stage {
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* The deck is the positioning context for the absolutely-stacked cards, and
+   it must have a height for `align-items: center` on the stage to place it in
+   the middle. The cards define its size via the tallest one, so give it a
+   relative min-height and let the active card set the visible height. */
+html.ka-arenas .ka-arenas-deck {
+  position: relative;
+  display: grid;
+  gap: 0;
+  place-items: center;
+}
+html.ka-arenas .ka-arenas-card {
+  /* All cards occupy the same grid cell so they stack; only the active one is
+     shown. Using grid-stacking (not position:absolute) lets the tallest card
+     size the deck naturally, so nothing is clipped. */
+  grid-area: 1 / 1;
+  width: min(100% - 2 * var(--spacing-gutter), 32rem);
+  opacity: 0;
+  transform: translateY(1.5rem) scale(0.98);
+  transition:
+    opacity 0.5s var(--ease-smooth),
+    transform 0.5s var(--ease-smooth);
+  pointer-events: none;
+}
+html.ka-arenas .ka-arenas-card.is-active {
+  opacity: 1;
+  transform: none;
+  /* Deliberately NOT re-enabling pointer-events: the card has no interactive
+     content, and keeping it pointer-events:none lets wheel/touch scroll pass
+     straight through to Lenis — otherwise scrolling stalls while the cursor
+     is over the card. */
+}
+@media (prefers-reduced-motion: reduce) {
+  html.ka-arenas .ka-arenas-card {
+    transition: opacity 0.3s linear;
+    transform: none;
+  }
 }
 
 /* First-visit preloader (xnrgy-style panel reveal). Hidden unless the

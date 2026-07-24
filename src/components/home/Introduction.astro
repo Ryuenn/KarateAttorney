@@ -77,16 +77,13 @@ const ctaBase =
         </div>
       </div>
 
-      {/* Framed portrait: the cutout stands inside a thin-bordered frame on
-          the paper background (no fill), so only the outline defines the
-          block. flex end-aligns the person to the frame floor; the frame
-          fills the column height (items-stretch). */}
+      {/* Portrait: full photo, no border frame. */}
       <div class="order-1 lg:order-2" data-reveal>
         <div
-          class="flex h-full min-h-[26rem] items-end justify-center overflow-hidden border border-ink/20"
+          class="flex h-full min-h-[26rem] items-end justify-center overflow-hidden"
         >
           <img
-            src="/person.png"
+            src="/introduction-picture.png"
             alt="Ibrahim Awad — The Karate Attorney"
             class="h-full max-h-[36rem] w-auto object-contain object-bottom"
             loading="lazy"

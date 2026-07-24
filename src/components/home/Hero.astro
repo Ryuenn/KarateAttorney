@@ -31,6 +31,16 @@ import { SITE } from '../../lib/site';
     <div class="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/40 to-navy-950/35"></div>
   </div>
 
+  {/* Column guide lines (xnrgy reference): faint full-height verticals at
+      25/50/75%, echoing the 4-panel preloader reveal. Sit over the video but
+      under the wordmark (-z-10), so they trace the hero without crossing the
+      text. */}
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <span class="absolute inset-y-0 left-1/4 w-px bg-white/12"></span>
+    <span class="absolute inset-y-0 left-1/2 w-px bg-white/12"></span>
+    <span class="absolute inset-y-0 left-3/4 w-px bg-white/12"></span>
+  </div>
+
   <!-- Full-viewport span like the navbar — the wordmark scales with vw and
        must never be caged by the centered wrap, or it wraps on wide screens. -->
   <div class="relative flex flex-1 flex-col px-(--spacing-gutter) pt-20 pb-14 sm:pt-24 sm:pb-20">

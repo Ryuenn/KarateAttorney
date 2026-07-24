@@ -1,0 +1,95 @@
+---
+/**
+ * Homepage 1 — "Three Arenas" sticky scroll-stepper (xnrgy clubs reference).
+ *
+ * A centred card on a plain (white) background steps through Ibrahim's three
+ * arenas — the courtroom, the mat, the stage — as the section is pinned and
+ * scrolled. Bracketed mono side labels flank the card.
+ *
+ * Progressive enhancement: the stepper (pin + swap) is wired by motion.ts,
+ * which adds `.ka-arenas` to <html> only when JS + ScrollTrigger are present
+ * and the viewport is wide enough. Without that class the cards render
+ * stacked and fully readable — a failed script can never blank the section.
+ */
+const arenas = [
+  {
+    title: 'The Courtroom',
+    img: '/first.png',
+    alt: '[PLACEHOLDER photo] Ibrahim in the courtroom',
+    body: 'Where preparation meets pressure. Insurance companies bank on lawyers who would rather settle than try a case — Ibrahim built his practice on the opposite instinct, and carries an injury claim to a jury when the offer falls short.',
+  },
+  {
+    title: 'The Mat',
+    img: '/2nd.png',
+    alt: '[PLACEHOLDER photo] Ibrahim training karate',
+    body: 'Where the discipline was forged. Karate taught him that composure is a skill you drill until it holds when everything is on the line — the same calm he brings to a case and to a stage.',
+  },
+  {
+    title: 'The Stage',
+    img: '/third.png',
+    alt: '[PLACEHOLDER photo] Ibrahim speaking to an audience',
+    body: 'Where the lessons are shared. From TEDx to the boardroom, Ibrahim speaks on discipline, resilience, and turning pressure into performance — the throughline of the mat and the courtroom, spoken aloud.',
+  },
+];
+
+const total = String(arenas.length).padStart(2, '0');
+---
+
+<section class="ka-arenas-section relative text-ink" data-arenas>
+  <div
+    class="ka-arenas-stage relative bg-cover bg-center bg-no-repeat"
+    style="background-image: url('/keep-scrolling.png');"
+  >
+    {/* Bracketed mono side labels (xnrgy reference) */}
+    <span
+      class="ka-arenas-aside pointer-events-none absolute top-1/2 left-[18%] hidden -translate-y-1/2 font-mono text-sm tracking-[0.05em] text-paper/80 lg:block xl:left-[24%]"
+      aria-hidden="true"
+    >
+      [Three Arenas]
+    </span>
+    <span
+      class="ka-arenas-aside pointer-events-none absolute top-1/2 right-[18%] hidden -translate-y-1/2 font-mono text-sm tracking-[0.05em] text-paper/80 lg:block xl:right-[24%]"
+      aria-hidden="true"
+    >
+      [Keep scrolling]
+    </span>
+
+    {/* Card deck: each panel is a full card. In the stacked fallback they
+        follow one another; once .ka-arenas is live they stack absolutely and
+        only the active one is shown. */}
+    <div class="ka-arenas-deck mx-auto w-full max-w-lg px-(--spacing-gutter)">
+      {
+        arenas.map((a, i) => (
+          <article
+            class="ka-arenas-card bg-white px-6 py-8 text-center shadow-xl sm:px-10 sm:py-10"
+            data-arena-card
+            data-arena-index={i}
+            data-reveal
+          >
+            <p class="font-mono text-xs tracking-[0.15em] text-ink/60 sm:text-sm">
+              <span class="text-ink">{String(i + 1).padStart(2, '0')}</span>
+              <span class="mx-2">—</span>
+              <span>{total}</span>
+            </p>
+
+            <h3 class="mx-auto mt-4 max-w-[16ch] font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.05] font-normal tracking-tight uppercase">
+              {a.title}
+            </h3>
+
+            <img
+              src={a.img}
+              alt={a.alt}
+              class="mx-auto mt-6 max-h-[34vh] w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+
+            <p class="mx-auto mt-6 max-w-md font-mono text-xs leading-relaxed text-ink/75 sm:text-sm">
+              {a.body}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
