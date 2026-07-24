@@ -1,5 +1,6 @@
 ---
-import { Font } from 'astro:assets';
+import { Font, Image } from 'astro:assets';
+import karateLogo from '../assets/karate-logo.png';
 import Footer from '../components/layout/Footer.astro';
 import Header from '../components/layout/Header.astro';
 import Analytics from '../components/seo/Analytics.astro';
@@ -43,9 +44,19 @@ const {
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    {/* Preload the Heavy display cut — it renders the LCP hero wordmark, so
+        preloading avoids a fallback→Helvetica flash on the most prominent
+        text. Light/Roman load on demand. */}
+    <link
+      rel="preload"
+      href="/helvetica-neue-lt-pro/HelveticaNeueLTW0585Heavy.otf"
+      as="font"
+      type="font/otf"
+      crossorigin
+    />
     <Seo title={title} description={description} noindex={noindex} />
-    <Font cssVariable="--font-archivo" preload />
     <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-space-mono" preload />
     <Analytics />
     <noscript>
       <style>
@@ -64,9 +75,8 @@ const {
       (function () {
         try {
           var path = location.pathname.replace(/\/$/, '') || '/';
-          var homepages = ['/', '/homepage-2', '/homepage-3'];
           if (
-            homepages.indexOf(path) === -1 ||
+            path !== '/' ||
             matchMedia('(prefers-reduced-motion: reduce)').matches
           ) {
             return;
@@ -100,13 +110,20 @@ const {
           />
         ))
       }
-      <p class="preloader-logo">
-        <span>The <span class="text-(--accent)">Karate</span> Attorney</span>
-      </p>
+      <div class="preloader-logo">
+        <Image
+          src={karateLogo}
+          alt=""
+          widths={[200, 320]}
+          sizes="240px"
+          class="h-auto w-[clamp(9rem,22vw,15rem)]"
+          loading="eager"
+        />
+      </div>
     </div>
     <a
       href="#main"
-      class="sr-only-focusable fixed top-2 left-2 rounded-full bg-gold-400 font-bold text-navy-950"
+      class="sr-only-focusable fixed top-2 left-2 rounded-full bg-(--accent) font-bold text-(--accent-ink)"
     >
       Skip to content
     </a>
@@ -128,8 +145,7 @@ const {
     {
       /* The footer renders unless bareChrome hides all shared chrome — but
          footerReveal opts a page back into the shared footer (with the
-         curtain-reveal wrapper) even when it supplies its own header, as
-         Homepage 3 does. */
+         curtain-reveal wrapper) even when it supplies its own header. */
       (footerReveal || !bareChrome) &&
         (footerReveal ? (
           <div class="footer-reveal">

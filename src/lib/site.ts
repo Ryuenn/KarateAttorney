@@ -30,16 +30,23 @@ export const SOCIALS = [
 ] as const;
 
 /**
- * Homepage-variant exploration phase (owner request, 2026-07-22): the site
- * is temporarily reduced to three homepage design candidates. The full
- * page set (about/speaking/content/contact/…) lives in git history and
- * returns once a direction is chosen.
+ * Homepage direction chosen (owner request, 2026-07-24): the variant
+ * switcher is retired and the site runs on the single Homepage 1 design.
+ * The full page set lives in git history and returns as real routes; until
+ * then these are placeholder labels (href '#') so the navbar shows the
+ * intended structure without navigating anywhere. Point each at its real
+ * route as the pages are restored.
  */
-export const NAV = [
-  { label: 'Homepage 1', href: '/' },
-  { label: 'Homepage 2', href: '/homepage-2' },
-  { label: 'Homepage 3', href: '/homepage-3' },
-] as const;
+export const NAV: readonly { label: string; href: string }[] = [
+  { label: 'About', href: '#' },
+  { label: 'Speaking', href: '#' },
+  { label: 'Law Firm', href: '#' },
+  { label: 'Martial Arts', href: '#' },
+  { label: 'Ventures', href: '#' },
+  { label: 'Content', href: '#' },
+  { label: 'Media', href: '#' },
+  { label: 'Contact', href: '#' },
+];
 
 /** Nav items pinned in the desktop header bar. */
 export const HEADER_NAV = NAV;

@@ -20,7 +20,7 @@ const ventureLinks = [
 
 <footer class="on-dark bg-navy-950 text-navy-100">
   <div class="wrap section-pad">
-    <div class="grid gap-12 lg:grid-cols-[2fr_1fr_1fr_1.5fr]">
+    <div class="grid gap-12 lg:grid-cols-[2fr_1fr_1.5fr]">
       <div>
         <Image
           src={karateLogo}
@@ -37,7 +37,7 @@ const ventureLinks = [
           <a
             href={FIRM_URL}
             data-firm-link
-            class="font-semibold text-gold-300 underline-offset-4 hover:underline"
+            class="font-semibold text-(--accent-muted) underline-offset-4 hover:underline"
           >
             Injured? Hire Ibrahim → The Awad Law Firm
           </a>
@@ -47,22 +47,24 @@ const ventureLinks = [
         </p>
       </div>
 
-      <nav aria-label="Site pages">
-        <h2 class="font-display text-sm font-bold tracking-widest text-navy-300 uppercase">
-          Explore
-        </h2>
-        <ul class="mt-4 space-y-2 text-sm">
-          {
-            NAV.map((item) => (
-              <li>
-                <a href={item.href} class="transition-colors hover:text-gold-300">
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+      {
+        NAV.length > 0 && (
+          <nav aria-label="Site pages">
+            <h2 class="font-display text-sm font-bold tracking-widest text-navy-300 uppercase">
+              Explore
+            </h2>
+            <ul class="mt-4 space-y-2 text-sm">
+              {NAV.map((item) => (
+                <li>
+                  <a href={item.href} class="transition-colors hover:text-(--accent-muted)">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
 
       <nav aria-label="Ventures and firm">
         <h2 class="font-display text-sm font-bold tracking-widest text-navy-300 uppercase">
@@ -76,7 +78,7 @@ const ventureLinks = [
                   href={v.href}
                   data-firm-link={v.firm || undefined}
                   rel="noopener"
-                  class="transition-colors hover:text-gold-300"
+                  class="transition-colors hover:text-(--accent-muted)"
                 >
                   {v.label}
                 </a>
@@ -91,7 +93,7 @@ const ventureLinks = [
           {
             SOCIALS.map((s) => (
               <li>
-                <a href={s.href} rel="noopener" class="transition-colors hover:text-gold-300">
+                <a href={s.href} rel="noopener" class="transition-colors hover:text-(--accent-muted)">
                   {s.label}
                 </a>
               </li>
@@ -130,7 +132,7 @@ const ventureLinks = [
               />
               <button
                 type="submit"
-                class="rounded-full bg-gold-400 px-5 py-2.5 text-sm font-bold text-navy-950 transition-colors hover:bg-gold-300"
+                class="rounded-full bg-(--accent) px-5 py-2.5 text-sm font-bold text-(--accent-ink) transition-colors hover:bg-(--accent-strong)"
               >
                 Join
               </button>
@@ -150,7 +152,7 @@ const ventureLinks = [
       <p>© {year} {SITE.person} · {SITE.name}. All rights reserved.</p>
       <p>
         Legal representation is provided through
-        <a href={FIRM_URL} data-firm-link class="text-gold-300 underline-offset-2 hover:underline">
+        <a href={FIRM_URL} data-firm-link class="text-(--accent-muted) underline-offset-2 hover:underline">
           The Awad Law Firm</a
         >.
       </p>

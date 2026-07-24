@@ -10,18 +10,11 @@ export default defineConfig({
   output: 'static',
   adapter: vercel(),
   // Self-hosted at build time via Astro's fonts API — no runtime Google
-  // requests. Both faces are swappable placeholders until the client signs
-  // off on final brand typography.
+  // requests. Headings use a system Helvetica Neue stack (matching the XNRGY
+  // reference) defined directly in global.css — no webfont needed — so only
+  // the Inter body face is downloaded here. Inter is a swappable placeholder
+  // until the client signs off on final brand typography.
   fonts: [
-    {
-      provider: fontProviders.google(),
-      name: 'Archivo',
-      cssVariable: '--font-archivo',
-      weights: ['500 900'],
-      styles: ['normal'],
-      subsets: ['latin'],
-      fallbacks: ['Arial', 'sans-serif'],
-    },
     {
       provider: fontProviders.google(),
       name: 'Inter',
@@ -32,14 +25,15 @@ export default defineConfig({
       fallbacks: ['Arial', 'sans-serif'],
     },
     {
-      // Elegant serif for the classic law-firm variant (Homepage 3).
+      // Technical monospace for nav links, CTA labels, and small meta text
+      // (the "subtext" kickers) — matches the reference's Space Mono.
       provider: fontProviders.google(),
-      name: 'Cormorant Garamond',
-      cssVariable: '--font-cormorant',
-      weights: ['400 600'],
+      name: 'Space Mono',
+      cssVariable: '--font-space-mono',
+      weights: ['400', '700'],
       styles: ['normal'],
       subsets: ['latin'],
-      fallbacks: ['Georgia', 'serif'],
+      fallbacks: ['monospace'],
     },
   ],
   vite: {

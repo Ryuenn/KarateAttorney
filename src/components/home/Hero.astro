@@ -10,8 +10,7 @@
  *     public/media/hero-mobile.mp4  lighter mobile rendition
  *     public/media/hero-poster.jpg  poster frame (the LCP image)
  */
-import { FIRM_URL, SITE } from '../../lib/site';
-import Button from '../ui/Button.astro';
+import { SITE } from '../../lib/site';
 ---
 
 <!-- Full viewport: the fixed transparent header overlays this section, so
@@ -34,50 +33,39 @@ import Button from '../ui/Button.astro';
 
   <!-- Full-viewport span like the navbar — the wordmark scales with vw and
        must never be caged by the centered wrap, or it wraps on wide screens. -->
-  <div class="relative flex flex-1 flex-col px-(--spacing-gutter) pt-20 pb-6 sm:pt-24 sm:pb-8">
+  <div class="relative flex flex-1 flex-col px-(--spacing-gutter) pt-20 pb-14 sm:pt-24 sm:pb-20">
     <!-- xnrgyclub-style oversized staggered wordmark over the video.
          mt-auto pins the kicker + headline cluster to the bottom of the
          hero, clear of the navbar, with open video above. -->
     <p
       data-hero-line
-      class="mt-auto text-[0.6875rem] font-bold tracking-[0.25em] text-gold-300 uppercase sm:text-sm"
+      class="mt-auto text-[0.6875rem] font-bold tracking-[0.25em] text-(--accent-muted) uppercase sm:text-sm"
     >
       {SITE.person} — Trial lawyer · Martial artist · TEDx speaker
     </p>
 
     <h1
-      class="mt-3 flex flex-col gap-3 font-display font-black tracking-tight uppercase sm:gap-5"
+      class="mt-3 flex flex-col gap-5 font-display font-normal tracking-[-0.04em] uppercase sm:gap-8"
     >
       <span
         data-hero-line
-        class="block text-[clamp(3rem,12.5vw,12rem)] leading-[0.85] whitespace-nowrap"
+        class="block text-[clamp(3.25rem,13.5vw,13rem)] leading-[1.02] whitespace-nowrap"
       >
         The Karate
       </span>
       <span
         data-hero-line
-        class="block self-end text-right text-[clamp(3rem,12.5vw,12rem)] leading-[0.85] whitespace-nowrap"
+        class="block self-end text-right text-[clamp(3.25rem,13.5vw,13rem)] leading-[1.02] whitespace-nowrap"
       >
-        Attorney<span class="text-gold-400">.</span>
+        {/* Extra gap only between the two T's — an inline spacer, since
+            letter-spacing can't target a single pair. */}
+        At<span aria-hidden="true" class="inline-block w-[0.12em]"></span>torney<span
+          class="text-(--accent-strong)">.</span>
       </span>
     </h1>
-
-    <div class="mt-6 flex flex-col gap-4 sm:mt-8 sm:flex-row sm:items-end sm:justify-between">
-      <div data-hero-line class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        {/* TODO: relink to the speaker funnel once pages return */}
-        <Button href="#" variant="light" size="lg">
-          Book Ibrahim to Speak
-        </Button>
-        <Button href={FIRM_URL} variant="gold" size="lg" data-firm-link>
-          Injured? Hire Ibrahim →
-          <span class="sr-only">at The Awad Law Firm</span>
-        </Button>
-      </div>
-      <p data-hero-line class="text-xs text-navy-200 sm:max-w-xs sm:text-right">
-        Legal cases are handled at The Awad Law Firm ·
-        <span lang="es">¿Lesionado? Visite The Awad Law Firm</span>
-      </p>
-    </div>
+    {/* Hero CTAs and the legal-attribution note removed — the primary
+        actions live in the header nav (Book to Speak / Need Legal Help?),
+        and the firm attribution remains in the footer. */}
   </div>
 </section>
 

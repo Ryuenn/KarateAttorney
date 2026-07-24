@@ -1,9 +1,45 @@
 @import 'tailwindcss';
 
 /* ------------------------------------------------------------------ */
-/* Design tokens — navy + gold brand core (§4 of the spec).           */
-/* Gold-on-navy pairs below are chosen to clear WCAG AA:              */
-/*   gold-400 on navy-950 ≈ 8.6:1 · paper on navy-900 ≈ 15:1          */
+/* Neue Helvetica LT Pro — licensed display face (files in            */
+/* public/helvetica-neue-lt-pro/). Three cuts map onto the weight     */
+/* scale so Tailwind's font-* utilities pick the right one:           */
+/*   Light 45  → 300 · Roman 55 → 400 · Heavy 85 → 700 (and 800/900,  */
+/*   so font-bold/extrabold/black all resolve to Heavy — the poster   */
+/*   look of the reference). `swap` paints Helvetica fallback first,  */
+/*   so the OTF never blocks text. */
+/* ------------------------------------------------------------------ */
+@font-face {
+  font-family: 'Neue Helvetica LT Pro';
+  src: url('/helvetica-neue-lt-pro/HelveticaNeueLTW0545Light.otf')
+    format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Helvetica LT Pro';
+  src: url('/helvetica-neue-lt-pro/HelveticaNeueLTW0555Roman.otf')
+    format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Helvetica LT Pro';
+  src: url('/helvetica-neue-lt-pro/HelveticaNeueLTW0585Heavy.otf')
+    format('opentype');
+  /* One face covers the whole bold end of the scale (700–900). */
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ------------------------------------------------------------------ */
+/* Design tokens — navy + deep-indigo brand core (§4 of the spec).    */
+/* The site accent is deep indigo (see --accent below); the gold ramp */
+/* is retained as neutral tokens but is no longer wired to any accent.*/
+/*   paper on navy-900 ≈ 15:1 (WCAG AA text on the dark chrome)       */
 /* ------------------------------------------------------------------ */
 @theme {
   /* Palette */
@@ -30,26 +66,37 @@
   --color-gold-800: #5f4a0b;
   --color-gold-900: #3d2f07;
 
-  /* Azure — accent used only on the Homepage 2 variant (colorway swap). */
-  --color-azure-50: #eef5fd;
-  --color-azure-100: #d7e8fb;
-  --color-azure-200: #aecff6;
-  --color-azure-300: #7fb2ef;
-  --color-azure-400: #4f90e4;
-  --color-azure-500: #2f74d4;
-  --color-azure-600: #205bb0;
-  --color-azure-700: #19478a;
-  --color-azure-800: #143766;
-  --color-azure-900: #0f2748;
+  /* Royal — deep indigo accent that drives the whole site colorway.
+     royal-500 (#192b88) is the CTA fill; the lighter steps carry text/icons
+     on the dark navy chrome and stay legible there (royal-300 ≈ 7:1 and
+     royal-400 ≈ 4.9:1 on navy-950). Named "royal" for continuity — every
+     --accent / royal-* usage picks up this indigo automatically. */
+  --color-royal-50: #eef1fb;
+  --color-royal-100: #dbe1f6;
+  --color-royal-200: #b6c2ee;
+  --color-royal-300: #8b9ce2;
+  --color-royal-400: #5f74d2;
+  --color-royal-500: #192b88;
+  --color-royal-600: #152474;
+  --color-royal-700: #111d5f;
+  --color-royal-800: #0d164a;
+  --color-royal-900: #091032;
 
   --color-ink: #0b0f17;
   --color-paper: #faf8f4;
 
-  /* Typography — Astro's <Font> component injects --font-archivo /
-     --font-inter with self-hosted files + tuned fallbacks. */
-  --font-display: var(--font-archivo, 'Archivo'), 'Arial', sans-serif;
+  /* Typography.
+     Display/headings use the licensed Neue Helvetica LT Pro (self-hosted
+     @font-face above), matching the XNRGY reference. System Helvetica Neue /
+     Helvetica / Arial follow as fallbacks — shown during `swap` before the
+     OTF loads, and on any browser that can't fetch it.
+     Body uses self-hosted Inter (injected by Astro's <Font>). */
+  --font-display:
+    'Neue Helvetica LT Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-body: var(--font-inter, 'Inter'), 'Arial', sans-serif;
-  --font-serif: var(--font-cormorant, 'Cormorant Garamond'), 'Georgia', serif;
+  /* Technical monospace for nav links, CTA labels, and small meta/kicker
+     text (the "subtext"), matching the reference's Space Mono. */
+  --font-mono: var(--font-space-mono, 'Space Mono'), monospace;
 
   /* Fluid display scale (clamp between mobile and desktop) */
   --text-display-2xl: clamp(2.75rem, 1.5rem + 6.5vw, 7rem);
@@ -104,17 +151,14 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 
-    /* Per-page accent (defaults to gold). A page can swap the whole site
-       chrome to another colorway by adding `theme-azure` to <body>. */
-    --accent: var(--color-gold-400);
-    --accent-strong: var(--color-gold-300);
-    --accent-muted: var(--color-gold-300);
-    --accent-ink: var(--color-navy-950);
-  }
-  body.theme-azure {
-    --accent: var(--color-azure-500);
-    --accent-strong: var(--color-azure-400);
-    --accent-muted: var(--color-azure-300);
+    /* Site accent — vivid royal blue (xnrgy-style cobalt-on-near-black).
+       --accent      the CTA / solid-fill blue
+       --accent-strong  a brighter step for stats and emphasis on dark
+       --accent-muted   text/hover blue that stays legible on the navy chrome
+       --accent-ink     the readable ink to place ON the accent fill */
+    --accent: var(--color-royal-500);
+    --accent-strong: var(--color-royal-400);
+    --accent-muted: var(--color-royal-300);
     --accent-ink: var(--color-paper);
   }
 
@@ -127,19 +171,19 @@
   }
 
   ::selection {
-    background-color: var(--color-gold-400);
-    color: var(--color-navy-950);
+    background-color: var(--color-royal-500);
+    color: var(--color-paper);
   }
 
   /* Visible, consistent focus for keyboard users (WCAG AA) */
   :focus-visible {
-    outline: 3px solid var(--color-gold-500);
+    outline: 3px solid var(--color-royal-500);
     outline-offset: 3px;
     border-radius: 2px;
   }
   .on-dark :focus-visible,
   [data-theme='dark'] :focus-visible {
-    outline-color: var(--color-gold-300);
+    outline-color: var(--color-royal-300);
   }
 }
 
@@ -150,10 +194,15 @@
 /* Fixed header: transparent over the hero, solid once scrolled (class
    toggled by Header.astro's script; <noscript> forces solid). */
 .site-header {
-  transition: background-color 0.3s var(--ease-smooth);
+  transition:
+    background-color 0.3s var(--ease-smooth),
+    border-color 0.3s var(--ease-smooth);
+  border-bottom: 1px solid transparent;
 }
 .site-header.is-solid {
-  background-color: color-mix(in srgb, var(--color-navy-950) 95%, transparent);
+  /* Near-black solid bar (xnrgy reference) once scrolled off the hero. */
+  background-color: color-mix(in srgb, var(--color-navy-950) 92%, #000 8%);
+  border-bottom-color: color-mix(in srgb, var(--color-navy-100) 10%, transparent);
   backdrop-filter: blur(10px);
 }
 
@@ -335,13 +384,8 @@ html.ka-preload .preloader {
   place-items: center;
   padding-inline: 1rem;
   opacity: 0;
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: clamp(0.875rem, 2vw, 1.25rem);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  text-align: center;
-  color: var(--color-paper);
+  /* Animated on both axes in the exit (fade + rise), so hint the compositor. */
+  will-change: transform, opacity;
 }
 
 /* ------------------------------------------------------------------ */

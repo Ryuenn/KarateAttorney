@@ -28,7 +28,7 @@ const ruleColor = dark ? 'bg-white/25' : 'bg-ink/20';
 <header class:list={['flex flex-col', className]}>
   <p class="flex items-center gap-4" data-reveal>
     <span class:list={['h-px w-12 sm:w-16', ruleColor]} aria-hidden="true"></span>
-    <span class:list={['text-xs tracking-[0.18em] lowercase sm:text-sm', kickerColor]}>
+    <span class:list={['font-mono text-xs tracking-[0.14em] lowercase sm:text-sm', kickerColor]}>
       {kicker}
     </span>
   </p>
@@ -36,7 +36,7 @@ const ruleColor = dark ? 'bg-white/25' : 'bg-ink/20';
   <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
     <h2
       class:list={[
-        'font-display text-[clamp(2rem,6.2vw,4.5rem)] leading-[0.95] font-extrabold tracking-tight uppercase',
+        'font-display text-[clamp(2rem,6.2vw,4.5rem)] leading-[0.95] font-light tracking-[-0.04em] uppercase',
         titleColor,
       ]}
       data-reveal
@@ -46,7 +46,7 @@ const ruleColor = dark ? 'bg-white/25' : 'bg-ink/20';
     {
       meta && (
         <p
-          class:list={['shrink-0 text-xs sm:pb-2 sm:text-right', metaColor]}
+          class:list={['shrink-0 font-mono text-xs sm:pb-2 sm:text-right', metaColor]}
           data-reveal
         >
           {meta}

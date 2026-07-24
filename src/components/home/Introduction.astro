@@ -1,0 +1,99 @@
+---
+/**
+ * Homepage 1 — Introduction section (xnrgy "A Place Defined By Movement"
+ * reference). Light/paper band: a small mono kicker, an oversized black
+ * display headline, two mono body paragraphs and a CTA pair on the left;
+ * a large portrait on the right.
+ *
+ * Introduces Ibrahim Awad — the person behind The Karate Attorney.
+ */
+import { FIRM_URL } from '../../lib/site';
+
+const ctaBase =
+  'inline-flex items-center justify-center rounded-none px-8 py-4 font-mono text-sm font-normal uppercase tracking-[0.1em] whitespace-nowrap transition-colors';
+---
+
+<section class="section-pad bg-paper pb-40 text-ink lg:pb-56">
+  {/* Wider than the standard `wrap` — content sits close to the edges with
+      only a slim side margin, matching the reference's low side inset. */}
+  <div class="mx-auto w-full max-w-[110rem] px-4 sm:px-6 lg:px-8">
+    <!-- Small mono kicker -->
+    <p
+      class="font-mono text-sm font-bold tracking-[0.2em] text-ink/70 uppercase"
+      data-reveal
+    >
+      Introduction
+    </p>
+
+    <!-- Oversized black display headline -->
+    <h2
+      class="mt-4 max-w-[14ch] font-display text-[clamp(3rem,8vw,7rem)] leading-[0.95] font-normal tracking-[-0.02em] uppercase"
+      data-reveal
+    >
+      One Discipline, Three Arenas
+    </h2>
+
+    <!-- Two-column body: mono copy + CTAs (left), framed portrait (right).
+         items-stretch equalises column heights; the left column centres its
+         content vertically so subtext + buttons sit in the middle of the box. -->
+    <div class="mt-6 grid gap-12 lg:mt-8 lg:grid-cols-2 lg:items-stretch lg:gap-16">
+      <div class="order-2 flex flex-col lg:order-1 lg:justify-center">
+        <div class="max-w-lg space-y-6 font-mono text-lg font-normal leading-relaxed text-ink">
+          <p data-reveal>
+            Ibrahim Awad is a trial lawyer, a martial artist, and a speaker —
+            and to him they were never separate lives. The same discipline
+            that holds under pressure on the mat is the one he carries into a
+            courtroom, and onto a stage in front of an audience.
+          </p>
+          <p data-reveal>
+            Karate taught him that composure is a skill you drill until it
+            holds when everything is on the line. That is what he brings to a
+            case: prepared, deliberate, and calm when the stakes are highest —
+            and what he speaks about when he steps in front of a room.
+          </p>
+        </div>
+
+        <div class="mt-10 flex flex-wrap gap-3" data-reveal>
+          {/* TODO: relink to the speaker funnel once pages return */}
+          <a
+            href="#"
+            class:list={[
+              ctaBase,
+              'bg-(--accent) text-(--accent-ink) hover:bg-(--accent-strong)',
+            ]}
+          >
+            Book Ibrahim to Speak
+          </a>
+          <a
+            href={FIRM_URL}
+            data-firm-link
+            class:list={[
+              ctaBase,
+              'border border-ink/30 text-ink hover:bg-ink hover:text-paper',
+            ]}
+          >
+            Need Legal Help?
+          </a>
+        </div>
+      </div>
+
+      {/* Framed portrait: the cutout stands inside a thin-bordered frame on
+          the paper background (no fill), so only the outline defines the
+          block. flex end-aligns the person to the frame floor; the frame
+          fills the column height (items-stretch). */}
+      <div class="order-1 lg:order-2" data-reveal>
+        <div
+          class="flex h-full min-h-[26rem] items-end justify-center overflow-hidden border border-ink/20"
+        >
+          <img
+            src="/person.png"
+            alt="Ibrahim Awad — The Karate Attorney"
+            class="h-full max-h-[36rem] w-auto object-contain object-bottom"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

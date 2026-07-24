@@ -115,7 +115,7 @@ const legendClass = 'font-display text-display-md';
               class={inputClass}
             />
             <label class="mt-2.5 flex items-center gap-2 text-sm font-medium">
-              <input type="checkbox" name="dateFlexible" id="dateFlexible" class="h-4 w-4 accent-gold-500" />
+              <input type="checkbox" name="dateFlexible" id="dateFlexible" class="h-4 w-4 accent-(--accent)" />
               We&rsquo;re flexible on dates
             </label>
           </div>
@@ -131,7 +131,7 @@ const legendClass = 'font-display text-display-md';
                       value={f.value}
                       required
                       checked={i === 0}
-                      class="h-4 w-4 accent-gold-500"
+                      class="h-4 w-4 accent-(--accent)"
                     />
                     {f.label}
                   </label>

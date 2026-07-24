@@ -4,7 +4,8 @@
  *
  * Variants:
  *  - primary  navy solid — default action on light surfaces
- *  - gold     the distinct "Need a Lawyer?" treatment (spec §3)
+ *  - gold     the distinct accent-fill "Need a Lawyer?" treatment (spec §3);
+ *             follows the site --accent colorway (royal blue), not literal gold
  *  - light    paper solid — primary action on navy surfaces
  *  - outline  current-color outline, works on light or dark
  */
@@ -29,8 +30,8 @@ const base =
 
 const variants = {
   primary: 'bg-navy-900 text-paper hover:bg-navy-700',
-  gold: 'bg-gold-400 text-navy-950 hover:bg-gold-300',
-  light: 'bg-paper text-navy-950 hover:bg-gold-100',
+  gold: 'bg-(--accent) text-(--accent-ink) hover:bg-(--accent-strong)',
+  light: 'bg-paper text-navy-950 hover:bg-navy-100',
   outline:
     'border-2 border-current text-current hover:bg-current/10',
 };

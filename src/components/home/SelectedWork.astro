@@ -77,14 +77,14 @@ const feature = {
                  the image's full width (same left/right edges). -->
             <div class="mt-6 flex flex-col gap-5 rounded-lg bg-navy-900 p-6 sm:flex-row sm:items-start sm:justify-between sm:p-8">
               <div class="max-w-md">
-                <h3 class="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+                <h3 class="font-display text-2xl font-normal tracking-tight sm:text-3xl">
                   {item.title}
                 </h3>
                 <p class="mt-3 text-sm leading-relaxed text-navy-200">
                   {item.body}
                 </p>
               </div>
-              <dl class="shrink-0 space-y-1.5 text-xs text-(--accent-strong)">
+              <dl class="shrink-0 space-y-1.5 font-mono text-xs text-(--accent-strong)">
                 {item.stats.map(([k, v]) => (
                   <div class="flex gap-2">
                     <dt class="text-navy-300">{k}</dt>
@@ -116,13 +116,13 @@ const feature = {
         class="block aspect-[3/2] h-full w-full rounded-xl object-cover lg:aspect-auto"
       />
       <div class="flex flex-col justify-center rounded-lg bg-navy-900 p-6 sm:p-10">
-        <h3 class="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h3 class="font-display text-3xl font-normal tracking-tight sm:text-4xl">
           {feature.title}
         </h3>
         <p class="mt-4 max-w-lg text-sm leading-relaxed text-navy-200">
           {feature.body}
         </p>
-        <dl class="mt-8 flex gap-10 text-xs text-(--accent-strong)">
+        <dl class="mt-8 flex gap-10 font-mono text-xs text-(--accent-strong)">
           {
             feature.stats.map(([k, v]) => (
               <div>

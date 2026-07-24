@@ -23,8 +23,9 @@ if (!prefersReducedMotion) {
   gsap.ticker.lagSmoothing(0);
 
   // First-visit preloader reveal (overlay exists only when the inline head
-  // script in BaseLayout added .ka-preload): wordmark fades in/out, then
-  // the navy panels slide up staggered, uncovering the page.
+  // script in BaseLayout added .ka-preload): the logo fades in and holds
+  // while the navy panels slide up staggered, then the logo rises and fades
+  // out over the revealed page.
   const root = document.documentElement;
   const preloader = document.getElementById('preloader');
   const preloading = root.classList.contains('ka-preload') && !!preloader;
@@ -70,6 +71,7 @@ if (!prefersReducedMotion) {
         },
       })
       .to('.preloader-logo', { opacity: 1, duration: 0.45, ease: 'power2.out' })
+      .addLabel('exit', '+=0.25')
       .to(
         preloader.querySelectorAll('.preloader-panel'),
         {
@@ -78,12 +80,15 @@ if (!prefersReducedMotion) {
           ease: 'power4.inOut',
           stagger: { each: 0.12, from: 'random' },
         },
-        '+=0.25',
+        'exit',
       )
+      // Exit: the logo rises and fades out IN LOCKSTEP with the panels —
+      // same start ('exit' label), same duration and ease — so it clears
+      // together with the cards instead of lagging behind.
       .to(
         '.preloader-logo',
-        { opacity: 0, duration: 0.35, ease: 'power2.in' },
-        '-=0.6',
+        { opacity: 0, y: -80, duration: 0.9, ease: 'power4.inOut' },
+        'exit',
       );
     // Hero lines rise while the columns are mid-reveal.
     heroDelay = 1.2;

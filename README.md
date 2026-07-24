@@ -20,16 +20,18 @@ Full spec: [karate-attorney-build-prompt.md](karate-attorney-build-prompt.md).
 - **Astro 7** + TypeScript, static-first: pages prerender; the form endpoints
   (`/api/*`) and redirects run on-demand via **@astrojs/node** (standalone)
 - **Tailwind CSS v4** — all design tokens in [src/styles/global.css](src/styles/global.css)
-  (`@theme` block: navy/gold palette, fluid type scale, motion/rhythm tokens)
+  (`@theme` block: navy/royal-blue palette, fluid type scale, motion/rhythm tokens)
 - **Lenis** + **GSAP ScrollTrigger** — [src/scripts/motion.ts](src/scripts/motion.ts);
   fully skipped under `prefers-reduced-motion`, content never depends on JS
 - **Content Collections** (Markdown) — the Content Hub, see “Authoring” below
 - **Resend** (email) + **Cloudflare Turnstile** (spam) + CRM webhook on the
   speaker form; all optional in dev with logged fallbacks
 
-Fonts (Archivo display / Inter body — placeholder pairing) are downloaded at
-build time and self-hosted via Astro's fonts API; swap them in
-[astro.config.mjs](astro.config.mjs) + the two `--font-*` tokens.
+Fonts: headings use a system **Helvetica Neue** stack (`--font-display` in
+[global.css](src/styles/global.css), matching the XNRGY reference — no webfont,
+falls back to Helvetica/Arial); the **Inter** body face is downloaded at build
+time and self-hosted via Astro's fonts API. Swap either in
+[astro.config.mjs](astro.config.mjs) + the `--font-*` tokens.
 
 ## Commands
 
@@ -146,5 +148,6 @@ Everything marked `[PLACEHOLDER: …]` in the codebase, principally:
   Academy, Team Karate Attorney URLs; newsletter provider
 - **Config**: speaker notification inbox, verified Resend sending domain,
   Turnstile keys, CRM webhook URL, analytics provider + ID
-- **Brand**: final typography pair (current Archivo/Inter is a placeholder),
-  confirmation of the navy/gold hex values in `global.css`
+- **Brand**: final typography pair (headings use a Helvetica Neue system
+  stack, body Inter — both swappable placeholders),
+  confirmation of the navy/royal-blue hex values in `global.css`
