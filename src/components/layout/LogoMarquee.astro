@@ -1,0 +1,56 @@
+---
+/**
+ * Partner / affiliation logo strip (xnrgy reference).
+ *
+ * A bordered box holding the logos in a continuous scroll. Reuses the
+ * .marquee / .marquee-track CSS from the text marquee, so it inherits the
+ * same behaviour: seamless -50% wrap, no pause on hover, pointer-events
+ * off, and a halt only under prefers-reduced-motion.
+ *
+ * Sources are /logo1.png … /logoN.png in public/.
+ *
+ * Images carry empty alt text because the partners are not named anywhere
+ * yet — a screen reader announcing "logo1" would be worse than silence.
+ * Give each a real alt (the organisation's name) once the list is known.
+ */
+interface Props {
+  /** How many /logoN.png files to pull in. */
+  count?: number;
+  /** Seconds for one full loop — higher is slower. */
+  duration?: number;
+}
+
+const { count = 6, duration = 45 } = Astro.props;
+
+const logos = Array.from({ length: count }, (_, i) => `/logo${i + 1}.png`);
+// Doubled so the track can translate a clean -50% and wrap seamlessly.
+const items = [...logos, ...logos];
+---
+
+<section class="relative bg-paper">
+  <div
+    class="relative mx-auto w-full max-w-[72rem] px-(--spacing-gutter) pb-24 sm:px-[calc(var(--spacing-gutter)+2rem)] lg:pb-32"
+  >
+    <div class="border border-ink/20">
+      <div
+        class="marquee py-10 lg:py-12"
+        style={`--marquee-duration:${duration}s`}
+        aria-hidden="true"
+      >
+        <div class="marquee-track items-center">
+          {
+            items.map((src) => (
+              <img
+                src={src}
+                alt=""
+                class="mx-10 h-8 w-auto shrink-0 object-contain sm:mx-14 sm:h-10"
+                loading="lazy"
+                decoding="async"
+              />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

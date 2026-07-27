@@ -6,9 +6,19 @@
 import type { APIRoute } from 'astro';
 import { SITE } from '../lib/site';
 
-// Homepage-variant phase: only the live homepage is listed (variants 2/3
-// are noindex drafts). Restore the full route list with the page set.
-const STATIC_ROUTES = ['/'];
+// The nav's eight areas, minus /contact (not built yet). These currently
+// carry a page hero only — add the remaining routes (/giving, /lawyer
+// redirects) as those pages land.
+const STATIC_ROUTES = [
+  '/',
+  '/about',
+  '/speaking',
+  '/attorney',
+  '/martial-artist',
+  '/faith',
+  '/ventures',
+  '/content',
+];
 
 export const GET: APIRoute = async () => {
   const urls = STATIC_ROUTES.map((path) => ({

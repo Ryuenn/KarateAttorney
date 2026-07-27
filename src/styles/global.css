@@ -54,6 +54,11 @@
   --color-navy-800: #0f1d38;
   --color-navy-900: #0a1428;
   --color-navy-950: #060d1a;
+  /* One step deeper than 950 — the page fill behind dark sections that
+     carry --color-panel cards. navy-950 sits too close to the panel colour
+     for a card to read against it; this opens the gap without touching the
+     panel value itself. */
+  --color-navy-1000: #03060d;
 
   --color-gold-50: #fcf8ec;
   --color-gold-100: #f8f0d9;
@@ -84,6 +89,12 @@
 
   --color-ink: #0b0f17;
   --color-paper: #faf8f4;
+
+  /* Panel surface — the shared fill for "cards" that sit on top of the page:
+     the preloader's sliding columns and the offset dark panels in the split
+     sections. Slightly lifted off navy-950 so a panel reads as a layer above
+     the page rather than a continuation of it. */
+  --color-panel: #0f1320;
 
   /* Typography.
      Display/headings use the licensed Neue Helvetica LT Pro (self-hosted
@@ -448,9 +459,10 @@ html.ka-arenas .ka-arenas-card {
   }
 }
 
-/* First-visit preloader (xnrgy-style panel reveal). Hidden unless the
-   inline head script adds .ka-preload — so it can never appear without
-   JS, on repeat visits in a session, or under prefers-reduced-motion.
+/* Page preloader (xnrgy-style panel reveal), shown on every page load —
+   including navigation between pages, so the reveal covers the swap.
+   Hidden unless the inline head script adds .ka-preload — so it can never
+   appear without JS or under prefers-reduced-motion.
    The reveal animation itself lives in src/scripts/motion.ts. */
 .preloader {
   display: none;
@@ -466,11 +478,8 @@ html.ka-preload .preloader {
 }
 .preloader-panel {
   position: absolute;
-  background-color: var(--color-navy-950);
+  background-color: var(--color-panel);
   will-change: transform;
-}
-.preloader-panel:nth-child(even) {
-  background-color: var(--color-navy-900);
 }
 .preloader-logo {
   position: absolute;
@@ -481,6 +490,40 @@ html.ka-preload .preloader {
   opacity: 0;
   /* Animated on both axes in the exit (fade + rise), so hint the compositor. */
   will-change: transform, opacity;
+}
+
+/* Infinite marquee band (xnrgy reference). The track holds the phrase
+   twice; translating it -50% lands the second copy exactly where the first
+   started, so the loop is seamless.
+
+   It never stops. There is deliberately NO :hover pause rule, and
+   pointer-events are off so a cursor (or a drag-select) cannot interact
+   with it at all — the band keeps moving regardless. Only
+   prefers-reduced-motion halts it, which is a hard accessibility
+   requirement, not a hover interaction. */
+.marquee {
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll var(--marquee-duration, 32s) linear infinite;
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
 }
 
 /* ------------------------------------------------------------------ */

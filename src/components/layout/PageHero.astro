@@ -1,0 +1,234 @@
+---
+/**
+ * Shared inner-page hero (xnrgy location-page reference).
+ *
+ * Layout mirrors the reference exactly:
+ *   - oversized display wordmark split across two lines — the first flush
+ *     left near the top, the second pushed right and sitting ON the top edge
+ *     of the photo, so the type overlaps the image;
+ *   - a mono lede + sharp-cornered CTA row pinned bottom-left;
+ *   - a photo filling the bottom-right quadrant (right half, lower 46% — the
+ *     cut sits just past mid-height, as in the reference);
+ *   - faint vertical column guides at 25/50/75%, echoing the 4-panel
+ *     preloader reveal and the homepage hero.
+ *
+ * The photo is a PLACEHOLDER until real per-page photography is supplied —
+ * pass `image` (a path under public/) to drop the real one in; everything
+ * else stays put.
+ *
+ * Mobile: the photo leaves the bottom-right quadrant and stacks below the
+ * text as a normal block, so type never sits over a busy image on a narrow
+ * screen.
+ */
+import { FIRM_LINK_ATTR } from '../../lib/site';
+
+interface Action {
+  label: string;
+  href: string;
+  /** Solid accent fill (one per hero); others render outlined. */
+  primary?: boolean;
+  /** Marks an outbound link to the firm site for the analytics layer. */
+  firm?: boolean;
+}
+
+interface Props {
+  /** Small mono eyebrow — names the page in the nav's own words. */
+  kicker: string;
+  /** First wordmark line (flush left). */
+  word1: string;
+  /** Second wordmark line (pushed right, overlaps the photo). */
+  word2: string;
+  /** Mono body paragraph under the wordmark. */
+  lede: string;
+  /** Path under public/ for the hero photo. Omit for the placeholder. */
+  image?: string;
+  imageAlt?: string;
+  /**
+   * CSS object-position for the photo — its focal point.
+   *
+   * The frame's aspect ratio changes with the viewport (it lands near 16:9
+   * on wide screens but noticeably squarer on a laptop), so object-cover
+   * crops a different amount at each size. Default centring throws away
+   * whichever side the subject is on. Set this to the subject's horizontal
+   * position so they survive every crop — e.g. "65% center" for a portrait
+   * standing right of centre.
+   */
+  imagePosition?: string;
+  actions?: Action[];
+}
+
+const {
+  kicker,
+  word1,
+  word2,
+  lede,
+  image,
+  imageAlt = '',
+  imagePosition = 'center',
+  actions = [],
+} = Astro.props;
+
+// Reference CTA treatment: sharp corners, mono uppercase, wide tracking —
+// same shape as the header pair so the two rows read as one system.
+const ctaBase =
+  'inline-flex items-center justify-center rounded-none px-5 py-3 font-mono text-[0.6875rem] font-normal uppercase tracking-[0.1em] whitespace-nowrap transition-colors sm:px-6 sm:text-xs';
+
+// Both wordmark lines share one scale so they read as a single mark. Capped
+// well below the homepage hero — inner-page words run longer (COURTROOM,
+// COMMUNITY) and must never wrap.
+const wordClass =
+  'block text-[clamp(2.5rem,11.5vw,10.5rem)] leading-[0.98] whitespace-nowrap';
+
+/**
+ * Optical left alignment for the first wordmark line.
+ *
+ * Every glyph carries a left side bearing — blank space baked into the
+ * character. At the kicker's 11px it is invisible; at the wordmark's ~170px
+ * it reads as a clear indent against the kicker and lede, which sit flush to
+ * the gutter. Pulling the line back by its own bearing gives all three a hard
+ * left edge.
+ *
+ * The amount is per-glyph, not global: a stem letter (M, F) carries roughly
+ * six times the bearing of T, whose crossbar runs nearly the full width. Ems,
+ * so the correction tracks the clamped font size. Values are for Neue
+ * Helvetica LT Pro; anything unlisted falls back to the common stem bearing.
+ */
+const OPTICAL_LSB: Record<string, number> = {
+  T: 0.012,
+  A: 0.008,
+  J: 0.03,
+  O: 0.045,
+  C: 0.045,
+  G: 0.045,
+  S: 0.05,
+  V: 0.02,
+  W: 0.02,
+  Y: 0.02,
+};
+const firstLetter = word1.trim().charAt(0).toUpperCase();
+const lsb = OPTICAL_LSB[firstLetter] ?? 0.075;
+---
+
+{/* overflow-x-clip (not overflow-hidden) so the oversized wordmark still
+    can't cause sideways scroll, while the photo below is free to hang past
+    the section's bottom edge. z-10 lifts the whole hero above the band that
+    follows, so that overhang paints ON TOP of it rather than under. */}
+<section
+  class="on-dark relative isolate z-10 flex min-h-svh flex-col overflow-x-clip bg-navy-1000 text-paper"
+>
+  {/* Column guide lines — full-height verticals at 25/50/75%. Behind the
+      wordmark, above the section fill. */}
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <span class="absolute inset-y-0 left-1/4 w-px bg-white/12"></span>
+    <span class="absolute inset-y-0 left-1/2 w-px bg-white/12"></span>
+    <span class="absolute inset-y-0 left-3/4 w-px bg-white/12"></span>
+  </div>
+
+  <div
+    class="relative flex flex-1 flex-col px-(--spacing-gutter) pt-28 pb-14 sm:px-[calc(var(--spacing-gutter)+2rem)] sm:pt-36 sm:pb-20"
+  >
+    <p
+      data-hero-line
+      class="font-mono text-[0.6875rem] font-normal tracking-[0.25em] text-(--accent-muted) uppercase sm:text-xs"
+    >
+      {kicker}
+    </p>
+
+    <h1
+      class="mt-6 flex flex-col font-display font-normal tracking-[-0.04em] uppercase sm:mt-8"
+    >
+      {/* Negative margin cancels the glyph's own left bearing — see
+          OPTICAL_LSB above — so the wordmark lines up with the kicker. */}
+      <span data-hero-line class={wordClass} style={`margin-left:-${lsb}em`}>
+        {word1}
+      </span>
+      {/* Pushed right and down so its baseline lands on the photo's top
+          edge — the reference's type-over-image seam. */}
+      <span
+        data-hero-line
+        class:list={[
+          wordClass,
+          // mr pulls it in off the right edge.
+          //
+          // mt has to step per breakpoint: the type scales with viewport
+          // WIDTH while the photo's cut is pinned to 54% of HEIGHT, so on a
+          // narrower window the smaller glyphs stop short of the cut and the
+          // overlap disappears. Smaller screens therefore need a bigger push
+          // down. 2xl keeps the tight offset that reads right on wide
+          // displays; xl covers the ~1440 MacBook case.
+          'mt-[7vh] self-end text-right lg:mt-[8vh] lg:mr-[3vw] xl:mt-[6vh] 2xl:mt-[2vh]',
+        ]}
+      >
+        {word2}
+      </span>
+    </h1>
+
+    {/* Lede + CTAs pinned bottom-left, clear of the photo's half. */}
+    <div class="mt-auto max-w-[30rem] pt-14 lg:pt-20">
+      <p
+        data-hero-line
+        class="font-mono text-base leading-relaxed font-normal text-navy-100 sm:text-lg"
+      >
+        {lede}
+      </p>
+
+      {
+        actions.length > 0 && (
+          <div data-hero-line class="mt-8 flex flex-wrap gap-3">
+            {actions.map((action) => (
+              <a
+                href={action.href}
+                class:list={[
+                  ctaBase,
+                  action.primary
+                    ? 'bg-(--accent) text-(--accent-ink) hover:bg-(--accent-strong)'
+                    : 'border border-paper/60 text-paper hover:border-paper hover:bg-paper hover:text-navy-950',
+                ]}
+                {...(action.firm ? FIRM_LINK_ATTR : {})}
+              >
+                {action.label}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  {/* Photo — bottom-right quadrant on lg+, stacked below the text on
+      narrow screens. -z-10 keeps it under the second wordmark line.
+
+      The negative bottom + matching extra height hang it 7rem past the
+      hero into the band below (the reference's overlap seam) while leaving
+      the top edge — the "cut" the wordmark sits on — exactly where it is. */}
+  <div
+    class="relative -z-10 mt-10 aspect-[4/3] w-full lg:absolute lg:right-0 lg:-bottom-28 lg:mt-0 lg:aspect-auto lg:h-[calc(46%+7rem)] lg:w-1/2"
+  >
+    {
+      image ? (
+        <img
+          src={image}
+          alt={imageAlt}
+          class="h-full w-full object-cover"
+          style={`object-position:${imagePosition}`}
+          loading="eager"
+          decoding="async"
+        />
+      ) : (
+        /* Stand-in until real per-page photography is supplied. Dark,
+           sharp-cornered and dashed so it reads as an intentional empty
+           slot rather than a broken image. */
+        <div
+          class="grid h-full w-full place-items-center border border-dashed border-paper/30 bg-panel"
+          aria-hidden="true"
+        >
+          <p
+            class="px-6 text-center font-mono text-[0.6875rem] tracking-[0.2em] text-paper/40 uppercase"
+          >
+            [Placeholder image]
+          </p>
+        </div>
+      )
+    }
+  </div>
+</section>

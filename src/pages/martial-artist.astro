@@ -1,0 +1,86 @@
+---
+import PageBand from '../components/layout/PageBand.astro';
+import LogoMarquee from '../components/layout/LogoMarquee.astro';
+import PageCards from '../components/layout/PageCards.astro';
+import PageClosing from '../components/layout/PageClosing.astro';
+import PageFaq from '../components/layout/PageFaq.astro';
+import PageFeature from '../components/layout/PageFeature.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Martial Artist"
+  description="Ibrahim Awad's martial-arts journey — the training story, Team Karate Attorney, and the ring-to-courtroom philosophy: keep your hands up."
+  heroOverlap
+>
+  <PageHero
+    kicker="Martial Artist"
+    word1="The"
+    word2="Mat"
+    lede="Where the discipline was forged. More than 250 tournaments before he ever earned a law degree — years of drilling composure until it holds when everything is on the line."
+  />
+
+  <PageBand
+    heading={'Keep your\nhands up'}
+    body="Every fighter learns the same lesson the hard way: you do not get hit by the punch you saw coming. Keeping your hands up is not fear, it is respect for what the other side is capable of — and it is the closest thing Ibrahim has to a philosophy. It is why files get worked before they are urgent, why the opposition gets studied, and why nothing gets assumed. Team Karate Attorney trains the same way: fundamentals first, ego last."
+    marquee="Team Karate Attorney"
+  />
+
+  <PageCards
+    cards={[
+      {
+        title: 'The Training',
+        body: 'The bag, the gloves, and the unglamorous repetition behind the belt. What years on the mat actually teach that no seminar can shortcut.',
+        href: '#',
+      },
+      {
+        title: 'Team Karate Attorney',
+        body: 'The team built around the same standard Ibrahim was held to: fundamentals before flash, effort before excuses, and respect for whoever is across from you.',
+        href: '#',
+      },
+      {
+        title: 'Ring to Courtroom',
+        body: 'Why composure under pressure transfers. The habits drilled for a fight turn out to be the same ones that win a case — preparation, patience, and no wasted motion.',
+        href: '#',
+      },
+    ]}
+  />
+
+  <PageFeature
+    heading={'The training\nnever stops'}
+    body="It just changes rooms. The same standard that built the black belt runs Team Karate Attorney today — fundamentals before flash, effort before excuses, and respect for whoever is across from you. If you want that message in front of your athletes, your school, or your team, Ibrahim will come and deliver it."
+    ctaLabel="Book Ibrahim to Speak"
+    ctaHref="/speaking"
+  />
+
+  <PageFaq
+    items={[
+      {
+        q: 'How long has Ibrahim competed?',
+        a: 'He competed in more than 250 martial arts tournaments before earning his law degree — which is where "The Karate Attorney" actually comes from.',
+      },
+      {
+        q: 'Can I train with Team Karate Attorney?',
+        a: 'The team takes on athletes who are willing to be held to a standard. Reach out with your background and what you are looking for.',
+      },
+      {
+        q: 'Does Ibrahim still compete?',
+        a: 'The focus now is on training, coaching, and the team. The reps have not stopped — the reason for doing them has changed.',
+      },
+      {
+        q: 'Will he speak to our team or school?',
+        a: 'Yes. Talks for young athletes on discipline, preparation, and composure under pressure are some of the ones he most enjoys giving.',
+      },
+    ]}
+  />
+
+  <LogoMarquee />
+
+  <PageClosing
+    marquee="Keep your hands up"
+    prompt="Bring the message to your team, your school, or your athletes."
+    primary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
+    secondary={{ label: 'Meet the Team', href: '/ventures' }}
+  />
+</BaseLayout>

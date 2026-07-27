@@ -1,0 +1,100 @@
+---
+/**
+ * FAQ block (xnrgy reference).
+ *
+ * Display headline, a one-line prompt, a solid accent CTA, then a rule-
+ * separated accordion. Sits in the same narrow centred column as
+ * PageFeature so the two read on one axis.
+ *
+ * Built on native <details>/<summary>: it opens and closes with no
+ * JavaScript at all, is keyboard operable for free, and is announced
+ * correctly by screen readers. The +/− swap is pure CSS via the open state.
+ */
+interface FaqItem {
+  q: string;
+  a: string;
+}
+
+interface Props {
+  items: FaqItem[];
+  /** Headline. "\n" forces a line break; still wraps naturally. */
+  heading?: string;
+  prompt?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  items,
+  heading = 'Frequently asked\nquestions, answered',
+  prompt = "Don't see your question here? Get in touch.",
+  ctaLabel = 'Contact Ibrahim',
+  ctaHref = '#',
+} = Astro.props;
+---
+
+<section class="relative bg-paper text-ink">
+  {/* Column guides continue from the sections above. */}
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <span class="absolute inset-y-0 left-1/4 w-px bg-ink/10"></span>
+    <span class="absolute inset-y-0 left-1/2 w-px bg-ink/10"></span>
+    <span class="absolute inset-y-0 left-3/4 w-px bg-ink/10"></span>
+  </div>
+
+  <div
+    class="relative mx-auto w-full max-w-[38rem] px-(--spacing-gutter) py-24 sm:px-0 lg:py-32"
+  >
+    <h2
+      class="font-display text-[clamp(1.875rem,3.4vw,3rem)] leading-[1.05] font-normal tracking-[-0.02em] whitespace-pre-line uppercase"
+      data-reveal
+    >
+      {heading}
+    </h2>
+
+    <p class="mt-8 font-mono text-sm font-normal text-ink" data-reveal>
+      {prompt}
+    </p>
+
+    <div data-reveal>
+      <a
+        href={ctaHref}
+        class="mt-6 inline-flex items-center gap-2 rounded-none bg-(--accent) px-5 py-3 font-mono text-[0.6875rem] font-normal tracking-[0.1em] text-(--accent-ink) uppercase transition-colors hover:bg-(--accent-strong) sm:text-xs"
+      >
+        <svg
+          class="h-4 w-4 shrink-0"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 3h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4V5a2 2 0 0 1 2-2Z"
+          ></path>
+        </svg>
+        {ctaLabel}
+      </a>
+    </div>
+
+    <div class="mt-14 border-t border-ink/20" data-reveal>
+      {
+        items.map((item) => (
+          <details class="group border-b border-ink/20">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 font-mono text-sm font-normal [&::-webkit-details-marker]:hidden">
+              <span>{item.q}</span>
+              {/* +/− swap driven by the open state — no script. */}
+              <span
+                class="shrink-0 text-lg leading-none select-none"
+                aria-hidden="true"
+              >
+                <span class="group-open:hidden">+</span>
+                <span class="hidden group-open:inline">−</span>
+              </span>
+            </summary>
+            <p class="pb-5 font-mono text-sm leading-relaxed font-normal text-ink/75">
+              {item.a}
+            </p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

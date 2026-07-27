@@ -1,0 +1,90 @@
+---
+import PageBand from '../components/layout/PageBand.astro';
+import LogoMarquee from '../components/layout/LogoMarquee.astro';
+import PageCards from '../components/layout/PageCards.astro';
+import PageClosing from '../components/layout/PageClosing.astro';
+import PageFaq from '../components/layout/PageFaq.astro';
+import PageFeature from '../components/layout/PageFeature.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { FIRM_URL } from '../lib/site';
+---
+
+<BaseLayout
+  title="My Story"
+  description="Ibrahim J. Awad — from 250+ martial arts tournaments and Dalton State College to Georgia State law, the DA's office, and founding The Awad Law Firm."
+  heroOverlap
+>
+  <PageHero
+    kicker="My Story"
+    word1="My"
+    word2="Story"
+    lede="More than 250 martial arts tournaments before the law degree. More than 100 felonies prosecuted after it. Today he tries injury cases across Georgia, and the standard has not moved once. This is the story behind the title."
+    image="/ibrahim-6.png"
+    imageAlt="Ibrahim J. Awad, arms folded, in a panelled office"
+    imagePosition="65% center"
+  />
+
+  <PageBand
+    heading={'Where the discipline\nbegan'}
+    body="Long before there was a courtroom, there was a mat. Ibrahim competed in over 250 tournaments before he ever sat for a law exam, and the habit those years built — show up when it is inconvenient, finish what you started — is the one that carried him through Dalton State College, where he graduated summa cum laude, and on to Georgia State University College of Law. He began his career as an assistant district attorney and prosecuted more than 100 felony cases. Then he built The Awad Law Firm from nothing. The setting changed. The standard never did."
+    marquee="This is my story"
+  />
+
+  <PageCards
+    cards={[
+      {
+        title: 'Dalton',
+        body: 'Where it started. A hometown in north Georgia, a summa cum laude degree from Dalton State College, and a scholarship he later endowed there for the students coming up behind him.',
+        href: '#',
+      },
+      {
+        title: 'The Prosecutor',
+        body: 'Before representing the injured, he prosecuted more than 100 felony cases as an assistant district attorney — learning exactly how the other side builds, and breaks, a case.',
+        href: '#',
+      },
+      {
+        title: 'The Firm',
+        body: 'The Awad Law Firm, built from nothing and now more than $60 million recovered for clients across Georgia. Injury, medical malpractice, wrongful death, and rideshare claims.',
+        href: '#',
+      },
+    ]}
+  />
+
+  <PageFeature
+    heading={'One discipline,\nthree arenas'}
+    body="The courtroom, the mat, and the stage were never three separate careers. They are one practice worn three ways, and the habits are identical: prepare past the point of comfort, stay composed when it counts, and finish what you started. If that is the kind of person you want in your corner — or in front of your audience — start here."
+    ctaLabel="Book Ibrahim to Speak"
+    ctaHref="/speaking"
+  />
+
+  <PageFaq
+    items={[
+      {
+        q: 'Is Ibrahim taking new cases?',
+        a: 'Injury cases are handled through The Awad Law Firm, and consultations there are free. This site is the personal side — the speaking, the martial arts, and the community work.',
+      },
+      {
+        q: 'What does "The Karate Attorney" actually mean?',
+        a: 'It is not a gimmick. The discipline that earned the black belt is the same one that runs the practice: prepare past the point of comfort, stay composed under pressure, and do not take the easy way out.',
+      },
+      {
+        q: 'Where is Ibrahim based?',
+        a: 'Georgia. He is originally from Dalton, practices across the state, and travels well beyond it for speaking engagements. Reach out with your location and dates.',
+      },
+      {
+        q: 'Can Ibrahim speak at our event?',
+        a: 'Yes — masjids, Islamic schools, MSAs, nonprofits, conferences, and corporate teams. Budget should never be the reason an organization does not ask.',
+      },
+    ]}
+  />
+
+  <LogoMarquee />
+
+  <PageClosing
+    marquee="Ready to work with Ibrahim?"
+    prompt="Book him for your event, or get help with an injury case."
+    primary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
+    secondary={{ label: 'Need Legal Help?', href: FIRM_URL, firm: true }}
+  />
+</BaseLayout>

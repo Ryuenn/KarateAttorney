@@ -1,0 +1,89 @@
+---
+import PageBand from '../components/layout/PageBand.astro';
+import LogoMarquee from '../components/layout/LogoMarquee.astro';
+import PageCards from '../components/layout/PageCards.astro';
+import PageClosing from '../components/layout/PageClosing.astro';
+import PageFaq from '../components/layout/PageFaq.astro';
+import PageFeature from '../components/layout/PageFeature.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Speaking"
+  description="Book Ibrahim Awad to speak — TEDx speaker and khateeb on discipline, resilience, and beautiful patience. For masjids, Islamic schools, MSAs, conferences, and companies."
+  heroOverlap
+>
+  <PageHero
+    kicker="Speaking"
+    word1="The"
+    word2="Stage"
+    lede="Where the lessons are shared. TEDx speaker and khateeb — talks on discipline, resilience, and beautiful patience, for masjids, Islamic schools, MSAs, conferences, and companies."
+    actions={[{ label: 'Book Ibrahim to Speak', href: '#', primary: true }]}
+  />
+
+  <PageBand
+    heading={'A message an audience\ncarries out'}
+    body="A talk is not a performance — it is preparation made audible. In his TEDxOcala talk, On Beautiful Patience, Ibrahim takes the discipline of the mat and the pressure of the courtroom and turns them into something a room can actually use on Monday morning. He speaks to masjids, Islamic schools, MSAs, conferences, and companies, and he adapts the talk to the room rather than the other way around. Budget should never stop an organization from asking."
+    marquee="Book Ibrahim to speak"
+  />
+
+  <PageCards
+    cards={[
+      {
+        title: 'The Topics',
+        body: 'Discipline, resilience, and beautiful patience. Faith and perseverance. Ring-to-courtroom lessons on preparation, and know-your-rights talks for a general audience.',
+        href: '#',
+      },
+      {
+        title: 'The Audiences',
+        body: 'Masjids and Islamic schools, MSAs and university groups, nonprofits and conferences, corporate teams, and legal associations. The talk adapts to the room.',
+        href: '#',
+      },
+      {
+        title: 'The TEDx Talk',
+        body: 'On Beautiful Patience, delivered at TEDxOcala — the throughline of the mat and the courtroom, spoken aloud in under fifteen minutes.',
+        href: '#',
+        linkLabel: 'Watch the talk',
+      },
+    ]}
+  />
+
+  <PageFeature
+    heading={'Bring Ibrahim\nto your audience'}
+    body="Tell us the organization, the date, the audience, and roughly how long you want him on stage. That is genuinely all it takes to start — the rest gets worked out together. Honorarium is optional to specify, and budget should never be the reason an organization does not ask."
+    ctaLabel="Request Ibrahim"
+    ctaHref="#"
+  />
+
+  <PageFaq
+    ctaLabel="Request Ibrahim"
+    items={[
+      {
+        q: 'What does it cost to book Ibrahim?',
+        a: 'It depends on the event, the travel, and the organization. The honorarium field on the request form is optional — say what you can, and budget should never be the reason you do not ask.',
+      },
+      {
+        q: 'How far in advance should we book?',
+        a: 'Earlier is better, especially around Ramadan and the school year. That said, send the request even if the date is close — it is worth asking.',
+      },
+      {
+        q: 'Will Ibrahim travel to us?',
+        a: 'Yes. He is based in Georgia and travels nationwide for engagements — Awad Academy already takes him across the country. Include your location in the request and travel gets worked out alongside everything else.',
+      },
+      {
+        q: 'Can the talk be tailored to our audience?',
+        a: 'That is the default. A khutbah, a youth night, an MSA event, and a corporate session are four different rooms, and the same talk does not belong in all of them.',
+      },
+    ]}
+  />
+
+  <LogoMarquee />
+
+  <PageClosing
+    marquee="Ready to book your speaker?"
+    prompt="Send the date and the audience — the rest gets worked out together."
+    primary={{ label: 'Request Ibrahim', href: '#' }}
+    secondary={{ label: 'Watch the TEDx Talk', href: '#' }}
+  />
+</BaseLayout>

@@ -1,0 +1,95 @@
+---
+import PageBand from '../components/layout/PageBand.astro';
+import LogoMarquee from '../components/layout/LogoMarquee.astro';
+import PageCards from '../components/layout/PageCards.astro';
+import PageClosing from '../components/layout/PageClosing.astro';
+import PageFaq from '../components/layout/PageFaq.astro';
+import PageFeature from '../components/layout/PageFeature.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { FIRM_URL } from '../lib/site';
+---
+
+<BaseLayout
+  title="The Attorney"
+  description="Ibrahim Awad, trial lawyer — the values behind the practice. Injury cases are handled through The Awad Law Firm."
+  heroOverlap
+>
+  <PageHero
+    kicker="The Attorney"
+    word1="The"
+    word2="Courtroom"
+    lede="Where preparation meets pressure. More than $60 million recovered for clients across Georgia, by a lawyer who spent the first half of his career on the other side of the aisle — and knows exactly how the state builds a case."
+    actions={[
+      { label: 'Need Legal Help?', href: FIRM_URL, primary: true, firm: true },
+    ]}
+  />
+
+  <PageBand
+    heading={'What a client is\nreally hiring'}
+    body="An insurance company runs the numbers on opposing counsel long before it runs them on your injury. It knows which lawyers file, posture, and settle — and it prices accordingly. Ibrahim built his practice to be the other kind of file on that desk: prepared early, documented thoroughly, and genuinely willing to try the case. He prosecuted more than 100 felonies as an assistant district attorney before he ever represented an injured client, which means trial is not a threat he makes — it is a room he has already lived in. More than $60 million recovered since says the approach holds."
+    marquee="The Awad Law Firm"
+  />
+
+  <PageCards
+    cards={[
+      {
+        title: 'Practice Areas',
+        body: 'Personal injury, medical malpractice, wrongful death, and rideshare accident claims — all handled through The Awad Law Firm, where intake and case detail live. Consultations cost nothing.',
+        href: FIRM_URL,
+        linkLabel: 'Go to the firm',
+        firm: true,
+      },
+      {
+        title: 'How a Case Moves',
+        body: 'What actually happens between the crash and the resolution — investigation, treatment, demand, negotiation, and the point where filing suit becomes the right call.',
+        href: '#',
+      },
+      {
+        title: 'Know Your Rights',
+        body: 'What to do at the scene, what never to say to an adjuster, and the deadlines that quietly decide cases before anyone reaches a courtroom.',
+        href: '#',
+      },
+    ]}
+  />
+
+  <PageFeature
+    heading={'Injured? Start\nwith a conversation'}
+    body="Case intake, practice areas, and the details of how the firm works all live at The Awad Law Firm. Consultations cost nothing, there is no fee unless the case is won, and the deadlines that matter start running from the day of the injury — not the day you decide to call."
+    ctaLabel="Go to The Awad Law Firm"
+    ctaHref={FIRM_URL}
+    firm
+  />
+
+  <PageFaq
+    ctaLabel="Go to the firm"
+    ctaHref={FIRM_URL}
+    items={[
+      {
+        q: 'What does a consultation cost?',
+        a: 'Nothing. Injury consultations through The Awad Law Firm are free, and the firm works on a contingency basis — no fee unless the case is won.',
+      },
+      {
+        q: 'How long do I have to file?',
+        a: 'Less time than most people assume, and the clock starts at the injury rather than the day you decide to act. Ask early — the answer depends on the type of claim.',
+      },
+      {
+        q: 'Should I talk to the insurance adjuster?',
+        a: 'Not before you have spoken to a lawyer. A recorded statement given in good faith on day two is routinely used to reduce what you are owed months later.',
+      },
+      {
+        q: 'Will my case actually go to trial?',
+        a: 'Most resolve before that. But cases settle well precisely because the other side believes you are prepared to try them — that willingness is the leverage.',
+      },
+    ]}
+  />
+
+  <LogoMarquee />
+
+  <PageClosing
+    marquee="Injured? Talk to Ibrahim"
+    prompt="Consultations are free, and there is no fee unless the case is won."
+    primary={{ label: 'Go to The Awad Law Firm', href: FIRM_URL, firm: true }}
+    secondary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
+  />
+</BaseLayout>

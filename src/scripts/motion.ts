@@ -22,7 +22,7 @@ if (!prefersReducedMotion) {
   gsap.ticker.add((time) => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
 
-  // First-visit preloader reveal (overlay exists only when the inline head
+  // Page preloader reveal (overlay exists only when the inline head
   // script in BaseLayout added .ka-preload): the logo fades in and holds
   // while the navy panels slide up staggered, then the logo rises and fades
   // out over the revealed page.

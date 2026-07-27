@@ -1,0 +1,90 @@
+---
+import PageBand from '../components/layout/PageBand.astro';
+import LogoMarquee from '../components/layout/LogoMarquee.astro';
+import PageCards from '../components/layout/PageCards.astro';
+import PageClosing from '../components/layout/PageClosing.astro';
+import PageFaq from '../components/layout/PageFaq.astro';
+import PageFeature from '../components/layout/PageFeature.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { FIRM_URL } from '../lib/site';
+---
+
+<BaseLayout
+  title="Content Hub"
+  description="Videos, reels, and articles from Ibrahim Awad — legal education, motivation, and faith."
+  heroOverlap
+>
+  <PageHero
+    kicker="Content Hub"
+    word1="The"
+    word2="Content"
+    lede="Videos, reels, and articles — legal education, motivation, and faith. The lessons from the mat, the courtroom, and the stage, gathered in one place."
+  />
+
+  <PageBand
+    heading={'Know what\nyou are owed'}
+    body="Most people meet the legal system on the worst day of their year, with no idea what their rights actually are. That is the gap this fills. Short videos on what to do after a crash and what never to say to an adjuster, longer pieces on how a case actually moves, and the motivational and faith-based talks that sit alongside them. Free, plainly worded, and filterable — because the information is only useful if you can find the piece you need."
+    marquee="Know your rights"
+  />
+
+  <PageCards
+    cards={[
+      {
+        title: 'Legal Education',
+        body: 'What to do after a crash, what never to say to an adjuster, and how a case actually moves. Plainly worded, free, and written for people having a bad month.',
+        href: '#',
+        linkLabel: 'Browse legal',
+      },
+      {
+        title: 'Motivational',
+        body: 'Short reels and longer talks on discipline, preparation, and staying composed when the pressure is highest — from the mat and the courtroom both.',
+        href: '#',
+        linkLabel: 'Browse motivational',
+      },
+      {
+        title: 'Faith',
+        body: 'Khutbahs and reflections on patience, accountability, and perseverance — the material that underpins everything else on this site.',
+        href: '#',
+        linkLabel: 'Browse faith',
+      },
+    ]}
+  />
+
+  <PageFeature
+    heading={'Watched something\nuseful? Share it'}
+    body="Everything here is free and meant to be passed on — to the friend who just got rear-ended, the cousin who does not know what an adjuster is, or the group that needs a reminder this week. If you would rather hear it in person, Ibrahim speaks to organizations of every size."
+    ctaLabel="Book Ibrahim to Speak"
+    ctaHref="/speaking"
+  />
+
+  <PageFaq
+    items={[
+      {
+        q: 'Is any of this legal advice?',
+        a: 'No. It is general education, not advice about your situation, and reading it does not create an attorney-client relationship. For your own case, speak to a lawyer.',
+      },
+      {
+        q: 'Can I share or repost these?',
+        a: 'Please do. It is all free and meant to be passed on — that is the entire reason it exists.',
+      },
+      {
+        q: 'How often is new content posted?',
+        a: 'Regularly, across video and writing. Following along on social is the fastest way to catch new pieces as they go up.',
+      },
+      {
+        q: 'Can Ibrahim cover a specific topic?',
+        a: 'Suggestions are welcome, especially the questions people are too embarrassed to ask out loud. Those usually make the most useful pieces.',
+      },
+    ]}
+  />
+
+  <LogoMarquee />
+
+  <PageClosing
+    marquee="Want this in person?"
+    prompt="Everything here is free — and Ibrahim will come say it to your room."
+    primary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
+    secondary={{ label: 'Need Legal Help?', href: FIRM_URL, firm: true }}
+  />
+</BaseLayout>

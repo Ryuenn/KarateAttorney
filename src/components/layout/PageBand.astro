@@ -1,0 +1,61 @@
+---
+/**
+ * Statement band that follows the page hero (xnrgy reference).
+ *
+ * Light band carrying an oversized black headline and a mono paragraph,
+ * both offset to start on the 25% column guide, then a full-width marquee
+ * closing the section.
+ *
+ * Overlap seam: the hero's photo hangs down past the hero's bottom edge and
+ * over the top of this band. That is driven from PageHero (the photo keeps
+ * its own overhang + z-index); all this band does is carry enough top
+ * padding that the headline clears the overhanging photo.
+ */
+import Marquee from './Marquee.astro';
+
+interface Props {
+  /** Headline. A "\n" forces a line break — each page sets its own, since
+   * the right break point differs per phrase and no single max-width gets
+   * all of them landing well. Still wraps naturally on narrow screens. */
+  heading: string;
+  body: string;
+  /** Phrase for the closing marquee. Rendered uppercase. */
+  marquee: string;
+}
+
+const { heading, body, marquee } = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-paper text-ink">
+  {/* Column guides continue from the hero, inked for the light band. */}
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <span class="absolute inset-y-0 left-1/4 w-px bg-ink/10"></span>
+    <span class="absolute inset-y-0 left-1/2 w-px bg-ink/10"></span>
+    <span class="absolute inset-y-0 left-3/4 w-px bg-ink/10"></span>
+  </div>
+
+  {/* pt clears the hero photo hanging into this band (see PageHero). */}
+  <div class="relative grid grid-cols-1 pt-28 pb-32 lg:grid-cols-4 lg:pt-72 lg:pb-48">
+    <div
+      class="px-(--spacing-gutter) sm:px-[calc(var(--spacing-gutter)+2rem)] lg:col-span-3 lg:col-start-2 lg:px-0 lg:pr-[10%]"
+    >
+      <h2
+        class="max-w-[27ch] font-display text-[clamp(2rem,5.6vw,4.75rem)] leading-[1] font-normal tracking-[-0.02em] whitespace-pre-line uppercase"
+        data-reveal
+      >
+        {heading}
+      </h2>
+
+      <p
+        class="mt-10 max-w-[76ch] font-mono text-sm leading-relaxed font-normal text-ink sm:text-base lg:mt-14"
+        data-reveal
+      >
+        {body}
+      </p>
+    </div>
+  </div>
+
+  <div class="pb-10 lg:pb-16">
+    <Marquee text={marquee} />
+  </div>
+</section>

@@ -1,0 +1,89 @@
+---
+import PageBand from '../components/layout/PageBand.astro';
+import LogoMarquee from '../components/layout/LogoMarquee.astro';
+import PageCards from '../components/layout/PageCards.astro';
+import PageClosing from '../components/layout/PageClosing.astro';
+import PageFaq from '../components/layout/PageFaq.astro';
+import PageFeature from '../components/layout/PageFeature.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Ventures"
+  description="Palistory, Awad Academy, and Team Karate Attorney — the ventures Ibrahim Awad builds outside the courtroom."
+  heroOverlap
+>
+  <PageHero
+    kicker="Ventures"
+    word1="The"
+    word2="Ventures"
+    lede="Palistory, Awad Academy, and Team Karate Attorney — the projects built outside the courtroom, each carrying the same discipline into a different room."
+  />
+
+  <PageBand
+    heading={'Built outside\nthe courtroom'}
+    body="A practice is not the only thing worth building. Palistory preserves a history that is constantly at risk of being told by everyone except the people who lived it. Awad Academy passes on what took years to learn, so the next person does not have to start from zero. Team Karate Attorney puts young athletes in front of a standard and asks them to meet it. Different rooms, same instinct: do the work properly, or do not put your name on it."
+    marquee="Palistory · Awad Academy"
+  />
+
+  <PageCards
+    cards={[
+      {
+        title: 'Palistory',
+        body: 'Preserving Palestinian history and the everyday stories behind it — kept by the people who lived it rather than summarised by everyone else.',
+        href: '#',
+        linkLabel: 'Visit Palistory',
+      },
+      {
+        title: 'Awad Academy',
+        body: 'Training attorneys nationwide in how to actually build and try a case — the practical craft that law school does not cover and most firms learn the expensive way.',
+        href: '#',
+        linkLabel: 'Visit the academy',
+      },
+      {
+        title: 'Team Karate Attorney',
+        body: 'Young athletes put in front of a standard and asked to meet it. Fundamentals first, ego last, and no shortcuts offered.',
+        href: '#',
+        linkLabel: 'Meet the team',
+      },
+    ]}
+  />
+
+  <PageFeature
+    heading={'Same instinct,\ndifferent rooms'}
+    body="Preserving a history, teaching what took years to learn, and holding young athletes to a standard are not detours from the day job — they run on exactly the same fuel. If you are building something that needs that kind of attention, or want Ibrahim to speak about it, get in touch."
+    ctaLabel="Book Ibrahim to Speak"
+    ctaHref="/speaking"
+  />
+
+  <PageFaq
+    items={[
+      {
+        q: 'What is Palistory?',
+        a: 'A project preserving Palestinian history and the everyday stories inside it — kept by the people who lived it rather than summarised by everyone else.',
+      },
+      {
+        q: 'Who is Awad Academy for?',
+        a: 'Attorneys. Ibrahim trains lawyers nationwide through the Academy on case building and trial craft — the practical side of the work that law school leaves out.',
+      },
+      {
+        q: 'How do I join Team Karate Attorney?',
+        a: 'Reach out with your background. The team takes athletes willing to meet a standard — fundamentals first, ego last.',
+      },
+      {
+        q: 'Can Ibrahim speak about building these?',
+        a: 'Yes. Talks on building something alongside a demanding career are a regular request from student and professional groups alike.',
+      },
+    ]}
+  />
+
+  <LogoMarquee />
+
+  <PageClosing
+    marquee="Building something? Let's talk"
+    prompt="Partnerships, collaborations, or a talk about building it — start here."
+    primary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
+    secondary={{ label: 'My Story', href: '/about' }}
+  />
+</BaseLayout>

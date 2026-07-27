@@ -68,17 +68,14 @@ const {
     </noscript>
     <script is:inline>
       // Opening-animation gate. Runs before first paint so there is no
-      // content flash. Plays on every load of a homepage variant (the
-      // "opening the site" moment); other pages skip it, as does reduced
-      // motion. The 4s timeout force-clears the overlay if the motion
-      // module never starts, so a failed script can't trap the page.
+      // content flash. Plays on every page load — including navigation
+      // between pages, so the panel reveal covers the swap instead of the
+      // new page snapping in. Reduced motion skips it. The 4s timeout
+      // force-clears the overlay if the motion module never starts, so a
+      // failed script can't trap the page.
       (function () {
         try {
-          var path = location.pathname.replace(/\/$/, '') || '/';
-          if (
-            path !== '/' ||
-            matchMedia('(prefers-reduced-motion: reduce)').matches
-          ) {
+          if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
             return;
           }
           var root = document.documentElement;

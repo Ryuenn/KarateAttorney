@@ -32,19 +32,22 @@ export const SOCIALS = [
 /**
  * Homepage direction chosen (owner request, 2026-07-24): the variant
  * switcher is retired and the site runs on the single Homepage 1 design.
- * The full page set lives in git history and returns as real routes; until
- * then these are placeholder labels (href '#') so the navbar shows the
- * intended structure without navigating anywhere. Point each at its real
- * route as the pages are restored.
+ * Eight links, matching spec §3. Every route below now exists and carries
+ * its page hero; the sections beneath each hero are still to come. Contact
+ * remains a placeholder ('#') — that page is being handled separately.
+ *
+ * `/giving` (Giving Back) and the firm site are reachable from the footer
+ * and the header's "Need Legal Help?" CTA respectively, so neither takes a
+ * nav slot.
  */
 export const NAV: readonly { label: string; href: string }[] = [
-  { label: 'About', href: '#' },
-  { label: 'Speaking', href: '#' },
-  { label: 'Law Firm', href: '#' },
-  { label: 'Martial Arts', href: '#' },
-  { label: 'Ventures', href: '#' },
-  { label: 'Content', href: '#' },
-  { label: 'Media', href: '#' },
+  { label: 'My Story', href: '/about' },
+  { label: 'Speaking', href: '/speaking' },
+  { label: 'The Attorney', href: '/attorney' },
+  { label: 'Martial Artist', href: '/martial-artist' },
+  { label: 'Faith', href: '/faith' },
+  { label: 'Ventures', href: '/ventures' },
+  { label: 'Content', href: '/content' },
   { label: 'Contact', href: '#' },
 ];
 

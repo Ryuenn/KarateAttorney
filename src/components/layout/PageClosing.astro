@@ -1,0 +1,129 @@
+---
+/**
+ * Closing CTA band that sits directly above the shared footer (xnrgy
+ * reference).
+ *
+ * A portrait breaks out of the top edge and overlaps up into the light
+ * section above, an oversized marquee runs beneath it, then a centred
+ * prompt and a CTA pair.
+ *
+ * The overlap works by flow alone: the portrait carries a negative top
+ * margin, and because this dark section comes after the light one in the
+ * DOM it paints over it — no z-index or absolute positioning needed.
+ *
+ * Dark navy so it runs straight into the footer with no seam.
+ *
+ * The portrait is a PLACEHOLDER until real photography is supplied — pass
+ * `image` (a path under public/) to drop the real one in.
+ */
+import { FIRM_LINK_ATTR } from '../../lib/site';
+import Marquee from './Marquee.astro';
+
+interface Action {
+  label: string;
+  href: string;
+  firm?: boolean;
+}
+
+interface Props {
+  /** Phrase for the marquee. Rendered uppercase. */
+  marquee: string;
+  /** One-line prompt under the marquee. */
+  prompt: string;
+  /** Solid accent CTA. */
+  primary: Action;
+  /** Outlined CTA beside it. */
+  secondary?: Action;
+  image?: string;
+  imageAlt?: string;
+}
+
+const { marquee, prompt, primary, secondary, image, imageAlt = '' } =
+  Astro.props;
+
+const ctaBase =
+  'inline-flex items-center justify-center rounded-none px-5 py-3 font-mono text-[0.6875rem] font-normal uppercase tracking-[0.1em] whitespace-nowrap transition-colors sm:px-6 sm:text-xs';
+---
+
+<section class="on-dark relative bg-navy-950 text-paper">
+  {/* Column guides continue, back to the light-on-dark treatment. */}
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <span class="absolute inset-y-0 left-1/4 w-px bg-white/12"></span>
+    <span class="absolute inset-y-0 left-1/2 w-px bg-white/12"></span>
+    <span class="absolute inset-y-0 left-3/4 w-px bg-white/12"></span>
+  </div>
+
+  <div class="relative">
+    {/* Portrait — negative top margin lifts it out of this section and over
+        the light band above. */}
+    <div class="mx-auto -mt-12 aspect-[4/5] w-[13rem] sm:w-[17rem]">
+      {
+        image ? (
+          <img
+            src={image}
+            alt={imageAlt}
+            class="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div
+            class="grid h-full w-full place-items-center border border-dashed border-paper/40 bg-panel"
+            aria-hidden="true"
+          >
+            <p class="px-4 text-center font-mono text-[0.6875rem] tracking-[0.2em] text-paper/40 uppercase">
+              [Placeholder image]
+            </p>
+          </div>
+        )
+      }
+    </div>
+
+    <div class="mt-8 lg:mt-10">
+      <Marquee text={marquee} tone="light" />
+    </div>
+
+    <div
+      class="px-(--spacing-gutter) pt-12 pb-20 text-center lg:pt-16 lg:pb-28"
+    >
+      <p class="font-mono text-sm font-normal text-navy-100" data-reveal>
+        {prompt}
+      </p>
+
+      <div
+        class="mt-6 flex flex-wrap items-center justify-center gap-3"
+        data-reveal
+      >
+        <a
+          href={primary.href}
+          class:list={[
+            ctaBase,
+            'bg-(--accent) text-(--accent-ink) hover:bg-(--accent-strong)',
+          ]}
+          {...(primary.firm ? FIRM_LINK_ATTR : {})}
+        >
+          {primary.label}
+        </a>
+        {
+          secondary && (
+            <a
+              href={secondary.href}
+              class:list={[
+                ctaBase,
+                'border border-paper/60 text-paper hover:border-paper hover:bg-paper hover:text-navy-950',
+              ]}
+              {...(secondary.firm ? FIRM_LINK_ATTR : {})}
+            >
+              {secondary.label}
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    {/* Rule closing the band before the shared footer begins. */}
+    <div class="mx-auto w-[min(72rem,100%-2*var(--spacing-gutter))]">
+      <div class="border-t border-white/15"></div>
+    </div>
+  </div>
+</section>

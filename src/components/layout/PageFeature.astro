@@ -1,0 +1,104 @@
+---
+/**
+ * Closing feature block (xnrgy reference).
+ *
+ * A tinted band carrying a narrow, centred column: display headline, mono
+ * paragraph, a solid accent CTA, then a wide image below at the same column
+ * width. This is the page's conversion moment — it should push toward the
+ * speaker funnel or the firm, not just describe more.
+ *
+ * The tint (navy-50) separates it from the paper band above without leaving
+ * the site palette; the reference's sage is its own brand colour.
+ *
+ * The image is a PLACEHOLDER until real photography is supplied — pass
+ * `image` (a path under public/) to drop the real one in.
+ */
+import { FIRM_LINK_ATTR } from '../../lib/site';
+
+interface Props {
+  /** Headline. "\n" forces a line break; still wraps naturally. */
+  heading: string;
+  body: string;
+  ctaLabel: string;
+  ctaHref: string;
+  /** Marks an outbound link to the firm site for the analytics layer. */
+  firm?: boolean;
+  /** Path under public/. Omit for the placeholder. */
+  image?: string;
+  imageAlt?: string;
+}
+
+const {
+  heading,
+  body,
+  ctaLabel,
+  ctaHref,
+  firm = false,
+  image,
+  imageAlt = '',
+} = Astro.props;
+---
+
+<section class="relative bg-navy-50 text-ink">
+  {/* Column guides continue from the sections above. */}
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <span class="absolute inset-y-0 left-1/4 w-px bg-ink/10"></span>
+    <span class="absolute inset-y-0 left-1/2 w-px bg-ink/10"></span>
+    <span class="absolute inset-y-0 left-3/4 w-px bg-ink/10"></span>
+  </div>
+
+  {/* Narrow centred column — the reference runs roughly a third of the
+      viewport, far tighter than the bands above it. */}
+  <div
+    class="relative mx-auto w-full max-w-[38rem] px-(--spacing-gutter) py-24 sm:px-0 lg:py-32"
+  >
+    <h2
+      class="font-display text-[clamp(1.875rem,3.4vw,3rem)] leading-[1.05] font-normal tracking-[-0.02em] whitespace-pre-line uppercase"
+      data-reveal
+    >
+      {heading}
+    </h2>
+
+    <p
+      class="mt-8 font-mono text-sm leading-relaxed font-normal text-ink"
+      data-reveal
+    >
+      {body}
+    </p>
+
+    <div data-reveal>
+      <a
+        href={ctaHref}
+        class="mt-8 inline-flex items-center justify-center rounded-none bg-(--accent) px-5 py-3 font-mono text-[0.6875rem] font-normal tracking-[0.1em] text-(--accent-ink) uppercase transition-colors hover:bg-(--accent-strong) sm:text-xs"
+        {...(firm ? FIRM_LINK_ATTR : {})}
+      >
+        {ctaLabel}
+      </a>
+    </div>
+
+    <div class="mt-14 aspect-[3/2] w-full overflow-hidden" data-reveal>
+      {
+        image ? (
+          <img
+            src={image}
+            alt={imageAlt}
+            class="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div
+            class="grid h-full w-full place-items-center border border-dashed border-ink/30 bg-ink/[0.04]"
+            aria-hidden="true"
+          >
+            <p
+              class="px-4 text-center font-mono text-[0.6875rem] tracking-[0.2em] text-ink/40 uppercase"
+            >
+              [Placeholder image]
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

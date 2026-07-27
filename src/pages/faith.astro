@@ -1,0 +1,88 @@
+---
+import PageBand from '../components/layout/PageBand.astro';
+import LogoMarquee from '../components/layout/LogoMarquee.astro';
+import PageCards from '../components/layout/PageCards.astro';
+import PageClosing from '../components/layout/PageClosing.astro';
+import PageFaq from '../components/layout/PageFaq.astro';
+import PageFeature from '../components/layout/PageFeature.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Faith & Community"
+  description="Khutbahs, Team Fajr, and community leadership — the faith and community work behind The Karate Attorney."
+  heroOverlap
+>
+  <PageHero
+    kicker="Faith & Community"
+    word1="Faith &"
+    word2="Community"
+    lede="Khutbahs, Team Fajr, and the community work that anchors the rest. Faith is not a fourth arena — it is the ground the other three stand on."
+  />
+
+  <PageBand
+    heading={'The ground the\nrest stands on'}
+    body="Beautiful patience — sabr jameel — is patience without complaint, and it is the idea underneath everything else here. It is what makes a hard case survivable, a hard round finishable, and a hard year meaningful. Ibrahim gives khutbahs, shows up for Team Fajr, and stays involved in the community work that does not come with a stage or a verdict. That part is not a credential. It is the reason the rest holds together."
+    marquee="Beautiful patience"
+  />
+
+  <PageCards
+    cards={[
+      {
+        title: 'Know Your Rights',
+        body: 'Free constitutional rights workshops held at mosques across Georgia — practical instruction on what the law actually protects, delivered where the community already gathers.',
+        href: '#',
+      },
+      {
+        title: 'MIST Atlanta',
+        body: 'A proud sponsor of the Muslim Interscholastic Tournament in Atlanta, putting young Muslims in front of a standard and giving them the stage to meet it.',
+        href: '#',
+      },
+      {
+        title: 'City of Refuge',
+        body: 'Partnering with City of Refuge in Dalton to get holiday assistance to families who need it — work that comes with no verdict and no audience.',
+        href: '#',
+      },
+    ]}
+  />
+
+  <PageFeature
+    heading={'Invite Ibrahim\nto your masjid'}
+    body="Khutbahs, halaqas, youth nights, fundraisers, and MSA events. Ibrahim speaks regularly at masjids and Islamic schools, and he adapts the reminder to the room rather than delivering the same talk twice. Budget should never be the reason a community does not ask."
+    ctaLabel="Request Ibrahim"
+    ctaHref="/speaking"
+  />
+
+  <PageFaq
+    ctaLabel="Request Ibrahim"
+    ctaHref="/speaking"
+    items={[
+      {
+        q: 'Does Ibrahim give khutbahs?',
+        a: 'Regularly, at masjids across the community. Send the date and the masjid through the speaker request and it goes straight to the right place.',
+      },
+      {
+        q: 'What is Team Fajr?',
+        a: 'A small group holding each other to the hardest prayer of the day. It asks the most and promises the least, which is rather the point.',
+      },
+      {
+        q: 'Will he speak to our youth group or MSA?',
+        a: 'Yes, and these are among the most requested. The reminder gets pitched to the room — a youth night and a fundraiser are not the same audience.',
+      },
+      {
+        q: 'Is there a fee for masjid events?',
+        a: 'Ask regardless. Honorarium is optional to specify on the request form, and a community budget should never be what stops the invitation.',
+      },
+    ]}
+  />
+
+  <LogoMarquee />
+
+  <PageClosing
+    marquee="Invite Ibrahim to speak"
+    prompt="Khutbahs, halaqas, youth nights, and fundraisers — just ask."
+    primary={{ label: 'Request Ibrahim', href: '/speaking' }}
+    secondary={{ label: 'My Story', href: '/about' }}
+  />
+</BaseLayout>

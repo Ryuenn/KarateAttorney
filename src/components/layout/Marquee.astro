@@ -1,0 +1,65 @@
+---
+/**
+ * Oversized scrolling marquee band (xnrgy reference).
+ *
+ * The phrase is rendered twice so the track can translate a clean -50% and
+ * wrap seamlessly (see .marquee in global.css). Each copy repeats the
+ * phrase enough times to overflow the widest viewport, so there is never a
+ * visible gap mid-loop.
+ *
+ * It does not pause on hover — that is the point of the component. The band
+ * is pointer-events: none, so the cursor passes straight through it.
+ *
+ * Decorative by nature: the phrase repeats and duplicates, so it is hidden
+ * from assistive tech rather than read out a dozen times.
+ */
+interface Props {
+  /** Phrase to repeat. Rendered uppercase. */
+  text: string;
+  /** Seconds for one full loop — higher is slower. One loop travels the
+   * width of REPEATS copies of the phrase, so this scales with how much
+   * text is on screen, not with the viewport. */
+  duration?: number;
+  /** Dark text on a light band (default) or light text on a dark one. */
+  tone?: 'dark' | 'light';
+  class?: string;
+}
+
+const {
+  text,
+  duration = 68,
+  tone = 'dark',
+  class: className = '',
+} = Astro.props;
+
+// Repeats per half-track. Four copies of a short phrase comfortably exceed
+// an ultrawide viewport; the track is then doubled for the seamless wrap.
+const REPEATS = 4;
+const half = Array.from({ length: REPEATS }, () => text);
+const items = [...half, ...half];
+---
+
+<div
+  class:list={['marquee', className]}
+  style={`--marquee-duration:${duration}s`}
+  aria-hidden="true"
+>
+  <div class="marquee-track">
+    {
+      items.map((phrase) => (
+        <span
+          class:list={[
+            'flex shrink-0 items-center font-display text-[clamp(2.75rem,10vw,9rem)] leading-none font-normal tracking-[-0.03em] whitespace-nowrap uppercase',
+            tone === 'light' ? 'text-paper' : 'text-ink',
+          ]}
+        >
+          {phrase}
+          {/* Separator dot between repeats — sized down and spaced so the
+              phrase reads as a continuous ticker. Inherits the text colour;
+              no dimming, so it sits at the same weight as the words. */}
+          <span class="mx-[0.35em] text-[0.35em] leading-none">●</span>
+        </span>
+      ))
+    }
+  </div>
+</div>
