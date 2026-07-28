@@ -110,7 +110,11 @@ const socialIcon: Record<string, string> = {
           <a
             href={FIRM_URL}
             data-firm-link
-            class="group mt-12 flex max-w-xs items-center justify-between border-b border-white/20 pb-4 font-display text-lg tracking-tight text-paper transition-colors hover:border-(--accent-muted)"
+            {/* max-w-xs keeps this narrow in the stacked mobile layout, but
+                is released once the 3-column grid kicks in — otherwise the
+                rule stops ~60px short of the column edge while the bottom
+                bar runs flush right, reading as a lopsided right margin. */}
+            class="group mt-12 flex max-w-xs items-center justify-between border-b border-white/20 pb-4 font-display text-lg tracking-tight text-paper transition-colors hover:border-(--accent-muted) lg:max-w-none"
           >
             <span>Need Legal Help?</span>
             <svg
@@ -151,8 +155,13 @@ const socialIcon: Record<string, string> = {
       </div>
     </div>
 
-    {/* Bottom bar */}
-    <div class="mt-20 flex flex-col gap-2 border-t border-white/10 pt-8 font-mono text-xs text-navy-300 sm:flex-row sm:items-center sm:justify-between lg:mt-28">
+    {/* Bottom bar. data-footer-bar is the reference the homepage's floating
+        CTA measures against so it can lift clear of this line instead of
+        sitting on top of it (see FloatingCta.astro). */}
+    <div
+      data-footer-bar
+      class="mt-20 flex flex-col gap-2 border-t border-white/10 pt-8 font-mono text-xs text-navy-300 sm:flex-row sm:items-center sm:justify-between lg:mt-28"
+    >
       <p>© {year} {SITE.person} · {SITE.name}. All rights reserved.</p>
       <p>
         {/* Explicit space: Astro strips the newline between the text and

@@ -4,34 +4,47 @@
  * lower-left; hidden while the hero is in view, slides in once the visitor
  * scrolls past it into the content. The firm conversion ("Need Legal Help?").
  *
+ * Two separate movements, on two separate elements on purpose:
+ *   - the DOCK (outer, fixed) carries the scroll-linked lift that keeps the
+ *     button clear of the footer's bottom bar. No transition — it tracks the
+ *     scroll position frame by frame, so easing would make it lag behind.
+ *   - the BUTTON (inner) carries the show/hide slide, which IS eased.
+ * Both used to live on one element, where the two transforms overwrote each
+ * other.
+ *
  * Progressive enhancement: with no JS the button simply stays visible (a
- * safe default — the CTA is never hidden). The scroll toggle only *adds*
- * the hide-at-top behaviour.
+ * safe default — the CTA is never hidden). The scripts only add the
+ * hide-at-top and lift-at-footer behaviours.
  */
 import { FIRM_URL } from '../../lib/site';
 ---
 
-<a
-  id="floating-cta"
-  href={FIRM_URL}
-  data-firm-link
-  class="floating-cta group fixed bottom-4 left-4 z-40 inline-flex items-center gap-2 rounded-none bg-[#dd6500] px-4 py-3 font-mono text-xs font-normal tracking-[0.1em] whitespace-nowrap text-paper uppercase shadow-lg transition-colors hover:bg-[#f07610] sm:bottom-6 sm:left-6 sm:px-5 sm:py-3.5 sm:text-sm"
+<div
+  id="floating-cta-dock"
+  class="fixed bottom-4 left-4 z-40 will-change-transform sm:bottom-6 sm:left-6"
 >
-  <svg
-    class="h-[18px] w-[18px] shrink-0"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    aria-hidden="true"
+  <a
+    id="floating-cta"
+    href={FIRM_URL}
+    data-firm-link
+    class="floating-cta group inline-flex items-center gap-2 rounded-none bg-[#dd6500] px-4 py-3 font-mono text-xs font-normal tracking-[0.1em] whitespace-nowrap text-paper uppercase shadow-lg transition-colors hover:bg-[#f07610] sm:px-5 sm:py-3.5 sm:text-sm"
   >
-    <circle cx="12" cy="3.4" r="1.7"></circle>
-    <rect x="4" y="4.6" width="16" height="1.7" rx="0.85"></rect>
-    <rect x="11.15" y="4.6" width="1.7" height="14.4" rx="0.85"></rect>
-    <path d="M5 5.8 1.3 12a3.7 3.7 0 0 0 7.4 0L5 5.8Z"></path>
-    <path d="M19 5.8 15.3 12a3.7 3.7 0 0 0 7.4 0L19 5.8Z"></path>
-    <rect x="7.5" y="19" width="9" height="2" rx="1"></rect>
-  </svg>
-  Need Legal Help?
-</a>
+    <svg
+      class="h-[18px] w-[18px] shrink-0"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="3.4" r="1.7"></circle>
+      <rect x="4" y="4.6" width="16" height="1.7" rx="0.85"></rect>
+      <rect x="11.15" y="4.6" width="1.7" height="14.4" rx="0.85"></rect>
+      <path d="M5 5.8 1.3 12a3.7 3.7 0 0 0 7.4 0L5 5.8Z"></path>
+      <path d="M19 5.8 15.3 12a3.7 3.7 0 0 0 7.4 0L19 5.8Z"></path>
+      <rect x="7.5" y="19" width="9" height="2" rx="1"></rect>
+    </svg>
+    Need Legal Help?
+  </a>
+</div>
 
 <script>
   // Reveal the floating CTA once scrolled roughly one viewport past the top.
@@ -40,15 +53,57 @@ import { FIRM_URL } from '../../lib/site';
   // the viewport during the scroll-cover reveal, so observing it would keep
   // the button hidden forever. Without JS the button just stays visible.
   const cta = document.getElementById('floating-cta');
+  const dock = document.getElementById('floating-cta-dock');
+  const footerBar = document.querySelector<HTMLElement>('[data-footer-bar]');
 
   if (cta) {
     cta.classList.add('is-hidden');
-    const sync = () => {
+    const syncVisibility = () => {
       const past = window.scrollY > window.innerHeight * 0.6;
       cta.classList.toggle('is-hidden', !past);
     };
-    sync();
-    window.addEventListener('scroll', sync, { passive: true });
-    window.addEventListener('resize', sync, { passive: true });
+    syncVisibility();
+    window.addEventListener('scroll', syncVisibility, { passive: true });
+    window.addEventListener('resize', syncVisibility, { passive: true });
+  }
+
+  // Footer docking: as the footer's bottom bar scrolls up into the button's
+  // space, lift the button by exactly the overlap so it comes to rest just
+  // above that line. Because the lift is derived from the bar's live
+  // position rather than a fixed scroll threshold, it eases in as the footer
+  // approaches, settles at the very bottom, and unwinds on the way back up.
+  if (dock && footerBar) {
+    // Clearance between the button's bottom edge and the bar's top edge.
+    const GAP = 16;
+    // Safety cap, so a layout change can never fling the button up the page.
+    const MAX_LIFT = 260;
+
+    let lift = 0;
+    let queued = false;
+
+    const syncLift = () => {
+      queued = false;
+      // Add the lift already applied back on, to recover the button's
+      // resting position — otherwise each frame measures its own output and
+      // the value walks away.
+      const restingBottom = dock.getBoundingClientRect().bottom + lift;
+      const overlap = restingBottom + GAP - footerBar.getBoundingClientRect().top;
+
+      const next = Math.max(0, Math.min(overlap, MAX_LIFT));
+      if (next !== lift) {
+        lift = next;
+        dock.style.transform = lift ? `translate3d(0,${-lift}px,0)` : '';
+      }
+    };
+
+    const request = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(syncLift);
+    };
+
+    syncLift();
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request, { passive: true });
   }
 </script>

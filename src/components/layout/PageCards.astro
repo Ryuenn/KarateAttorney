@@ -7,8 +7,10 @@
  * paper band as the marquee above them, so the two read as one light
  * section.
  *
- * Link rows are intentionally NOT bottom-aligned across the three cards —
- * they follow their own copy, as in the reference.
+ * Link rows ARE bottom-aligned across the three cards: each card is a
+ * flex column stretched to the row height, and the link takes mt-auto so it
+ * sits on a common baseline no matter how many lines the body runs to. The
+ * pt keeps a minimum gap above it when a card's copy is long.
  *
  * Photos are PLACEHOLDERS until real photography is supplied; pass `image`
  * (a path under public/) on a card to drop the real one in.
@@ -24,6 +26,11 @@ interface Card {
   /** Path under public/. Omit for the placeholder. */
   image?: string;
   imageAlt?: string;
+  /**
+   * Focal point as Tailwind object-position classes, for photos whose ratio
+   * differs from the 16/9 frame. Defaults to centre.
+   */
+  imagePosition?: string;
   /** Marks an outbound link to the firm site for the analytics layer. */
   firm?: boolean;
 }
@@ -57,7 +64,10 @@ const { cards } = Astro.props;
               <img
                 src={card.image}
                 alt={card.imageAlt ?? ''}
-                class="h-full w-full object-cover"
+                class:list={[
+                  'h-full w-full object-cover',
+                  card.imagePosition ?? 'object-center',
+                ]}
                 loading="lazy"
                 decoding="async"
               />
@@ -85,7 +95,7 @@ const { cards } = Astro.props;
 
           <a
             href={card.href}
-            class="mt-8 self-start font-mono text-xs font-normal tracking-[0.08em] text-ink underline decoration-1 underline-offset-4 transition-opacity hover:opacity-60"
+            class="mt-auto self-start pt-8 font-mono text-xs font-normal tracking-[0.08em] text-ink underline decoration-1 underline-offset-4 transition-opacity hover:opacity-60"
             {...(card.firm ? FIRM_LINK_ATTR : {})}
           >
             {card.linkLabel ?? 'Discover more'}

@@ -9,15 +9,24 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 // outlined + one solid royal-blue, uppercase with wide tracking. Shared base;
 // the outline vs. fill treatment is applied per-button below.
 const ctaClass =
-  'inline-flex items-center gap-2 rounded-none px-3 py-2.5 font-mono text-[0.6875rem] font-normal uppercase tracking-[0.08em] whitespace-nowrap transition-colors sm:px-4 sm:text-xs xl:px-5 xl:tracking-[0.1em] 2xl:px-6 2xl:py-3 2xl:text-sm';
+  'inline-flex items-center gap-2 rounded-none px-3 py-2.5 font-mono text-[0.6875rem] font-normal uppercase tracking-[0.08em] whitespace-nowrap transition-colors sm:px-4 sm:text-xs 2xl:px-6 2xl:py-3 2xl:text-sm 2xl:tracking-[0.1em]';
 ---
 
 <header class="site-header on-dark text-paper">
   <!-- Full-viewport span (xnrgy-style): gutter padding only, no max-width
        wrap — logo sits at the left edge; the nav links flow continuously
        into the CTA pair as one right-aligned band. -->
-  <div class="flex items-center gap-4 px-(--spacing-gutter) py-6 sm:px-[calc(var(--spacing-gutter)+2rem)] sm:py-9 xl:px-[calc(var(--spacing-gutter)+3.5rem)]">
-    <a href="/" class="ml-2 shrink-0 sm:ml-4" aria-label={`${SITE.name} — home`}>
+  {/* Side padding matches every other section (gutter + 2rem) at all widths
+      — the old xl bump to +3.5rem both misaligned the bar against the hero
+      below it and stole 48px that the 8 links + 2 CTAs needed. gap sets the
+      MINIMUM space between the logo and the nav band, so they can never
+      close up on each other. */}
+  <div class="flex items-center gap-4 px-(--spacing-gutter) py-6 sm:px-[calc(var(--spacing-gutter)+2rem)] sm:py-9 xl:gap-10">
+    {/* No extra left margin here: the container's px is the only inset, so
+        the logo's left edge and the CTA's right edge sit the same distance
+        from their respective viewport edges. An ml on the logo alone made
+        the bar visibly lopsided. */}
+    <a href="/" class="shrink-0" aria-label={`${SITE.name} — home`}>
       <Image
         src={karateLogo}
         alt={SITE.name}
@@ -32,14 +41,16 @@ const ctaClass =
         spaced group (ref layout). ml-auto pushes the whole band right. Gaps
         and type scale up with width so the 8 links + 2 CTAs never overflow on
         narrower (MacBook ~1440px) screens. */}
-    <div class="ml-auto flex items-center gap-3 xl:gap-5 2xl:gap-7">
-      <nav aria-label="Primary" class="hidden items-center gap-4 lg:flex xl:gap-5 2xl:gap-7">
+    <div class="ml-auto flex items-center gap-3 xl:gap-4 2xl:gap-7">
+      {/* xl keeps the base gap-4: at ~1440 the extra spacing is what pushed
+          the band into the logo. 2xl has room to open back up. */}
+      <nav aria-label="Primary" class="hidden items-center gap-4 lg:flex 2xl:gap-7">
         {
           HEADER_NAV.map((item) => (
             <a
               href={item.href}
               aria-current={currentPath === item.href ? 'page' : undefined}
-              class="font-mono text-xs font-normal tracking-[0.08em] uppercase whitespace-nowrap text-paper transition-colors hover:text-(--accent-muted) aria-[current=page]:text-(--accent-muted) xl:text-[0.8125rem] xl:tracking-[0.1em] 2xl:text-sm"
+              class="font-mono text-xs font-normal tracking-[0.08em] uppercase whitespace-nowrap text-paper transition-colors hover:text-(--accent-muted) aria-[current=page]:text-(--accent-muted) 2xl:text-sm 2xl:tracking-[0.1em]"
             >
               {item.label}
             </a>

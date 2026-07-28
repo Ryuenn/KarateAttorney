@@ -44,6 +44,17 @@ interface Props {
   image?: string;
   imageAlt?: string;
   /**
+   * Focal point, as Tailwind object-position classes. Pass a base value plus
+   * per-breakpoint overrides where the crop demands it. (No literal example
+   * here: Tailwind scans comments too and would emit CSS for it.)
+   *
+   * Classes rather than a plain CSS value because the crop is not constant:
+   * the frame's ratio is driven by viewport height while photos are a fixed
+   * ratio, so how much is cut off (and therefore where the subject needs to
+   * sit) changes per breakpoint.
+   */
+  imagePosition?: string;
+  /**
    * CSS object-position for the photo — its focal point.
    *
    * The frame's aspect ratio changes with the viewport (it lands near 16:9
@@ -64,7 +75,7 @@ const {
   lede,
   image,
   imageAlt = '',
-  imagePosition = 'center',
+  imagePosition = 'object-center',
   actions = [],
 } = Astro.props;
 
@@ -156,7 +167,9 @@ const lsb = OPTICAL_LSB[firstLetter] ?? 0.075;
           // overlap disappears. Smaller screens therefore need a bigger push
           // down. 2xl keeps the tight offset that reads right on wide
           // displays; xl covers the ~1440 MacBook case.
-          'mt-[7vh] self-end text-right lg:mt-[8vh] lg:mr-[3vw] xl:mt-[6vh] 2xl:mt-[2vh]',
+          // xl is pushed further down than the neighbouring breakpoints
+          // because the 16:9 frame there is shorter, so its cut sits lower.
+          'mt-[7vh] self-end text-right lg:mt-[8vh] lg:mr-[3vw] xl:mt-[13vh] 2xl:mt-[2vh]',
         ]}
       >
         {word2}
@@ -202,15 +215,19 @@ const lsb = OPTICAL_LSB[firstLetter] ?? 0.075;
       hero into the band below (the reference's overlap seam) while leaving
       the top edge — the "cut" the wordmark sits on — exactly where it is. */}
   <div
-    class="relative -z-10 mt-10 aspect-[4/3] w-full lg:absolute lg:right-0 lg:-bottom-28 lg:mt-0 lg:aspect-auto lg:h-[calc(46%+7rem)] lg:w-1/2"
+    {/* xl only: height derived from the frame's own width (50vw / 1.78 =
+        28.1vw) so the frame IS 16:9 and the photo fills it with nothing
+        cropped. Height in vw, not %, so the ratio holds at any window
+        height. The overhang shrinks to keep the shorter frame's top edge —
+        the cut — from dropping too far down the page. */}
+    class="relative -z-10 mt-10 aspect-[4/3] w-full lg:absolute lg:right-0 lg:-bottom-28 lg:mt-0 lg:aspect-auto lg:h-[calc(46%+7rem)] lg:w-1/2 xl:-bottom-10 xl:h-[28.1vw] 2xl:-bottom-28 2xl:h-[calc(46%+7rem)]"
   >
     {
       image ? (
         <img
           src={image}
           alt={imageAlt}
-          class="h-full w-full object-cover"
-          style={`object-position:${imagePosition}`}
+          class:list={['h-full w-full object-cover', imagePosition]}
           loading="eager"
           decoding="async"
         />
