@@ -53,10 +53,17 @@ const ctaBase =
     <span class="absolute inset-y-0 left-3/4 w-px bg-white/12"></span>
   </div>
 
-  <div class="relative">
+  {/* flex establishes a formatting context so the portrait's negative top
+      margin CANNOT collapse through this wrapper and the <section>. Without
+      it the margin escapes and simply drags the whole dark band upward,
+      leaving the portrait flush to the section edge with no overhang. */}
+  <div class="relative flex flex-col">
     {/* Portrait — negative top margin lifts it out of this section and over
-        the light band above. */}
-    <div class="mx-auto -mt-12 aspect-[4/5] w-[13rem] sm:w-[17rem]">
+        the light band above. relative z-10 keeps it above the marquee that
+        follows, so the text runs BEHIND it rather than over the top. */}
+    <div
+      class="relative z-10 mx-auto -mt-10 aspect-[4/5] w-[13rem] shrink-0 sm:-mt-16 sm:w-[17rem]"
+    >
       {
         image ? (
           <img
@@ -79,7 +86,9 @@ const ctaBase =
       }
     </div>
 
-    <div class="mt-8 lg:mt-10">
+    {/* Marquee clears the portrait entirely — a positive gap, so the type
+        never runs under the photo at any width. */}
+    <div class="mt-4 lg:mt-8">
       <Marquee text={marquee} tone="light" />
     </div>
 

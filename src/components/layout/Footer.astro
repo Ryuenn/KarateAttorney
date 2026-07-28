@@ -30,7 +30,12 @@ const socialIcon: Record<string, string> = {
 ---
 
 <footer class="on-dark bg-navy-950 text-navy-100">
-  <div class="mx-auto w-full max-w-[110rem] px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+  {/* Asymmetric vertical padding: generous above so the columns breathe,
+      tight below so the bottom bar sits near the page end instead of
+      leaving a dead band under the copyright line. */}
+  <div
+    class="mx-auto w-full max-w-[110rem] px-4 pt-20 pb-10 sm:px-6 lg:px-8 lg:pt-28 lg:pb-12"
+  >
     <div class="grid gap-16 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-12">
       {/* Left: logo, intro line, contact links */}
       <div>
@@ -150,7 +155,9 @@ const socialIcon: Record<string, string> = {
     <div class="mt-20 flex flex-col gap-2 border-t border-white/10 pt-8 font-mono text-xs text-navy-300 sm:flex-row sm:items-center sm:justify-between lg:mt-28">
       <p>© {year} {SITE.person} · {SITE.name}. All rights reserved.</p>
       <p>
-        Legal representation is provided through
+        {/* Explicit space: Astro strips the newline between the text and
+            the link, so without it the words run together. */}
+        Legal representation is provided through{' '}
         <a
           href={FIRM_URL}
           data-firm-link

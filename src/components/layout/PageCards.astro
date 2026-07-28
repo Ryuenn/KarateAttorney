@@ -49,7 +49,10 @@ const { cards } = Astro.props;
     {
       cards.map((card) => (
         <article class="flex flex-col" data-reveal>
-          <div class="aspect-[4/3] w-full overflow-hidden">
+          {/* 16/9 matches the supplied photography exactly, so object-cover
+              has nothing to crop. A 4/3 frame cut ~25% off the sides, which
+              on a group shot meant losing the people at both edges. */}
+          <div class="aspect-video w-full overflow-hidden">
             {card.image ? (
               <img
                 src={card.image}
