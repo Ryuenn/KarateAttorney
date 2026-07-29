@@ -1,0 +1,98 @@
+---
+/**
+ * /contact — the xnrgy "get in touch" layout: a photo-less hero carrying the
+ * split wordmark and the two primary channels, then three columns of detail
+ * beneath it.
+ *
+ * Routing rule (spec §2): anything with legal intent goes to The Awad Law
+ * Firm, so the firm is the first column AND the primary CTA. The site's own
+ * inbox handles speaking, media, and everything else.
+ */
+import PageClosing from '../components/layout/PageClosing.astro';
+import PageContact from '../components/layout/PageContact.astro';
+import PageFaq from '../components/layout/PageFaq.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CONTACT, FIRM_URL, OFFICE_HOURS } from '../lib/site';
+---
+
+<BaseLayout
+  title="Contact"
+  description="Reach Ibrahim Awad — injury cases through The Awad Law Firm, speaking and media through the booking inbox."
+  heroOverlap
+>
+  <PageHero
+    kicker="Contact"
+    word1="Get In"
+    word2="Touch"
+    lede="A case, a stage, or a question you have not asked anyone yet. Injury matters run through the firm, where intake and case detail live; everything else lands in the inbox below."
+    noImage
+    actions={[
+      { label: 'Need Legal Help?', href: FIRM_URL, primary: true, firm: true },
+      { label: 'Book Ibrahim to Speak', href: '/speaking' },
+    ]}
+  />
+
+  <PageContact
+    columns={[
+      {
+        title: 'Legal Intake',
+        note: 'Injury, malpractice, and wrongful death cases are handled through The Awad Law Firm. Consultations cost nothing.',
+        lines: CONTACT.address,
+        links: [
+          { label: CONTACT.phone.label, href: CONTACT.phone.href },
+          { label: CONTACT.email.label, href: CONTACT.email.href },
+        ],
+        action: { label: 'Go to the firm', href: FIRM_URL, firm: true },
+      },
+      {
+        title: 'Speaking & Media',
+        note: 'Keynotes, khutbahs, panels, seminars, and press. Send the date, the room, and the audience — the form asks for the rest.',
+        links: [{ label: CONTACT.booking.label, href: CONTACT.booking.href }],
+        action: { label: 'Request Ibrahim', href: '/speaking' },
+      },
+      {
+        title: 'Office Hours',
+        note: 'Applies to every channel above. Messages outside these hours are answered the next working day.',
+        hours: OFFICE_HOURS,
+      },
+    ]}
+  />
+
+  <PageFaq
+    prompt="Don't see your question here? Send it to the inbox above."
+    ctaLabel="Email Ibrahim"
+    ctaHref={CONTACT.email.href}
+    items={[
+      {
+        q: 'Who do I contact about an injury case?',
+        a: 'The Awad Law Firm. Intake, practice areas, and case detail all live there, and the consultation costs nothing — this site does not handle case enquiries directly.',
+      },
+      {
+        q: 'How quickly will I hear back?',
+        a: 'Within office hours, same day wherever possible. Anything that arrives outside them is answered the next working day.',
+      },
+      {
+        q: 'How do I book Ibrahim to speak?',
+        a: 'Through the speaker request, not the general inbox — it asks for the date, the audience, and the room up front, which saves a round of email.',
+      },
+      {
+        q: 'Is there a fee for a consultation?',
+        a: 'No. Injury consultations through the firm are free, and the firm works on contingency — no fee unless the case is won.',
+      },
+      {
+        q: 'What about press and media requests?',
+        a: 'The booking inbox handles those too. Include the outlet and the deadline; interviews and commentary get scheduled around the case calendar.',
+      },
+    ]}
+  />
+
+  <PageClosing
+    marquee="Start with a conversation"
+    prompt="Injury cases go to the firm. Everything else lands in the inbox."
+    primary={{ label: 'Need Legal Help?', href: FIRM_URL, firm: true }}
+    secondary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
+    image="/ibrahim-9.png"
+    imageAlt="Ibrahim J. Awad, arms folded, in a studio portrait"
+  />
+</BaseLayout>

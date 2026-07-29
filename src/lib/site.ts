@@ -14,6 +14,40 @@ export const SITE = {
 /** The law-firm site every legal-intent visitor must be routed to. */
 export const FIRM_URL = 'https://theawadlawfirm.com';
 
+/**
+ * Contact details — [PLACEHOLDER] until confirmed by the client. Shared by
+ * the footer and /contact so the two can never drift apart; swap the values
+ * here once and both pick them up.
+ */
+export const CONTACT = {
+  phone: { label: '+01 23456789', href: 'tel:+0123456789' },
+  email: {
+    label: 'info@karateattorney.com',
+    href: 'mailto:info@karateattorney.com',
+  },
+  booking: {
+    label: 'speaking@karateattorney.com',
+    href: 'mailto:speaking@karateattorney.com',
+  },
+  /** Street lines for /contact. Rendered as written, one line each. */
+  address: ['[PLACEHOLDER: street address]', '[PLACEHOLDER: city, state ZIP]'],
+} as const;
+
+/**
+ * Office hours for /contact — [PLACEHOLDER] hours, not confirmed. The shape
+ * (a day and a span per row) is what the layout needs; the values are a
+ * stand-in so the column reads correctly until the real ones land.
+ */
+export const OFFICE_HOURS: readonly { day: string; hours: string }[] = [
+  { day: 'Monday', hours: '09:00 – 18:00' },
+  { day: 'Tuesday', hours: '09:00 – 18:00' },
+  { day: 'Wednesday', hours: '09:00 – 18:00' },
+  { day: 'Thursday', hours: '09:00 – 18:00' },
+  { day: 'Friday', hours: '09:00 – 18:00' },
+  { day: 'Saturday', hours: 'By appointment' },
+  { day: 'Sunday', hours: 'Closed' },
+];
+
 /** Venture links (spec §3 — /ventures cards link out). */
 export const VENTURES = {
   palistory: '[PLACEHOLDER: Palistory URL]',
@@ -33,8 +67,7 @@ export const SOCIALS = [
  * Homepage direction chosen (owner request, 2026-07-24): the variant
  * switcher is retired and the site runs on the single Homepage 1 design.
  * Eight links, matching spec §3. Every route below now exists and carries
- * its page hero; the sections beneath each hero are still to come. Contact
- * remains a placeholder ('#') — that page is being handled separately.
+ * its page hero; the sections beneath each hero are still to come.
  *
  * `/giving` (Giving Back) and the firm site are reachable from the footer
  * and the header's "Need Legal Help?" CTA respectively, so neither takes a
@@ -48,7 +81,7 @@ export const NAV: readonly { label: string; href: string }[] = [
   { label: 'Faith', href: '/faith' },
   { label: 'Ventures', href: '/ventures' },
   { label: 'Content', href: '/content' },
-  { label: 'Contact', href: '#' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 /** Nav items pinned in the desktop header bar. */

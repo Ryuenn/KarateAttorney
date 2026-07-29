@@ -55,6 +55,8 @@ import { FIRM_URL } from '../../lib/site';
   const cta = document.getElementById('floating-cta');
   const dock = document.getElementById('floating-cta-dock');
   const footerBar = document.querySelector<HTMLElement>('[data-footer-bar]');
+  // The opaque content layer that covers the pinned footer (curtain reveal).
+  const curtain = document.getElementById('main');
 
   if (cta) {
     cta.classList.add('is-hidden');
@@ -67,11 +69,22 @@ import { FIRM_URL } from '../../lib/site';
     window.addEventListener('resize', syncVisibility, { passive: true });
   }
 
-  // Footer docking: as the footer's bottom bar scrolls up into the button's
+  // Footer docking: as the footer's bottom bar comes up into the button's
   // space, lift the button by exactly the overlap so it comes to rest just
-  // above that line. Because the lift is derived from the bar's live
-  // position rather than a fixed scroll threshold, it eases in as the footer
-  // approaches, settles at the very bottom, and unwinds on the way back up.
+  // above that line. Because the lift is derived from live positions rather
+  // than a fixed scroll threshold, it eases in as the footer is uncovered,
+  // settles at the very bottom, and unwinds on the way back up.
+  //
+  // The bar's own position is NOT enough to drive this on the homepage: the
+  // footer is `position: sticky; bottom: 0` (the curtain reveal), so it is
+  // parked at the viewport bottom for the whole page and the bar's rect never
+  // moves. Measuring it alone kept the button docked mid-page, everywhere.
+  // So the obstacle is whichever is LOWER on screen: the bar, or the bottom
+  // edge of the content curtain still hiding it. Mid-page the curtain reaches
+  // past the viewport bottom, so there is no overlap and the button sits in
+  // the corner; only as the footer is uncovered does the button ride up, and
+  // it stops once it clears the bar. Pages whose footer scrolls normally are
+  // unaffected — there the bar is always the lower of the two.
   if (dock && footerBar) {
     // Clearance between the button's bottom edge and the bar's top edge.
     const GAP = 16;
@@ -87,7 +100,11 @@ import { FIRM_URL } from '../../lib/site';
       // resting position — otherwise each frame measures its own output and
       // the value walks away.
       const restingBottom = dock.getBoundingClientRect().bottom + lift;
-      const overlap = restingBottom + GAP - footerBar.getBoundingClientRect().top;
+      const obstacleTop = Math.max(
+        footerBar.getBoundingClientRect().top,
+        curtain ? curtain.getBoundingClientRect().bottom : -Infinity,
+      );
+      const overlap = restingBottom + GAP - obstacleTop;
 
       const next = Math.max(0, Math.min(overlap, MAX_LIFT));
       if (next !== lift) {

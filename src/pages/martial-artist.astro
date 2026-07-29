@@ -19,6 +19,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     word1="The"
     word2="Mat"
     lede="Where the discipline was forged. More than 250 tournaments before he ever earned a law degree — years of drilling composure until it holds when everything is on the line."
+    image="/karate.png"
+    imageAlt="Ibrahim J. Awad in a gi and black belt, hands up, in a dimly lit dojo"
+    {/* Biased up: the frame reaches ~1.8:1 on short 2xl windows and crops top
+        and bottom — centring would clip the top of his head. The gi trousers
+        and floor take the cut instead. */}
+    imagePosition="object-[center_25%]"
   />
 
   <PageBand
@@ -82,5 +88,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     prompt="Bring the message to your team, your school, or your athletes."
     primary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
     secondary={{ label: 'Meet the Team', href: '/ventures' }}
+    image="/ibrahim-9.png"
+    imageAlt="Ibrahim J. Awad, arms folded, in a studio portrait"
   />
 </BaseLayout>

@@ -20,6 +20,12 @@ import { FIRM_URL } from '../lib/site';
     word1="The"
     word2="Courtroom"
     lede="Where preparation meets pressure. More than $60 million recovered for clients across Georgia, by a lawyer who spent the first half of his career on the other side of the aisle — and knows exactly how the state builds a case."
+    image="/ibrahim-10.png"
+    imageAlt="Ibrahim J. Awad seated at his desk, hands clasped, with law books and a set of scales behind him"
+    {/* Biased up: the frame goes as wide as ~1.8:1 on short 2xl windows,
+        which crops top and bottom — centring would clip the top of his head.
+        The desk edge is the expendable part. */}
+    imagePosition="object-[center_30%]"
     actions={[
       { label: 'Need Legal Help?', href: FIRM_URL, primary: true, firm: true },
     ]}
@@ -39,16 +45,28 @@ import { FIRM_URL } from '../lib/site';
         href: FIRM_URL,
         linkLabel: 'Go to the firm',
         firm: true,
+        image: '/practice-areas.png',
+        imageAlt:
+          'A case file, pen, gavel and a personal injury law volume on a desk, with a set of brass scales behind them',
+        // 3:2 photo in a 16:9 frame — centring would shave the top of the
+        // scales. Biased up; the empty desk edge takes the crop instead.
+        imagePosition: 'object-[center_30%]',
       },
       {
         title: 'How a Case Moves',
         body: 'What actually happens between the crash and the resolution — investigation, treatment, demand, negotiation, and the point where filing suit becomes the right call.',
         href: '#',
+        image: '/howcasemoves.png',
+        imageAlt:
+          'A case timeline laid out on a clipboard, beside stacked personal injury law volumes, a case file and brass scales',
       },
       {
         title: 'Know Your Rights',
         body: 'What to do at the scene, what never to say to an adjuster, and the deadlines that quietly decide cases before anyone reaches a courtroom.',
         href: '#',
+        image: '/adjuster.png',
+        imageAlt:
+          'A "Your Rights" checklist on a clipboard covering the scene, adjuster calls and filing deadlines, beside a desk calendar and brass scales',
       },
     ]}
   />
@@ -59,6 +77,8 @@ import { FIRM_URL } from '../lib/site';
     ctaLabel="Go to The Awad Law Firm"
     ctaHref={FIRM_URL}
     firm
+    image="/ibrahim-11.png"
+    imageAlt="Ibrahim J. Awad in a long black overcoat, fists raised in a fighting guard, against a gold-streaked backdrop"
   />
 
   <PageFaq
@@ -91,5 +111,7 @@ import { FIRM_URL } from '../lib/site';
     prompt="Consultations are free, and there is no fee unless the case is won."
     primary={{ label: 'Go to The Awad Law Firm', href: FIRM_URL, firm: true }}
     secondary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
+    image="/ibrahim-9.png"
+    imageAlt="Ibrahim J. Awad, arms folded, in a studio portrait"
   />
 </BaseLayout>

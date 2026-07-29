@@ -1,0 +1,158 @@
+---
+/**
+ * Contact columns (xnrgy "get in touch" reference).
+ *
+ * Three columns under the hero, each a landscape photo with an uppercase
+ * display title and mono detail lines below it. The reference runs two
+ * location columns plus an opening-hours table; the shape here is the same
+ * but content-driven, so a column can carry any mix of plain lines, tappable
+ * contact links, an hours table, and a closing underlined action.
+ *
+ * Actions ARE bottom-aligned across the row (same trick as PageCards): each
+ * column is a flex column stretched to the row height and the action takes
+ * mt-auto, so the links sit on a common baseline however long the copy runs.
+ *
+ * Photos are PLACEHOLDERS until real photography is supplied; pass `image`
+ * (a path under public/) on a column to drop the real one in.
+ */
+import { FIRM_LINK_ATTR } from '../../lib/site';
+
+interface Link {
+  label: string;
+  href: string;
+  /** Marks an outbound link to the firm site for the analytics layer. */
+  firm?: boolean;
+}
+
+interface Column {
+  /** Uppercase display heading under the photo. */
+  title: string;
+  /** Path under public/. Omit for the placeholder. */
+  image?: string;
+  imageAlt?: string;
+  /** Focal point as Tailwind object-position classes, for off-ratio photos. */
+  imagePosition?: string;
+  /** Lead line under the title (the reference's "Applies to all locations"). */
+  note?: string;
+  /** Plain lines — an address, a room, a note. Rendered one per line. */
+  lines?: readonly string[];
+  /** Tappable rows: tel:, mailto:, or a page. */
+  links?: readonly Link[];
+  /** Day/hours rows, rendered as a description list on a shared tab stop. */
+  hours?: readonly { day: string; hours: string }[];
+  /** Underlined action pinned to the bottom of the column. */
+  action?: Link;
+}
+
+interface Props {
+  columns: readonly Column[];
+}
+
+const { columns } = Astro.props;
+---
+
+{/* Matches the hero above it — the contact page runs as one continuous
+    surface, so there is no seam here. */}
+<section class="on-dark relative bg-navy-1000 text-paper">
+  {/* Column guides continue from the hero above. */}
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <span class="absolute inset-y-0 left-1/4 w-px bg-white/12"></span>
+    <span class="absolute inset-y-0 left-1/2 w-px bg-white/12"></span>
+    <span class="absolute inset-y-0 left-3/4 w-px bg-white/12"></span>
+  </div>
+
+  <div
+    class="relative mx-auto grid max-w-[110rem] grid-cols-1 gap-x-10 gap-y-16 px-(--spacing-gutter) pt-16 pb-28 sm:px-[calc(var(--spacing-gutter)+2rem)] lg:grid-cols-3 lg:pt-24 lg:pb-40"
+  >
+    {
+      columns.map((col) => (
+        <article class="flex flex-col" data-reveal>
+          {/* 4/3 matches the reference's contact frames — squarer than the
+              16/9 cards elsewhere, so a room reads as a place rather than a
+              letterbox strip. */}
+          <div class="aspect-[4/3] w-full overflow-hidden">
+            {col.image ? (
+              <img
+                src={col.image}
+                alt={col.imageAlt ?? ''}
+                class:list={[
+                  'h-full w-full object-cover',
+                  col.imagePosition ?? 'object-center',
+                ]}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              /* Stand-in until real photography lands — sharp-cornered and
+                 dashed so it reads as an intentional empty slot. */
+              <div
+                class="grid h-full w-full place-items-center border border-dashed border-paper/30 bg-panel"
+                aria-hidden="true"
+              >
+                <p class="px-4 text-center font-mono text-[0.6875rem] tracking-[0.2em] text-paper/40 uppercase">
+                  [Placeholder image]
+                </p>
+              </div>
+            )}
+          </div>
+
+          <h2 class="mt-8 font-display text-[clamp(1.375rem,2.1vw,1.875rem)] leading-tight font-normal tracking-[-0.01em] uppercase">
+            {col.title}
+          </h2>
+
+          {col.note && (
+            <p class="mt-5 font-mono text-sm leading-relaxed text-navy-100">
+              {col.note}
+            </p>
+          )}
+
+          {col.lines && col.lines.length > 0 && (
+            <div class="mt-5 font-mono text-sm leading-relaxed text-navy-100">
+              {col.lines.map((line) => (
+                <p>{line}</p>
+              ))}
+            </div>
+          )}
+
+          {col.links && col.links.length > 0 && (
+            <div class="mt-6 space-y-2 font-mono text-sm">
+              {col.links.map((link) => (
+                <a
+                  href={link.href}
+                  class="block w-fit underline underline-offset-4 transition-colors hover:text-(--accent-muted)"
+                  {...(link.firm ? FIRM_LINK_ATTR : {})}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          )}
+
+          {col.hours && col.hours.length > 0 && (
+            /* Fixed first track, not justify-between: the hours line up on
+               one tab stop across every row (reference), instead of ragging
+               to whatever width each day name happens to be. */
+            <dl class="mt-6 grid max-w-xs grid-cols-[7.5rem_1fr] gap-y-2 font-mono text-sm text-navy-100">
+              {col.hours.map((row) => (
+                <>
+                  <dt>{row.day}</dt>
+                  <dd>{row.hours}</dd>
+                </>
+              ))}
+            </dl>
+          )}
+
+          {col.action && (
+            <a
+              href={col.action.href}
+              class="mt-auto self-start pt-8 font-mono text-xs font-normal tracking-[0.08em] text-paper underline decoration-1 underline-offset-4 transition-opacity hover:opacity-60"
+              {...(col.action.firm ? FIRM_LINK_ATTR : {})}
+            >
+              {col.action.label}
+            </a>
+          )}
+        </article>
+      ))
+    }
+  </div>
+</section>

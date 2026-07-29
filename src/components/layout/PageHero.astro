@@ -65,6 +65,12 @@ interface Props {
    * standing right of centre.
    */
   imagePosition?: string;
+  /**
+   * Drop the photo quadrant entirely (the /contact layout, which runs the
+   * wordmark over empty space). Note the section then has no overhang, so a
+   * following band needs none of PageBand's extra top padding.
+   */
+  noImage?: boolean;
   actions?: Action[];
 }
 
@@ -76,6 +82,7 @@ const {
   image,
   imageAlt = '',
   imagePosition = 'object-center',
+  noImage = false,
   actions = [],
 } = Astro.props;
 
@@ -214,38 +221,38 @@ const lsb = OPTICAL_LSB[firstLetter] ?? 0.075;
       The negative bottom + matching extra height hang it 7rem past the
       hero into the band below (the reference's overlap seam) while leaving
       the top edge — the "cut" the wordmark sits on — exactly where it is. */}
-  <div
-    {/* xl only: height derived from the frame's own width (50vw / 1.78 =
-        28.1vw) so the frame IS 16:9 and the photo fills it with nothing
-        cropped. Height in vw, not %, so the ratio holds at any window
-        height. The overhang shrinks to keep the shorter frame's top edge —
-        the cut — from dropping too far down the page. */}
-    class="relative -z-10 mt-10 aspect-[4/3] w-full lg:absolute lg:right-0 lg:-bottom-28 lg:mt-0 lg:aspect-auto lg:h-[calc(46%+7rem)] lg:w-1/2 xl:-bottom-10 xl:h-[28.1vw] 2xl:-bottom-28 2xl:h-[calc(46%+7rem)]"
-  >
-    {
-      image ? (
-        <img
-          src={image}
-          alt={imageAlt}
-          class:list={['h-full w-full object-cover', imagePosition]}
-          loading="eager"
-          decoding="async"
-        />
-      ) : (
-        /* Stand-in until real per-page photography is supplied. Dark,
-           sharp-cornered and dashed so it reads as an intentional empty
-           slot rather than a broken image. */
-        <div
-          class="grid h-full w-full place-items-center border border-dashed border-paper/30 bg-panel"
-          aria-hidden="true"
-        >
-          <p
-            class="px-6 text-center font-mono text-[0.6875rem] tracking-[0.2em] text-paper/40 uppercase"
+  {
+    !noImage && (
+      <div
+        {/* xl only: height derived from the frame's own width (50vw / 1.78 =
+            28.1vw) so the frame IS 16:9 and the photo fills it with nothing
+            cropped. Height in vw, not %, so the ratio holds at any window
+            height. The overhang shrinks to keep the shorter frame's top edge
+            — the cut — from dropping too far down the page. */}
+        class="relative -z-10 mt-10 aspect-[4/3] w-full lg:absolute lg:right-0 lg:-bottom-28 lg:mt-0 lg:aspect-auto lg:h-[calc(46%+7rem)] lg:w-1/2 xl:-bottom-10 xl:h-[28.1vw] 2xl:-bottom-28 2xl:h-[calc(46%+7rem)]"
+      >
+        {image ? (
+          <img
+            src={image}
+            alt={imageAlt}
+            class:list={['h-full w-full object-cover', imagePosition]}
+            loading="eager"
+            decoding="async"
+          />
+        ) : (
+          /* Stand-in until real per-page photography is supplied. Dark,
+             sharp-cornered and dashed so it reads as an intentional empty
+             slot rather than a broken image. */
+          <div
+            class="grid h-full w-full place-items-center border border-dashed border-paper/30 bg-panel"
+            aria-hidden="true"
           >
-            [Placeholder image]
-          </p>
-        </div>
-      )
-    }
-  </div>
+            <p class="px-6 text-center font-mono text-[0.6875rem] tracking-[0.2em] text-paper/40 uppercase">
+              [Placeholder image]
+            </p>
+          </div>
+        )}
+      </div>
+    )
+  }
 </section>
