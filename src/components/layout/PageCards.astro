@@ -37,9 +37,21 @@ interface Card {
 
 interface Props {
   cards: Card[];
+  /**
+   * Set when this row follows PageHero directly, with no statement band in
+   * between (see /ventures).
+   *
+   * The hero's photo deliberately hangs ~7rem past its own bottom edge and
+   * paints over whatever follows. PageBand absorbs that with a large top
+   * padding of its own; without a band here, the photo would drop onto the
+   * first row of cards. This restores the same clearance.
+   *
+   * Not needed after a hero with `noImage` — there is no overhang to clear.
+   */
+  clearsHero?: boolean;
 }
 
-const { cards } = Astro.props;
+const { cards, clearsHero = false } = Astro.props;
 ---
 
 <section class="relative bg-paper text-ink">
@@ -51,7 +63,10 @@ const { cards } = Astro.props;
   </div>
 
   <div
-    class="relative mx-auto grid max-w-[76rem] grid-cols-1 gap-x-10 gap-y-16 px-(--spacing-gutter) pt-16 pb-28 sm:px-[calc(var(--spacing-gutter)+2rem)] lg:grid-cols-3 lg:px-8 lg:pt-28 lg:pb-40"
+    class:list={[
+      'relative mx-auto grid max-w-[76rem] grid-cols-1 gap-x-10 gap-y-16 px-(--spacing-gutter) pb-28 sm:px-[calc(var(--spacing-gutter)+2rem)] lg:grid-cols-3 lg:px-8 lg:pb-40',
+      clearsHero ? 'pt-28 lg:pt-72' : 'pt-16 lg:pt-28',
+    ]}
   >
     {
       cards.map((card) => (
@@ -85,7 +100,23 @@ const { cards } = Astro.props;
             )}
           </div>
 
-          <h3 class="mt-8 font-display text-[clamp(1.375rem,2.1vw,1.875rem)] leading-tight font-normal tracking-[-0.01em] uppercase">
+          {/* The clamp's CAP is what keeps every title on one line, and it is
+              sized off the longest title in the system — "Team Karate
+              Attorney" (martial-artist + ventures), which sets to ~12.9em in
+              Neue Helvetica caps at this tracking.
+
+              Above 1280px the column stops growing (the grid hits its 76rem
+              max) at 378px while the viewport-driven font keeps climbing, so
+              the cap is the only thing standing between that title and a
+              second line: 12.9em x 1.875rem = 386px overflowed, 1.75rem lands
+              at ~360px with room to spare. Below 1280px the 2.1vw term is
+              already small enough to fit the narrower column.
+
+              Deliberately applied to ALL cards, not just the long one — a row
+              whose middle title is a size smaller than its neighbours reads as
+              a bug. If a longer title is ever added it will wrap rather than
+              overflow; re-derive the cap from it at that point. */}
+          <h3 class="mt-8 font-display text-[clamp(1.375rem,2.1vw,1.75rem)] leading-tight font-normal tracking-[-0.01em] uppercase">
             {card.title}
           </h3>
 

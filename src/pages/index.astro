@@ -5,6 +5,7 @@ import EvolvingEnergy from '../components/home/EvolvingEnergy.astro';
 import Introduction from '../components/home/Introduction.astro';
 import MeasureMotion from '../components/home/MeasureMotion.astro';
 import Method from '../components/home/Method.astro';
+import ChatWidget from '../components/layout/ChatWidget.astro';
 import FloatingCta from '../components/layout/FloatingCta.astro';
 import JsonLd from '../components/seo/JsonLd.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -53,5 +54,8 @@ import { FIRM_URL, SITE } from '../lib/site';
     <MeasureMotion />
   </div>
 
+  {/* Opposite corners: the firm CTA sits lower-left, the chat lower-right.
+      Both dock above the footer bar via the same helper. */}
   <FloatingCta />
+  <ChatWidget />
 </BaseLayout>

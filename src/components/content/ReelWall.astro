@@ -1,0 +1,373 @@
+---
+/**
+ * Content Hub reel wall — the /content page's replacement for the generic
+ * three-up card row (PageCards), which framed video work as landscape
+ * article teasers. The material here is vertical social video, so the frames
+ * are 9:16 and the section is built around the format instead of around it.
+ *
+ * Editorial (Vogue-ish) treatment, kept inside the existing system rather
+ * than beside it:
+ *   - a hairline rule and a mono index/browse row open the section, the way
+ *     a magazine opens a feature well;
+ *   - an oversized display heading in the same cut as every other section
+ *     head on the site;
+ *   - a staggered grid — alternate frames drop by a fixed offset — so the
+ *     row reads as a spread rather than a table of thumbnails. This is the
+ *     one genuinely "fashion editorial" move; everything else is the site's
+ *     own vocabulary (mono kickers, hairline rules, sharp corners).
+ *
+ * Dark band by design. The bands either side of it on /content are light
+ * (PageBand's paper, PageFeature's navy-50), so this reads as the page's
+ * spine — and video frames, which are mostly dark, sit far better on navy
+ * than on paper.
+ *
+ * A reel frame renders one of three ways, in this order:
+ *   - `video` — a real file under public/, previewed on hover (see script);
+ *   - `poster` alone — a still, for reels that live on YouTube rather than as
+ *     files we host. A YouTube `href` plays in a modal on the page (see
+ *     VideoDialog) instead of navigating off to the short; nothing is
+ *     requested from YouTube until that click, which is the whole point of
+ *     using a local still rather than nine embedded players;
+ *   - neither — the dashed placeholder.
+ * Everything else — labels, index, layout — stays put across all three.
+ */
+
+import VideoDialog from '../layout/VideoDialog.astro';
+import {
+  videoDialogId,
+  youTubeEmbedSrc,
+  youTubeIdFromUrl,
+} from '../../lib/video';
+
+interface Reel {
+  /** Reel title. Runs two lines at most in the frame width. */
+  title: string;
+  /** Category label above the title, e.g. "Legal education". */
+  category: string;
+  /** Runtime, shown in the frame's corner. Omit to hide the chip. */
+  duration?: string;
+  /** Where the reel opens. Omit for a non-interactive placeholder. A YouTube
+   *  URL plays in a modal on the page; anything else is an ordinary link. */
+  href?: string;
+  /** Path under public/ for the video file. Omit for the placeholder. */
+  video?: string;
+  /** Path under public/ for the poster still. Strongly recommended with
+   *  `video` — without it the frame is blank until metadata loads. Used on
+   *  its own for reels hosted off-site, where it IS the frame. */
+  poster?: string;
+  /** Describes the still. Only read out when the poster stands alone —
+   *  alongside `video` the frame is already named by the title. */
+  posterAlt?: string;
+}
+
+interface Props {
+  /** Mono eyebrow, rendered in brackets to match the site's kickers. */
+  kicker: string;
+  /** Display heading. "\n" forces a break; still wraps naturally. */
+  heading: string;
+  reels: Reel[];
+  /** Category browse links, right-aligned in the header rule. */
+  browse?: { label: string; href: string }[];
+}
+
+const { kicker, heading, reels, browse = [] } = Astro.props;
+---
+
+<section class="on-dark relative overflow-hidden bg-navy-1000 text-paper">
+  {/* Column guides continue the hero's, inked for the dark band. */}
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <span class="absolute inset-y-0 left-1/4 w-px bg-white/10"></span>
+    <span class="absolute inset-y-0 left-1/2 w-px bg-white/10"></span>
+    <span class="absolute inset-y-0 left-3/4 w-px bg-white/10"></span>
+  </div>
+
+  <div
+    class="relative mx-auto max-w-[84rem] px-(--spacing-gutter) py-24 sm:px-[calc(var(--spacing-gutter)+2rem)] lg:py-36"
+  >
+    {/* Masthead rule: kicker + count left, browse links right. The rule sits
+        ABOVE the row (border-t) so the section opens on a line, like the top
+        of a feature well. */}
+    <div
+      class="flex flex-col gap-4 border-t border-white/20 pt-5 sm:flex-row sm:items-baseline sm:justify-between"
+      data-reveal
+    >
+      <p
+        class="font-mono text-[0.6875rem] font-normal tracking-[0.25em] text-(--accent-muted) uppercase sm:text-xs"
+      >
+        [{kicker}] — {String(reels.length).padStart(2, '0')} pieces
+      </p>
+
+      {
+        browse.length > 0 && (
+          <nav class="flex flex-wrap gap-x-6 gap-y-2">
+            {browse.map((b) => (
+              <a
+                href={b.href}
+                class="font-mono text-[0.6875rem] font-normal tracking-[0.12em] text-paper/70 uppercase underline decoration-1 underline-offset-4 transition-opacity hover:text-paper hover:opacity-100 sm:text-xs"
+              >
+                {b.label}
+              </a>
+            ))}
+          </nav>
+        )
+      }
+    </div>
+
+    <h2
+      class="mt-10 max-w-[18ch] font-display text-[clamp(2.25rem,6.4vw,5.5rem)] leading-[0.96] font-normal tracking-[-0.03em] whitespace-pre-line uppercase lg:mt-14"
+      data-reveal
+    >
+      {heading}
+    </h2>
+
+    {/* The wall. gap-y is generous enough that a staggered frame never
+        crowds the row beneath it — see the offset below. */}
+    <ul
+      class="mt-16 grid grid-cols-2 gap-x-5 gap-y-14 sm:gap-x-8 lg:mt-24 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-20"
+    >
+      {
+        reels.map((reel, i) => {
+          const index = String(i + 1).padStart(2, '0');
+          // The editorial stagger: every other frame drops. Held back until
+          // sm — at one column there is no adjacent frame to offset against,
+          // so it would just read as an inconsistent gap.
+          const offset = i % 2 === 1 ? 'sm:mt-14 lg:mt-24' : '';
+          // Non-interactive when there is nowhere to go yet (placeholder
+          // reels), so a keyboard user is not sent to a dead "#".
+          const Frame = reel.href ? 'a' : 'div';
+
+          // A YouTube reel stays on the page: the anchor is upgraded to a
+          // modal trigger by VideoDialog's script. It is still a real link
+          // underneath, so it survives a middle-click, a crawler, or JS
+          // failing to run — which is why this is an <a> and not a <button>.
+          const youTubeId = reel.href ? youTubeIdFromUrl(reel.href) : undefined;
+          const dialogId = youTubeId ? videoDialogId(youTubeId) : undefined;
+
+          // Anything else off-site is an ordinary link, and leaves in a new
+          // tab with the rel that stops the opened page reaching back through
+          // window.opener.
+          const external = !youTubeId && reel.href?.startsWith('http');
+
+          return (
+            <li class:list={['group', offset]} data-reveal>
+              <Frame
+                {...(reel.href ? { href: reel.href } : {})}
+                {...(external
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
+                {...(dialogId
+                  ? {
+                      'data-video-open': dialogId,
+                      'aria-label': `Play reel: ${reel.title}`,
+                    }
+                  : {})}
+                class="block focus-visible:outline-2 focus-visible:outline-offset-4"
+                data-reel
+              >
+                {/* 9:16 — the format the material is actually shot in. */}
+                <div class="relative aspect-[9/16] w-full overflow-hidden bg-panel">
+                  {reel.video ? (
+                    <video
+                      src={reel.video}
+                      poster={reel.poster}
+                      class="h-full w-full object-cover"
+                      muted
+                      loop
+                      playsinline
+                      preload="metadata"
+                      aria-label={reel.title}
+                    />
+                  ) : reel.poster ? (
+                    /* Off-site reel: the still IS the frame, and the click
+                       goes to the platform. No embed, no iframe, nothing
+                       requested from YouTube until the visitor asks for it.
+
+                       Hover matches the featured-video band (PageVideo) —
+                       the poster creeps in, the scrim deepens, the play mark
+                       fills with accent — so a reel and a film behave the
+                       same way under the pointer. */
+                    <>
+                      <img
+                        src={reel.poster}
+                        alt={reel.posterAlt ?? ''}
+                        class="ka-reel-poster h-full w-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span
+                        class="ka-reel-scrim pointer-events-none absolute inset-0 bg-navy-1000/35"
+                        aria-hidden="true"
+                      />
+                      <span
+                        class="pointer-events-none absolute inset-0 grid place-items-center"
+                        aria-hidden="true"
+                      >
+                        <span class="ka-reel-play grid h-14 w-14 place-items-center rounded-full border border-paper/70 text-paper">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            class="ml-[0.15em] h-4 w-4"
+                          >
+                            <path d="M8 5.5 19 12 8 18.5V5.5Z" />
+                          </svg>
+                        </span>
+                      </span>
+                    </>
+                  ) : (
+                    /* Stand-in until real footage lands. Dashed and sharp so
+                       it reads as an intentional empty slot, matching the
+                       image placeholders elsewhere — but with a play mark so
+                       it is legible as a VIDEO slot, not a photo one. */
+                    <div
+                      class="grid h-full w-full place-items-center border border-dashed border-paper/25"
+                      aria-hidden="true"
+                    >
+                      <div class="flex flex-col items-center gap-4 px-3">
+                        <svg
+                          viewBox="0 0 48 48"
+                          class="h-10 w-10 text-paper/30 transition-colors duration-300 group-hover:text-(--accent-muted)"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <circle
+                            cx="24"
+                            cy="24"
+                            r="23"
+                            stroke="currentColor"
+                            stroke-width="1"
+                          />
+                          <path d="M20 16.5 32 24l-12 7.5V16.5Z" fill="currentColor" />
+                        </svg>
+                        <p class="text-center font-mono text-[0.625rem] tracking-[0.2em] text-paper/35 uppercase">
+                          [Placeholder reel]
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {reel.duration && (
+                    <span class="absolute right-3 bottom-3 bg-navy-1000/75 px-2 py-1 font-mono text-[0.625rem] tracking-[0.1em] text-paper/85 tabular-nums">
+                      {reel.duration}
+                    </span>
+                  )}
+                </div>
+
+                {/* Caption block: index + category on one hairline-separated
+                    row, title beneath — the magazine plate-caption pattern. */}
+                <div class="mt-5 border-t border-white/15 pt-4">
+                  <p class="flex items-center gap-3 font-mono text-[0.625rem] tracking-[0.2em] uppercase">
+                    <span class="tabular-nums text-paper/40">{index}</span>
+                    <span class="text-(--accent-muted)">{reel.category}</span>
+                  </p>
+                  <h3 class="mt-3 font-display text-[clamp(1rem,1.5vw,1.375rem)] leading-tight font-normal tracking-[-0.01em] uppercase">
+                    {reel.title}
+                  </h3>
+                </div>
+              </Frame>
+
+              {/* One player per YouTube reel. Cheap to render — it is empty
+                  markup until the frame is clicked — and rendering it inside
+                  the <li> keeps each dialog next to the reel it belongs to.
+                  Portrait, because these are 9:16 shorts. */}
+              {youTubeId && dialogId && (
+                <VideoDialog
+                  id={dialogId}
+                  src={youTubeEmbedSrc(youTubeId)}
+                  label={reel.title}
+                  orientation="portrait"
+                />
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Poster-frame hover, kept in CSS (not Tailwind group-hover utilities) so
+     it can be switched off wholesale under reduced motion below, and so it
+     stays visibly the same treatment as PageVideo's poster. */
+  .ka-reel-poster,
+  .ka-reel-scrim,
+  .ka-reel-play {
+    transition:
+      transform 0.7s var(--ease-smooth),
+      background-color 0.4s var(--ease-smooth),
+      color 0.4s var(--ease-smooth),
+      border-color 0.4s var(--ease-smooth),
+      opacity 0.4s var(--ease-smooth);
+  }
+
+  .ka-reel-play {
+    background-color: rgb(3 6 13 / 0.35);
+  }
+
+  /* Hover AND focus-visible — a keyboard user gets the same affordance. */
+  .group:hover .ka-reel-poster,
+  [data-reel]:focus-visible .ka-reel-poster {
+    transform: scale(1.04);
+  }
+
+  .group:hover .ka-reel-scrim,
+  [data-reel]:focus-visible .ka-reel-scrim {
+    opacity: 0.7;
+  }
+
+  .group:hover .ka-reel-play,
+  [data-reel]:focus-visible .ka-reel-play {
+    transform: scale(1.08);
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ka-reel-poster,
+    .ka-reel-scrim,
+    .ka-reel-play {
+      transition: none;
+    }
+
+    .group:hover .ka-reel-poster,
+    [data-reel]:focus-visible .ka-reel-poster,
+    .group:hover .ka-reel-play,
+    [data-reel]:focus-visible .ka-reel-play {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Preview-on-hover for reels that have real footage. Muted + looping, so it
+   * behaves like every social feed: motion on intent, silence always.
+   *
+   * Deliberately does nothing to placeholder frames (they hold no <video>),
+   * and nothing at all under reduced motion — an autoplaying loop is exactly
+   * the kind of movement that setting exists to stop.
+   *
+   * play() is promise-returning and rejects if the pointer leaves before the
+   * frame is ready; that rejection is caught and dropped rather than left to
+   * surface as an unhandled rejection in the console.
+   */
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-reel]').forEach((frame) => {
+      const video = frame.querySelector('video');
+      if (!video) return;
+
+      const play = () => void video.play().catch(() => {});
+      const stop = () => {
+        video.pause();
+        video.currentTime = 0;
+      };
+
+      frame.addEventListener('pointerenter', play);
+      frame.addEventListener('pointerleave', stop);
+      // Keyboard parity — focusing a reel previews it just as hovering does.
+      frame.addEventListener('focusin', play);
+      frame.addEventListener('focusout', stop);
+    });
+  }
+</script>

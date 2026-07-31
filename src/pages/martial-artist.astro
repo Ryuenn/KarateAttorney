@@ -7,6 +7,7 @@ import PageFaq from '../components/layout/PageFaq.astro';
 import PageFeature from '../components/layout/PageFeature.astro';
 import PageHero from '../components/layout/PageHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { FIRM_URL } from '../lib/site';
 ---
 
 <BaseLayout
@@ -36,19 +37,43 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <PageCards
     cards={[
       {
-        title: 'The Training',
-        body: 'The bag, the gloves, and the unglamorous repetition behind the belt. What years on the mat actually teach that no seminar can shortcut.',
+        title: 'Earned On The Bag',
+        body: 'Ten thousand rounds nobody watched, long before anyone said black belt. The part that actually builds a fighter is the part no seminar can hand you.',
         href: '#',
+        linkLabel: 'See the work',
+        /* Same frame as the homepage "The Mat" card. The file is 16:9, which
+           is exactly the card's aspect-video frame, so no imagePosition is
+           needed — object-cover has nothing to crop. */
+        image: '/kickin.JPG',
+        imageAlt: 'Ibrahim Awad training on the heavy bag',
       },
       {
-        title: 'Team Karate Attorney',
-        body: 'The team built around the same standard Ibrahim was held to: fundamentals before flash, effort before excuses, and respect for whoever is across from you.',
-        href: '#',
+        title: 'The Awad Law Firm',
+        /* Angled to THIS page — the mat feeding the practice — rather than
+           reusing the /ventures copy verbatim. Same firm on two pages, two
+           different reasons to care about it. */
+        body: 'The same discipline, in a suit. Built from the ground up and now more than $60 million recovered for clients across Georgia, run on habits the mat taught first.',
+        href: FIRM_URL,
+        firm: true,
+        linkLabel: 'Visit the firm',
+        /* 1672x941 — 16:9 to within a pixel, so it fills the card's
+           aspect-video frame with nothing cropped. */
+        image: '/karate-attorney.png',
+        imageAlt:
+          'Ibrahim J. Awad in a suit with a raised fist, in an office holding karate artwork, a trophy, and the scales of justice',
       },
       {
-        title: 'Ring to Courtroom',
-        body: 'Why composure under pressure transfers. The habits drilled for a fight turn out to be the same ones that win a case — preparation, patience, and no wasted motion.',
+        title: 'Same Fight, New Room',
+        body: 'Composure does not care which room it is in. The habits drilled for a fight turn out to be the ones that win a case — preparation, patience, and no wasted motion.',
         href: '#',
+        linkLabel: 'Read the philosophy',
+        image: '/antibullying1.png',
+        imageAlt:
+          'Ibrahim J. Awad, wearing a headset microphone, speaking with a young boy during an anti-bullying workshop',
+        /* The file is ~3:2, so the 16:9 frame cuts ~18% of its height.
+           Biased up: his head sits within 10% of the top edge and centring
+           would clip it — the boy's torso takes the cut instead. */
+        imagePosition: 'object-[center_20%]',
       },
     ]}
   />
@@ -58,6 +83,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     body="It just changes rooms. The same standard that built the black belt runs Team Karate Attorney today — fundamentals before flash, effort before excuses, and respect for whoever is across from you. If you want that message in front of your athletes, your school, or your team, Ibrahim will come and deliver it."
     ctaLabel="Book Ibrahim to Speak"
     ctaHref="/speaking"
+    image="/even3new.JPG"
+    imageAlt="Ibrahim J. Awad presenting on stage in a waistcoat and headset microphone, Awad Academy balloons beside him"
   />
 
   <PageFaq

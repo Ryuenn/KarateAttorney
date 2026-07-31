@@ -109,6 +109,60 @@ if (!prefersReducedMotion) {
     });
   }
 
+  // Inner-page hero photo: the bottom-right quadrant frame slides in from the
+  // right edge (PageHero — the homepage hero is a different component and is
+  // untouched).
+  //
+  // No rotation and no fade. The frame is already pinned to the right edge of
+  // the viewport, so it simply arrives from just off it — the same panel-slide
+  // vocabulary as the preloader columns, which travel vertically. The section
+  // clips on X, so the frame is invisible until it crosses the edge; a fade
+  // would only muddy an entrance that is already clean.
+  //
+  // The photo inside lags behind the frame — it travels a shorter distance, so
+  // it drifts against the moving edge instead of being carried rigidly with
+  // it. That differential is the whole effect. It is also why the photo is
+  // over-scaled: at rest the frame crops it exactly, leaving no slack to shift
+  // within, so the scale buys overhang on both sides. 8% of travel against
+  // 12.5% of overhang per side keeps the frame covered for the entire tween —
+  // if you raise the shift, raise the scale with it or a bare strip of
+  // background will show at the leading edge.
+  //
+  // Timing: starts a beat AHEAD of the wordmark lines (heroDelay, 1.2s) while
+  // the preloader columns are still clearing, so the photo is already settling
+  // as the last column leaves rather than beginning after it.
+  const heroPhoto = document.querySelector<HTMLElement>('[data-hero-photo]');
+  if (heroPhoto) {
+    const heroPhotoImg = heroPhoto.querySelector<HTMLElement>(
+      '[data-hero-photo-inner]',
+    );
+
+    const photoTl = gsap.timeline({ delay: preloading ? 0.95 : 0.1 });
+
+    photoTl.from(heroPhoto, {
+      xPercent: 100,
+      duration: 1.1,
+      ease: 'power4.out',
+      // Dropped afterwards so the compositor hint does not outlive the
+      // one-shot entrance (it costs a layer for the life of the page).
+      onComplete: () => {
+        heroPhoto.style.willChange = '';
+      },
+    });
+    heroPhoto.style.willChange = 'transform';
+
+    if (heroPhotoImg) {
+      // Runs alongside (position 0) and settles a little later, so the photo
+      // is still easing as the frame lands — the lag must outlive the slide,
+      // or the two arrive together and read as one rigid block.
+      photoTl.from(
+        heroPhotoImg,
+        { xPercent: -8, scale: 1.25, duration: 1.35, ease: 'power4.out' },
+        0,
+      );
+    }
+  }
+
   // Homepage scroll-cover polish. The pinning itself is CSS (.hero-sticky
   // in global.css) so the effect works without JS; this only adds the depth
   // cues — the hero dims and eases back slightly as the next section

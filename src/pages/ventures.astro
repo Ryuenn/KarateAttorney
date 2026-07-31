@@ -1,91 +1,104 @@
 ---
-import PageBand from '../components/layout/PageBand.astro';
-import LogoMarquee from '../components/layout/LogoMarquee.astro';
+/**
+ * /ventures — deliberately the shortest page on the site.
+ *
+ * Reduced (owner request) to three beats: the hero, the ventures themselves,
+ * and the speaking CTA. The statement band, FAQ, logo marquee and closing
+ * block were all removed — this page exists to answer "what else does he
+ * run?", and everything else was padding around that answer.
+ *
+ * The section vocabulary is unchanged: same hero, same card row, same
+ * feature block as every other inner page, so it still reads as part of the
+ * set rather than as a one-off.
+ */
 import PageCards from '../components/layout/PageCards.astro';
-import PageClosing from '../components/layout/PageClosing.astro';
-import PageFaq from '../components/layout/PageFaq.astro';
 import PageFeature from '../components/layout/PageFeature.astro';
 import PageHero from '../components/layout/PageHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { FIRM_URL } from '../lib/site';
 ---
 
 <BaseLayout
   title="Ventures"
-  description="Palistory, Awad Academy, and Team Karate Attorney — the ventures Ibrahim Awad builds outside the courtroom."
+  description="Palistory, Awad Academy, and The Awad Law Firm — the things Ibrahim Awad has built from nothing."
   heroOverlap
 >
+  {/* Exactly 16:9, so it fills the xl frame uncropped; at the squarer
+      breakpoints the crop comes off the sides, and the three subjects sit
+      well inside the middle — no focal-point override needed. */}
   <PageHero
     kicker="Ventures"
     word1="The"
     word2="Ventures"
-    lede="Palistory, Awad Academy, and Team Karate Attorney — the projects built outside the courtroom, each carrying the same discipline into a different room."
+    lede="Palistory, Awad Academy, and The Awad Law Firm — each one built from nothing, and each one carrying the same discipline into a different room."
+    image="/2ndimage.jpg"
+    imageAlt="Ibrahim J. Awad with two colleagues at a Palistory event, in front of a Palistory step-and-repeat banner"
   />
 
-  <PageBand
-    heading={'Built outside\nthe courtroom'}
-    body="A practice is not the only thing worth building. Palistory preserves a history that is constantly at risk of being told by everyone except the people who lived it. Awad Academy passes on what took years to learn, so the next person does not have to start from zero. Team Karate Attorney puts young athletes in front of a standard and asks them to meet it. Different rooms, same instinct: do the work properly, or do not put your name on it."
-    marquee="Palistory · Awad Academy"
-  />
-
+  {/* clearsHero: the card row now follows the hero directly (the statement
+      band that used to absorb the hero photo's overhang is gone), so it has
+      to carry that clearance itself or the photo hangs over the first row. */}
   <PageCards
+    clearsHero
     cards={[
       {
         title: 'Palistory',
         body: 'Preserving Palestinian history and the everyday stories behind it — kept by the people who lived it rather than summarised by everyone else.',
         href: '#',
         linkLabel: 'Visit Palistory',
+        /* A 4:3 photo in the row's 16:9 frame, so a quarter of its height is
+           cut — centred, which keeps everyone's head well inside the frame at
+           the cost of the PALISTORY banner along the bottom edge. There is no
+           crop that keeps both: the subjects span more than three quarters of
+           the photo's height. The card's own heading carries the name. */
+        image: '/palistory1.JPG',
+        imageAlt:
+          'Ibrahim J. Awad and two others behind the Palistory stall at a 5K for Palestine event',
       },
       {
         title: 'Awad Academy',
         body: 'Training attorneys nationwide in how to actually build and try a case — the practical craft that law school does not cover and most firms learn the expensive way.',
         href: '#',
         linkLabel: 'Visit the academy',
+        /* Cropped in from bash.JPG and resampled to 1600x900. The original is
+           a wide 6000px frame with the four subjects small in the middle —
+           at card width their faces were unreadable, and the browser's
+           downscale from 6000px to ~380px added its own mush. This is the
+           tightest 16:9 window that still holds everyone (their combined
+           width is what limits it), sized for the frame it actually renders
+           in. 225KB against the original's 6.6MB. */
+        image: '/awad-academy-card.jpg',
+        imageAlt:
+          'Ibrahim J. Awad with three colleagues in front of an Awad Law Firm and Karate Attorney backdrop',
       },
       {
-        title: 'Team Karate Attorney',
-        body: 'Young athletes put in front of a standard and asked to meet it. Fundamentals first, ego last, and no shortcuts offered.',
-        href: '#',
-        linkLabel: 'Meet the team',
+        title: 'The Awad Law Firm',
+        body: 'Built from the ground up and now more than $60 million recovered for clients across Georgia. Injury, medical malpractice, wrongful death, and rideshare claims.',
+        /* The one venture with a real URL. `firm` tags it for the analytics
+           layer, which counts firm clicks as the site's secondary
+           conversion — the other two cards stay on "#" until their links
+           land. */
+        href: FIRM_URL,
+        firm: true,
+        linkLabel: 'Visit the firm',
+        /* Exactly 16:9, so it fills the frame with nothing cropped. */
+        image: '/herobgrefined.jpg',
+        imageAlt:
+          'The full Awad Law Firm team photographed together in front of a branded backdrop',
       },
     ]}
   />
 
+  {/* A 2:1 photo in the band's 16:9 frame, so ~11% comes off the width.
+      Anchored right because the subject sits hard against that edge and the
+      left of the frame is dark brick — centring would clip him to save wall. */}
   <PageFeature
     heading={'Same instinct,\ndifferent rooms'}
-    body="Preserving a history, teaching what took years to learn, and holding young athletes to a standard are not detours from the day job — they run on exactly the same fuel. If you are building something that needs that kind of attention, or want Ibrahim to speak about it, get in touch."
+    body="Preserving a history, teaching what took years to learn, and building a practice from the ground up all run on exactly the same fuel. If you are building something that needs that kind of attention, or want Ibrahim to speak about it, get in touch."
     ctaLabel="Book Ibrahim to Speak"
     ctaHref="/speaking"
-  />
-
-  <PageFaq
-    items={[
-      {
-        q: 'What is Palistory?',
-        a: 'A project preserving Palestinian history and the everyday stories inside it — kept by the people who lived it rather than summarised by everyone else.',
-      },
-      {
-        q: 'Who is Awad Academy for?',
-        a: 'Attorneys. Ibrahim trains lawyers nationwide through the Academy on case building and trial craft — the practical side of the work that law school leaves out.',
-      },
-      {
-        q: 'How do I join Team Karate Attorney?',
-        a: 'Reach out with your background. The team takes athletes willing to meet a standard — fundamentals first, ego last.',
-      },
-      {
-        q: 'Can Ibrahim speak about building these?',
-        a: 'Yes. Talks on building something alongside a demanding career are a regular request from student and professional groups alike.',
-      },
-    ]}
-  />
-
-  <LogoMarquee />
-
-  <PageClosing
-    marquee="Building something? Let's talk"
-    prompt="Partnerships, collaborations, or a talk about building it — start here."
-    primary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
-    secondary={{ label: 'My Story', href: '/about' }}
-    image="/ibrahim-9.png"
-    imageAlt="Ibrahim J. Awad, arms folded, in a studio portrait"
+    image="/ibrahim-40.png"
+    imageAlt="Ibrahim J. Awad in profile wearing a headset microphone, mid-talk"
+    imagePosition="object-right"
   />
 </BaseLayout>

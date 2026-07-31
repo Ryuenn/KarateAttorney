@@ -48,11 +48,16 @@ export const OFFICE_HOURS: readonly { day: string; hours: string }[] = [
   { day: 'Sunday', hours: 'Closed' },
 ];
 
-/** Venture links (spec §3 — /ventures cards link out). */
+/**
+ * Venture links (spec §3 — /ventures cards link out).
+ *
+ * The third venture is The Awad Law Firm, which already has a real URL in
+ * FIRM_URL above — so it is deliberately not repeated here. Team Karate
+ * Attorney is no longer a venture; it lives on /martial-artist.
+ */
 export const VENTURES = {
   palistory: '[PLACEHOLDER: Palistory URL]',
   awadAcademy: '[PLACEHOLDER: Awad Academy URL]',
-  teamKarateAttorney: '[PLACEHOLDER: Team Karate Attorney URL]',
 } as const;
 
 /** Social profiles — handles not confirmed. */
@@ -66,8 +71,8 @@ export const SOCIALS = [
 /**
  * Homepage direction chosen (owner request, 2026-07-24): the variant
  * switcher is retired and the site runs on the single Homepage 1 design.
- * Eight links, matching spec §3. Every route below now exists and carries
- * its page hero; the sections beneath each hero are still to come.
+ * Seven links: spec §3 listed eight, but /faith was removed on the owner's
+ * request (2026-07-31) and its route deleted. Every route below exists.
  *
  * `/giving` (Giving Back) and the firm site are reachable from the footer
  * and the header's "Need Legal Help?" CTA respectively, so neither takes a
@@ -78,7 +83,6 @@ export const NAV: readonly { label: string; href: string }[] = [
   { label: 'Speaking', href: '/speaking' },
   { label: 'The Attorney', href: '/attorney' },
   { label: 'Martial Artist', href: '/martial-artist' },
-  { label: 'Faith', href: '/faith' },
   { label: 'Ventures', href: '/ventures' },
   { label: 'Content', href: '/content' },
   { label: 'Contact', href: '/contact' },

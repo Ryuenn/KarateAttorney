@@ -1,7 +1,7 @@
 ---
+import ReelWall from '../components/content/ReelWall.astro';
 import PageBand from '../components/layout/PageBand.astro';
 import LogoMarquee from '../components/layout/LogoMarquee.astro';
-import PageCards from '../components/layout/PageCards.astro';
 import PageClosing from '../components/layout/PageClosing.astro';
 import PageFaq from '../components/layout/PageFaq.astro';
 import PageFeature from '../components/layout/PageFeature.astro';
@@ -15,11 +15,16 @@ import { FIRM_URL } from '../lib/site';
   description="Videos, reels, and articles from Ibrahim Awad — legal education, motivation, and faith."
   heroOverlap
 >
+  {/* Exactly 16:9, so it fills the xl frame uncropped; at the squarer
+      breakpoints the crop comes off the sides, and the subject is dead centre
+      — no focal-point override needed. */}
   <PageHero
     kicker="Content Hub"
     word1="The"
     word2="Content"
     lede="Videos, reels, and articles — legal education, motivation, and faith. The lessons from the mat, the courtroom, and the stage, gathered in one place."
+    image="/upscaled.png"
+    imageAlt="Ibrahim J. Awad seated at a marble desk in front of a white panelled wall, mid-piece to camera"
   />
 
   <PageBand
@@ -28,34 +33,169 @@ import { FIRM_URL } from '../lib/site';
     marquee="Know your rights"
   />
 
-  <PageCards
-    cards={[
+  {/* Replaces the generic three-up card row here: this page's material is
+      vertical social video, and PageCards framed it as landscape article
+      teasers. The browse-by-category links the cards carried are preserved
+      in the wall's masthead, so no navigation was lost in the swap. */}
+  <ReelWall
+    kicker="The Feed"
+    heading={'Watch it\nin sixty\nseconds'}
+    {/* One link per category actually present in the wall. "Browse faith"
+        went with the placeholder reels — the only two faith pieces were
+        placeholders — and comes back when real faith content does. */}
+    browse={[
+      { label: 'Browse legal', href: '#' },
+      { label: 'Browse motivational', href: '#' },
+      { label: 'Browse martial arts', href: '#' },
+      { label: 'Browse ventures', href: '#' },
+      { label: 'Browse off the clock', href: '#' },
+    ]}
+    {/* Every reel here is real and lives on YouTube: the frame is a local
+        still of the short's own thumbnail, and clicking it opens the short in
+        a modal on the page. ReelWall still supports placeholder entries (omit
+        `href`/`poster`) for slots waiting on footage. */}
+    reels={[
       {
-        title: 'Legal Education',
-        body: 'What to do after a crash, what never to say to an adjuster, and how a case actually moves. Plainly worded, free, and written for people having a bad month.',
-        href: '#',
-        linkLabel: 'Browse legal',
+        title: 'Can you sue for inconvenience?',
+        category: 'Legal education',
+        duration: '0:56',
+        href: 'https://youtube.com/shorts/XeSF5T5GGBM',
+        poster: '/reel-sue-inconvenience.jpg',
+        posterAlt:
+          'Ibrahim J. Awad in a blue suit mid-sentence, captioned "You can\'t get to work right"',
       },
       {
-        title: 'Motivational',
-        body: 'Short reels and longer talks on discipline, preparation, and staying composed when the pressure is highest — from the mat and the courtroom both.',
-        href: '#',
-        linkLabel: 'Browse motivational',
+        title: 'Do you like to run?',
+        category: 'Motivational',
+        duration: '0:22',
+        href: 'https://youtube.com/shorts/_m2vU8KmFNM',
+        poster: '/reel-do-you-like-to-run.jpg',
+        posterAlt:
+          'Ibrahim J. Awad running across a bridge in training gear, captioned "What\'s blurred?"',
       },
       {
-        title: 'Faith',
-        body: 'Khutbahs and reflections on patience, accountability, and perseverance — the material that underpins everything else on this site.',
-        href: '#',
-        linkLabel: 'Browse faith',
+        title: 'Who wins this fight?',
+        category: 'Martial arts',
+        duration: '0:57',
+        href: 'https://youtube.com/shorts/uU0QqMbPQq4',
+        poster: '/reel-who-wins-this-fight.jpg',
+        posterAlt:
+          'Two fighters in headgear squaring up on the mat at a Classic Combat tournament',
+      },
+      {
+        title: 'Been hurt in a car wreck?',
+        category: 'Legal education',
+        duration: '0:14',
+        href: 'https://youtube.com/shorts/MGYhAHeGEBw',
+        poster: '/reel-been-hurt-in-a-wreck.jpg',
+        posterAlt:
+          'Ibrahim J. Awad courtside in training gear with taped hands, captioned "I\'ll hit back"',
+      },
+      {
+        title: 'Does a tree make a sound?',
+        category: 'Off the clock',
+        duration: '2:33',
+        href: 'https://youtube.com/shorts/yAWdpvKZh-4',
+        poster: '/reel-does-a-tree-make-a-sound.jpg',
+        posterAlt:
+          'Ibrahim J. Awad driving, mid-argument, captioned "What is the definition of sound"',
+      },
+      {
+        title: 'You cannot grow in places of comfort',
+        category: 'Motivational',
+        duration: '0:28',
+        href: 'https://youtube.com/shorts/FQqpVT0OdaA',
+        poster: '/reel-you-cannot-grow-in-comfort.jpg',
+        posterAlt:
+          'Ibrahim J. Awad talking outdoors, captioned "So sometimes you gotta put yourself"',
+      },
+      {
+        title: 'The power of leaving',
+        category: 'Motivational',
+        duration: '0:24',
+        href: 'https://youtube.com/shorts/ijNVZWM3dek',
+        poster: '/reel-the-power-of-leaving.jpg',
+        posterAlt:
+          'Ibrahim J. Awad in a firm-branded gilet walking through a garden, captioned "The watermelon that I\'m planting"',
+      },
+      {
+        title: 'Unreasonable hospitality for the team',
+        category: 'Motivational',
+        duration: '1:36',
+        href: 'https://youtube.com/shorts/HDnFG2bE71w',
+        poster: '/reel-unreasonable-hospitality.jpg',
+        posterAlt:
+          'Ibrahim J. Awad talking to camera from a car, captioned "The Awad Law Firm to be about"',
+      },
+      {
+        title: 'Car wreck?',
+        category: 'Legal education',
+        duration: '0:15',
+        href: 'https://youtube.com/shorts/8gpNOdRgQiQ',
+        poster: '/reel-car-wreck.jpg',
+        posterAlt:
+          'Ibrahim J. Awad driving, over a caption reading "Over 1,000 road accidents happen in Georgia every single day"',
+      },
+      {
+        title: 'In a car wreck?',
+        category: 'Legal education',
+        duration: '0:20',
+        href: 'https://youtube.com/shorts/j317IRjfwOU',
+        poster: '/reel-in-a-car-wreck.jpg',
+        posterAlt:
+          'The "Got hit? I\'ll hit back legally" billboard above a Georgia roadside, captioned "How often do insurance companies lowball accident victims?"',
+      },
+      {
+        title: 'Are billboards actually worth it?',
+        category: 'Ventures',
+        duration: '0:45',
+        href: 'https://youtube.com/shorts/rkFh0Rt6eTk',
+        poster: '/reel-are-billboards-worth-it.jpg',
+        posterAlt:
+          'Ibrahim J. Awad in a checked waistcoat, mid-interview on The Visionary Builder podcast',
+      },
+      {
+        /* YouTube's title is the full "Hiring Global Talents Speed Dating
+           Edition at the CEO Lawyer Academy 2026 in Cancun" — five lines in a
+           frame that holds two. Shortened here; the full title still shows on
+           YouTube. */
+        title: 'Hiring global talent, speed-dating style',
+        category: 'Ventures',
+        duration: '1:33',
+        href: 'https://youtube.com/shorts/NqFMSXVM5LU',
+        poster: '/reel-hiring-global-talent.jpg',
+        posterAlt:
+          'Interviews under way around tables at the CEO Lawyer Academy in Cancun, attendees blurred',
+      },
+      {
+        title: 'Small gesture, massive brand impact',
+        category: 'Ventures',
+        duration: '1:20',
+        href: 'https://youtube.com/shorts/0VRtvEqHen0',
+        poster: '/reel-small-gesture-brand-impact.jpg',
+        posterAlt:
+          'Ibrahim J. Awad seated in an orange armchair beside The Visionary Builder banner',
+      },
+      {
+        title: 'Many people would be fired',
+        category: 'Ventures',
+        duration: '0:54',
+        href: 'https://youtube.com/shorts/51hdHmjXCVA',
+        poster: '/reel-many-would-be-fired.jpg',
+        posterAlt:
+          'Ibrahim J. Awad mid-sentence in the podcast chair, captioned "On such a trauma"',
       },
     ]}
   />
 
+  {/* Exactly 16:9, matching the band's frame, so nothing is cropped. */}
   <PageFeature
     heading={'Watched something\nuseful? Share it'}
     body="Everything here is free and meant to be passed on — to the friend who just got rear-ended, the cousin who does not know what an adjuster is, or the group that needs a reminder this week. If you would rather hear it in person, Ibrahim speaks to organizations of every size."
     ctaLabel="Book Ibrahim to Speak"
     ctaHref="/speaking"
+    image="/ibrahim-30.png"
+    imageAlt="Ibrahim J. Awad in shirt and tie with his jacket slung over one shoulder, smiling to camera"
   />
 
   <PageFaq

@@ -1,0 +1,334 @@
+---
+/**
+ * The modal player itself — markup, styling and behaviour for one video.
+ * Rendered by PageVideo (a landscape film) and by ReelWall (portrait shorts);
+ * both point a trigger at it by id, and neither carries its own copy of the
+ * dialog logic.
+ *
+ * Nothing from YouTube is requested until the visitor asks for it: the
+ * <iframe> is built and inserted on the first play click. That keeps
+ * YouTube's scripts, cookies and ~hundreds of KB off every page load, and it
+ * is why the embed uses youtube-nocookie.com — no tracking cookie is set
+ * until playback actually begins.
+ *
+ * This is a native <dialog> opened with showModal(), which is doing a lot of
+ * quiet work: focus is trapped, Escape closes, the page behind goes inert,
+ * focus returns to the trigger on close, and the whole thing renders in the
+ * top layer so it cannot lose a z-index fight with the fixed header or the
+ * hero's stacking context. Hand-rolling any of that would be more code and
+ * worse.
+ *
+ * The pop animation is CSS, not GSAP, on purpose. GSAP is only initialised in
+ * motion.ts when reduced motion is OFF, so a GSAP-driven modal would either
+ * need its own copy of the library or would silently fail to appear for
+ * reduced-motion users. A transition degrades to an instant, correct open.
+ */
+
+interface Props {
+  /** Must match the trigger's `data-video-open`. Use `videoDialogId()`. */
+  id: string;
+  /** Finished embed URL. Use `youTubeEmbedSrc()`. */
+  src: string;
+  /** Names the player for screen readers, and labels the dialog. */
+  label: string;
+  /**
+   * Frame shape. "portrait" is for 9:16 shorts, where the constraint is the
+   * viewport's HEIGHT, not its width — so the panel's width is derived from
+   * the height available rather than the other way round.
+   */
+  orientation?: 'landscape' | 'portrait';
+}
+
+const { id, src, label, orientation = 'landscape' } = Astro.props;
+---
+
+{/* In the top layer once opened, so its position in the document does not
+    matter — it is rendered wherever the band that owns it happens to sit. */}
+<dialog
+  id={id}
+  class="ka-video-dialog"
+  aria-label={label}
+  data-orientation={orientation}
+>
+  <div class="ka-video-backdrop" data-video-dismiss></div>
+
+  <div class="ka-video-panel">
+    <button
+      type="button"
+      class="ka-video-close font-mono text-[0.6875rem] tracking-[0.15em] uppercase"
+      data-video-close
+    >
+      Close <span aria-hidden="true">&#215;</span>
+    </button>
+
+    {/* The iframe is inserted here on first open and removed on close —
+        removal is what actually stops playback. */}
+    <div class="ka-video-frame" data-video-mount data-video-src={src}></div>
+  </div>
+</dialog>
+
+<style>
+  /* The native backdrop is left transparent: the visible one is the div
+     inside, which can be transitioned and click-tested like any element. */
+  .ka-video-dialog::backdrop {
+    background: transparent;
+  }
+
+  .ka-video-dialog {
+    position: fixed;
+    inset: 0;
+    display: none;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: hidden;
+  }
+
+  .ka-video-dialog[open] {
+    display: grid;
+    place-items: center;
+  }
+
+  .ka-video-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgb(3 6 13 / 0.92);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-smooth);
+  }
+
+  .ka-video-panel {
+    position: relative;
+    z-index: 1;
+    width: min(100% - 2rem, 78rem);
+    /* The pop: down a touch, back, and slightly small. */
+    transform: translateY(1.5rem) scale(0.94);
+    opacity: 0;
+    transition:
+      transform 0.45s var(--ease-smooth),
+      opacity 0.35s var(--ease-smooth);
+  }
+
+  /* A 9:16 frame is bounded by the viewport's height, so the panel's WIDTH is
+     derived from the height on offer: whatever is left after the close button
+     and a margin, scaled back down by the aspect ratio. Without this the
+     panel would take the full column width and run off the bottom of the
+     screen. */
+  .ka-video-dialog[data-orientation='portrait'] .ka-video-panel {
+    width: min(100% - 2rem, calc((100vh - 7rem) * 9 / 16));
+  }
+
+  /* svh, so mobile browser chrome is accounted for. Written as @supports
+     rather than as a second `width` declaration because the CSS minifier
+     deduplicates same-property declarations and would drop the vh fallback —
+     leaving an engine without svh on the landscape width, which for a
+     portrait video means a 78rem panel running off the screen. */
+  @supports (height: 100svh) {
+    .ka-video-dialog[data-orientation='portrait'] .ka-video-panel {
+      width: min(100% - 2rem, calc((100svh - 7rem) * 9 / 16));
+    }
+  }
+
+  .ka-video-dialog[data-orientation='portrait'] .ka-video-frame {
+    aspect-ratio: 9 / 16;
+  }
+
+  .ka-video-dialog[data-open] .ka-video-backdrop {
+    opacity: 1;
+  }
+
+  .ka-video-dialog[data-open] .ka-video-panel {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .ka-video-close {
+    display: block;
+    margin-left: auto;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.25rem;
+    color: rgb(250 248 244 / 0.7);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: color 0.3s var(--ease-smooth);
+  }
+
+  .ka-video-close:hover,
+  .ka-video-close:focus-visible {
+    color: var(--color-paper);
+  }
+
+  .ka-video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    background-color: #000;
+    overflow: hidden;
+  }
+
+  .ka-video-frame :global(iframe) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /* The pop is decoration; the modal must still open instantly and land in
+     the right place without it. */
+  @media (prefers-reduced-motion: reduce) {
+    .ka-video-backdrop,
+    .ka-video-panel,
+    .ka-video-close {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Wires every trigger on the page to the dialog it names. Paired by id, not
+   * by DOM adjacency — a page with a film band and eight reels on it must not
+   * let any trigger drive the wrong player.
+   *
+   * A trigger is either a <button> (PageVideo's poster) or an <a> pointing at
+   * the watch page (ReelWall's reels). The anchor is the better starting
+   * point: with no JS it is simply a link that works, and this upgrades it to
+   * the modal rather than being the only thing that makes it clickable.
+   */
+  document
+    .querySelectorAll<HTMLElement>('[data-video-open]')
+    .forEach((trigger) => {
+      const dialog = document.getElementById(
+        trigger.dataset.videoOpen ?? '',
+      ) as HTMLDialogElement | null;
+      const mount = dialog?.querySelector<HTMLElement>('[data-video-mount]');
+      const src = mount?.dataset.videoSrc;
+
+      if (!dialog || !mount || !src) return;
+
+      // showModal() is unsupported on very old engines. An anchor already
+      // goes somewhere sensible, so it is left alone; a button has nowhere to
+      // fall back to, and leaving it inert would be a dead end.
+      if (typeof dialog.showModal !== 'function') {
+        if (trigger instanceof HTMLAnchorElement) return;
+
+        const link = document.createElement('a');
+        link.href = src
+          .replace('www.youtube-nocookie.com/embed/', 'www.youtube.com/watch?v=')
+          .split('?')[0];
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        trigger.addEventListener('click', () => link.click());
+        return;
+      }
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const root = document.documentElement;
+
+      const open = () => {
+        // Built fresh each time. Re-inserting rather than reusing a hidden
+        // iframe guarantees the video restarts from zero and, more
+        // importantly, that no YouTube frame lingers in the DOM (still
+        // phoning home) once the visitor has closed the modal.
+        const iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.title =
+          trigger.getAttribute('aria-label') ??
+          dialog.getAttribute('aria-label') ??
+          'Video';
+        iframe.allow =
+          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+        mount.replaceChildren(iframe);
+
+        dialog.showModal();
+        // Lenis keeps driving document scroll behind a modal, so the page
+        // would scroll under the dialog on wheel. Stopping it (and the html
+        // overflow, for native scrolling) pins the page until close.
+        //
+        // Hiding the overflow also removes the scrollbar, which widens the
+        // viewport and shifts the whole page left by its width. Replacing it
+        // with equivalent padding holds the layout still — the backdrop is
+        // translucent, so a jump behind it would be plainly visible, and it
+        // would happen again in reverse on close.
+        const barWidth = window.innerWidth - root.clientWidth;
+        window.__lenis?.stop();
+        root.style.overflow = 'hidden';
+        if (barWidth > 0) root.style.paddingRight = `${barWidth}px`;
+
+        // One frame after showModal so the browser has painted the closed
+        // state — without that there is nothing to transition FROM and the
+        // panel simply appears.
+        requestAnimationFrame(() => {
+          dialog.dataset.open = 'true';
+        });
+      };
+
+      const finishClose = () => {
+        dialog.close();
+        // Dropping the iframe is what stops playback; pausing is not
+        // possible from outside the frame without the YouTube API.
+        mount.replaceChildren();
+        window.__lenis?.start();
+        root.style.overflow = '';
+        root.style.paddingRight = '';
+      };
+
+      const close = () => {
+        if (!dialog.open) return;
+        delete dialog.dataset.open;
+
+        if (reduced.matches) {
+          finishClose();
+          return;
+        }
+
+        // Wait out the exit transition, but never trust it to fire — a
+        // backgrounded tab or an interrupted transition would otherwise
+        // leave the dialog open and the page locked. The timeout is the
+        // real guarantee; transitionend just makes it feel immediate.
+        let done = false;
+        const once = () => {
+          if (done) return;
+          done = true;
+          panel?.removeEventListener('transitionend', once);
+          finishClose();
+        };
+        const panel = dialog.querySelector<HTMLElement>('.ka-video-panel');
+        panel?.addEventListener('transitionend', once);
+        window.setTimeout(once, 500);
+      };
+
+      trigger.addEventListener('click', (event) => {
+        // Stops an anchor navigating to YouTube; a no-op on a button. Modified
+        // clicks are left alone so "open in new tab" still reaches the short.
+        const mouse = event as MouseEvent;
+        if (mouse.metaKey || mouse.ctrlKey || mouse.shiftKey || mouse.button > 0)
+          return;
+
+        event.preventDefault();
+        open();
+      });
+
+      dialog
+        .querySelector<HTMLElement>('[data-video-close]')
+        ?.addEventListener('click', close);
+      dialog
+        .querySelector<HTMLElement>('[data-video-dismiss]')
+        ?.addEventListener('click', close);
+
+      // Escape fires `cancel` on a modal dialog. Preventing the default stops
+      // the browser closing it instantly, so it can leave through the same
+      // animated path as every other dismissal.
+      dialog.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        close();
+      });
+    });
+</script>

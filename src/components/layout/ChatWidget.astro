@@ -1,0 +1,540 @@
+---
+/**
+ * Scripted chat widget — lower-right corner, opposite the floating firm CTA.
+ *
+ * There is NO model and no network call behind this. Every reply is written
+ * below in `SCRIPT` and matched by keyword, so what the visitor is told is
+ * exactly what was authored here. That is deliberate for a law firm: an
+ * open-ended bot on this site would be answering legal questions from
+ * strangers, which is precisely the thing the rest of the site is careful not
+ * to do. When a real backend replaces this, the same rule should hold — the
+ * bot orients people, it does not advise them.
+ *
+ * The replies stay navigational for the same reason (what Ibrahim does, how
+ * to book him, where to find things), and anything that sounds like an actual
+ * case is handed to the firm. The panel carries a standing disclaimer.
+ *
+ * Progressive enhancement: with no JS the launcher is a plain link to
+ * /contact rather than a dead button, so the corner still does something
+ * useful. The panel is inert markup until the script upgrades it.
+ */
+import { FIRM_URL } from '../../lib/site';
+
+/**
+ * The whole conversation model.
+ *
+ * `match` is a list of lowercase keywords; a typed message picks the entry
+ * with the most hits. `prompt` is the chip the visitor can click instead of
+ * typing — omit it to keep an answer reachable by typing only.
+ */
+const SCRIPT: {
+  prompt?: string;
+  match: string[];
+  answer: string;
+  link?: { label: string; href: string; firm?: boolean };
+}[] = [
+  {
+    prompt: 'Who is the Karate Attorney?',
+    match: ['who', 'about', 'karate attorney', 'ibrahim', 'bio', 'story'],
+    answer:
+      'Ibrahim J. Awad — a trial lawyer, a black belt, and a TEDx speaker. The short version: the discipline came from the mat, and it turned up again in the courtroom. The long version is on the story page.',
+    link: { label: 'Read the story', href: '/about' },
+  },
+  {
+    prompt: 'Can Ibrahim speak at my event?',
+    match: ['speak', 'speaker', 'speaking', 'event', 'book', 'talk', 'keynote'],
+    answer:
+      'Yes — schools, companies, and organizations of every size, on discipline, resilience, and anti-bullying. Tell us the date, the audience, and roughly how long you need, and we will come back to you.',
+    link: { label: 'Book Ibrahim to speak', href: '/speaking' },
+  },
+  {
+    prompt: 'I was in a car wreck — can you help?',
+    match: [
+      'wreck',
+      'crash',
+      'accident',
+      'injury',
+      'injured',
+      'hurt',
+      'case',
+      'sue',
+      'claim',
+      'insurance',
+      'adjuster',
+      'lawyer',
+      'legal help',
+    ],
+    answer:
+      'Sorry to hear it. Cases are handled through The Awad Law Firm, and a case review there is free — that is the right place to start, because the details of your situation matter and I cannot get into them here.',
+    link: { label: 'Free case review', href: FIRM_URL, firm: true },
+  },
+  {
+    prompt: 'Where can I watch the videos?',
+    match: ['video', 'videos', 'watch', 'content', 'reel', 'reels', 'youtube', 'shorts'],
+    answer:
+      'The content hub has the reels and films in one place — legal education, motivation, and the lighter stuff. All free, all meant to be passed on.',
+    link: { label: 'Open the content hub', href: '/content' },
+  },
+  {
+    match: ['martial', 'karate', 'belt', 'dojo', 'train', 'fight', 'tournament'],
+    answer:
+      'Black belt, still training, still competing. The martial arts page covers where that started and what it has to do with practising law.',
+    link: { label: 'The martial artist', href: '/martial-artist' },
+  },
+  {
+    match: ['contact', 'reach', 'email', 'phone', 'call', 'talk to', 'human'],
+    answer:
+      'The contact page has every way to reach us, and a real person reads what comes in.',
+    link: { label: 'Get in touch', href: '/contact' },
+  },
+  {
+    match: ['price', 'cost', 'fee', 'charge', 'how much', 'pay'],
+    answer:
+      'Injury cases at The Awad Law Firm are handled on a contingency basis — no fee unless the case is won. Exact terms depend on the case, so the firm will walk you through them directly.',
+    link: { label: 'Ask the firm', href: FIRM_URL, firm: true },
+  },
+];
+
+/** Shown when nothing matches, so the widget never dead-ends. */
+const FALLBACK =
+  'That one is better answered by a person. Try a suggestion below, or send it through the contact page and someone will come back to you.';
+
+const prompts = SCRIPT.filter((entry) => entry.prompt);
+---
+
+<div
+  id="chat-dock"
+  class="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-3 will-change-transform sm:right-6 sm:bottom-6"
+>
+  {/* PANEL. Not a native <dialog>: this is a non-blocking widget, so the page
+      behind it stays scrollable and usable — showModal() would make the rest
+      of the site inert, which is wrong for something the visitor is meant to
+      consult alongside the page. Focus is therefore moved by hand on open and
+      returned on close. */}
+  <section
+    id="chat-panel"
+    class="chat-panel flex w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden bg-paper text-ink shadow-2xl"
+    role="dialog"
+    aria-label="Ask a question"
+    aria-modal="false"
+    hidden
+  >
+    <header class="flex items-center justify-between bg-(--accent) px-4 py-3.5">
+      <p
+        class="font-mono text-[0.6875rem] font-normal tracking-[0.2em] text-(--accent-ink) uppercase"
+      >
+        Karate Attorney
+      </p>
+      <button
+        type="button"
+        id="chat-close"
+        class="-mr-1 grid h-7 w-7 place-items-center text-(--accent-ink) transition-opacity hover:opacity-70"
+        aria-label="Close chat"
+      >
+        <svg viewBox="0 0 24 24" class="h-4 w-4" aria-hidden="true">
+          <path
+            d="M6 6l12 12M18 6L6 18"
+            stroke="currentColor"
+            stroke-width="1.75"
+            fill="none"
+          ></path>
+        </svg>
+      </button>
+    </header>
+
+    {/* role="log" + polite: replies arrive after the visitor's own action, so
+        they should be announced without interrupting whatever is being read. */}
+    <div
+      id="chat-log"
+      {/* 45vh, not more: the panel also carries a header, the chip row, the
+          form and the disclaimer, and on a short landscape phone a taller log
+          pushed the whole thing off the top of the screen. */}
+      class="flex max-h-[min(26rem,45vh)] min-h-[13rem] flex-col gap-3 overflow-y-auto bg-navy-50 px-4 py-4"
+      role="log"
+      aria-live="polite"
+      aria-label="Conversation"
+    >
+      {/* No meta-commentary about what this thing is — the visitor came here
+          to get somewhere, so the opener says what it can do and gets out of
+          the way. Contractions avoided, as everywhere else on the site. */}
+      <p class="chat-msg chat-msg--bot">
+        Ask about Ibrahim, booking a talk, or where to find something. If it is
+        about your own case, I will hand you to the firm — they take it from
+        there.
+      </p>
+    </div>
+
+    {/* Suggested questions. These ARE the happy path — the typed input is the
+        fallback, not the other way round, because a scripted bot answers a
+        known question far better than a guessed one. */}
+    <div
+      id="chat-prompts"
+      class="flex flex-wrap gap-2 border-t border-ink/10 bg-paper px-4 pt-3"
+    >
+      {
+        prompts.map((entry) => (
+          <button
+            type="button"
+            class="chat-chip font-mono text-[0.625rem] tracking-[0.08em] uppercase"
+            data-prompt={entry.prompt}
+          >
+            {entry.prompt}
+          </button>
+        ))
+      }
+    </div>
+
+    <form id="chat-form" class="flex items-center gap-2 bg-paper px-4 py-3">
+      <label class="sr-only" for="chat-input">Ask a question</label>
+      <input
+        id="chat-input"
+        type="text"
+        name="message"
+        autocomplete="off"
+        placeholder="Ask me anything"
+        class="min-w-0 flex-1 border border-ink/15 bg-paper px-3 py-2.5 font-mono text-xs text-ink placeholder:text-ink/40 focus:border-(--accent) focus:outline-none"
+      />
+      <button
+        type="submit"
+        class="grid h-10 w-10 shrink-0 place-items-center bg-(--accent) text-(--accent-ink) transition-opacity hover:opacity-90"
+        aria-label="Send"
+      >
+        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor" aria-hidden="true">
+          <path d="M3 20.5 22 12 3 3.5 3 10l13 2-13 2z"></path>
+        </svg>
+      </button>
+    </form>
+
+    <p
+      class="border-t border-ink/10 bg-paper px-4 pt-2 pb-3 text-center font-mono text-[0.5625rem] leading-relaxed tracking-[0.05em] text-ink/45 uppercase"
+    >
+      General information only — not legal advice
+    </p>
+  </section>
+
+  {/* LAUNCHER. An <a> to /contact, upgraded to a button by the script: with
+      no JS the corner still leads somewhere rather than being a dead control. */}
+  <a
+    id="chat-launcher"
+    href="/contact"
+    class="chat-launcher grid h-14 w-14 place-items-center bg-(--accent) text-(--accent-ink) shadow-lg transition-colors"
+    aria-label="Open chat"
+    aria-controls="chat-panel"
+    aria-expanded="false"
+  >
+    <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true">
+      <path
+        d="M3 4.5h18a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H8.5L4 21.2V17.5H3a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Z"
+      ></path>
+      <circle cx="8.5" cy="11" r="1.15" fill="var(--accent)"></circle>
+      <circle cx="12" cy="11" r="1.15" fill="var(--accent)"></circle>
+      <circle cx="15.5" cy="11" r="1.15" fill="var(--accent)"></circle>
+    </svg>
+  </a>
+</div>
+
+{/* The script reads its answers from here rather than from an inlined JS
+    object, so the copy above stays the single source of truth. */}
+<script id="chat-script-data" type="application/json" set:html={JSON.stringify({ script: SCRIPT, fallback: FALLBACK })} is:inline />
+
+<style>
+  .chat-launcher:hover,
+  .chat-launcher:focus-visible {
+    background-color: var(--accent-strong);
+  }
+
+  /* Sharp corners and a hard shadow, like every other surface on the site —
+     no rounded bubble chrome. */
+  .chat-panel {
+    transform-origin: bottom right;
+    transform: translateY(0.75rem) scale(0.96);
+    opacity: 0;
+    transition:
+      transform 0.35s var(--ease-smooth),
+      opacity 0.25s var(--ease-smooth);
+  }
+
+  .chat-panel[data-open] {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .chat-msg {
+    max-width: 85%;
+    padding: 0.625rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .chat-msg--bot {
+    align-self: flex-start;
+    background-color: var(--color-paper);
+    border: 1px solid rgb(11 15 23 / 0.08);
+  }
+
+  .chat-msg--user {
+    align-self: flex-end;
+    background-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .chat-msg :global(a) {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .chat-msg--user :global(a) {
+    color: var(--accent-ink);
+  }
+
+  .chat-chip {
+    padding: 0.4rem 0.625rem;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: none;
+    cursor: pointer;
+    transition:
+      background-color 0.25s var(--ease-smooth),
+      color 0.25s var(--ease-smooth);
+  }
+
+  .chat-chip:hover,
+  .chat-chip:focus-visible {
+    background-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* Typing indicator — three dots, so the scripted delay reads as thinking
+     rather than as the widget having frozen. */
+  .chat-typing {
+    display: inline-flex;
+    gap: 0.25rem;
+  }
+
+  .chat-typing span {
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 50%;
+    background-color: rgb(11 15 23 / 0.35);
+    animation: chat-blink 1.2s infinite ease-in-out;
+  }
+
+  .chat-typing span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .chat-typing span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes chat-blink {
+    0%,
+    80%,
+    100% {
+      opacity: 0.25;
+    }
+    40% {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chat-panel {
+      transition: none;
+    }
+
+    .chat-typing span {
+      animation: none;
+      opacity: 0.5;
+    }
+  }
+</style>
+
+<script>
+  import { dockAboveFooter } from '../../scripts/footer-dock';
+
+  interface Entry {
+    prompt?: string;
+    match: string[];
+    answer: string;
+    link?: { label: string; href: string; firm?: boolean };
+  }
+
+  const dock = document.getElementById('chat-dock');
+  const panel = document.getElementById('chat-panel');
+  const launcher = document.getElementById('chat-launcher');
+  const closeBtn = document.getElementById('chat-close');
+  const log = document.getElementById('chat-log');
+  const form = document.getElementById('chat-form') as HTMLFormElement | null;
+  const input = document.getElementById('chat-input') as HTMLInputElement | null;
+  const promptRow = document.getElementById('chat-prompts');
+  const data = document.getElementById('chat-script-data');
+
+  if (dock && panel && launcher && closeBtn && log && form && input && data) {
+    const { script, fallback } = JSON.parse(data.textContent ?? '{}') as {
+      script: Entry[];
+      fallback: string;
+    };
+
+    // Rides up with the firm CTA on the opposite corner.
+    dockAboveFooter(dock);
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    /* ---- transcript ---------------------------------------------------- */
+
+    const scrollToEnd = () => {
+      log.scrollTop = log.scrollHeight;
+    };
+
+    const addMessage = (who: 'bot' | 'user', text: string, entry?: Entry) => {
+      const p = document.createElement('p');
+      p.className = `chat-msg chat-msg--${who}`;
+      p.textContent = text;
+
+      if (entry?.link) {
+        const a = document.createElement('a');
+        a.href = entry.link.href;
+        a.textContent = entry.link.label;
+        if (entry.link.firm) {
+          // Outbound to the firm — tagged for the analytics layer, which
+          // counts firm clicks as the site's secondary conversion.
+          a.dataset.firmLink = '';
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+        }
+        p.append(document.createElement('br'), a);
+      }
+
+      log.append(p);
+      scrollToEnd();
+    };
+
+    /** Best entry for a typed message: the one matching the most keywords. */
+    const findEntry = (text: string): Entry | undefined => {
+      const q = text.toLowerCase();
+      let best: Entry | undefined;
+      let bestScore = 0;
+
+      for (const entry of script) {
+        const score = entry.match.filter((k) => q.includes(k)).length;
+        if (score > bestScore) {
+          best = entry;
+          bestScore = score;
+        }
+      }
+
+      return best;
+    };
+
+    const reply = (entry?: Entry) => {
+      // The pause is theatre, but the alternative — an answer appearing in the
+      // same frame as the question — reads as a canned form response, which is
+      // exactly what it is and exactly what we do not want it to feel like.
+      const typing = document.createElement('p');
+      typing.className = 'chat-msg chat-msg--bot';
+      typing.innerHTML =
+        '<span class="chat-typing"><span></span><span></span><span></span></span>';
+      typing.setAttribute('aria-hidden', 'true');
+      log.append(typing);
+      scrollToEnd();
+
+      window.setTimeout(
+        () => {
+          typing.remove();
+          if (entry) addMessage('bot', entry.answer, entry);
+          else addMessage('bot', fallback);
+        },
+        reduced.matches ? 0 : 550,
+      );
+    };
+
+    const ask = (text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+      addMessage('user', trimmed);
+      reply(findEntry(trimmed));
+    };
+
+    /* ---- open / close --------------------------------------------------- */
+
+    let open = false;
+
+    const setOpen = (next: boolean) => {
+      open = next;
+      launcher.setAttribute('aria-expanded', String(next));
+      launcher.setAttribute('aria-label', next ? 'Close chat' : 'Open chat');
+
+      if (next) {
+        panel.hidden = false;
+        // One frame after unhiding, so there is a painted closed state to
+        // transition from — without it the panel simply appears.
+        requestAnimationFrame(() => panel.setAttribute('data-open', ''));
+        input.focus();
+        return;
+      }
+
+      panel.removeAttribute('data-open');
+      launcher.focus();
+
+      if (reduced.matches) {
+        panel.hidden = true;
+        return;
+      }
+
+      // Wait out the exit transition, but never trust it to fire — a
+      // backgrounded tab would otherwise leave the panel visible but marked
+      // closed. The timeout is the guarantee.
+      let done = false;
+      const finish = () => {
+        if (done || open) return;
+        done = true;
+        panel.removeEventListener('transitionend', finish);
+        panel.hidden = true;
+      };
+      panel.addEventListener('transitionend', finish);
+      window.setTimeout(finish, 400);
+    };
+
+    // The launcher is an <a href="/contact"> in the markup so it still leads
+    // somewhere without JS. Now that JS is running, it becomes the toggle.
+    launcher.setAttribute('role', 'button');
+    launcher.addEventListener('click', (event) => {
+      event.preventDefault();
+      setOpen(!open);
+    });
+
+    // An anchor fires click on Enter but not on Space; role="button" promises
+    // both, so the missing half is added by hand.
+    launcher.addEventListener('keydown', (event) => {
+      if (event.key !== ' ' && event.key !== 'Spacebar') return;
+      event.preventDefault();
+      setOpen(!open);
+    });
+
+    closeBtn.addEventListener('click', () => setOpen(false));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && open) setOpen(false);
+    });
+
+    /* ---- input ---------------------------------------------------------- */
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      ask(input.value);
+      input.value = '';
+    });
+
+    promptRow?.addEventListener('click', (event) => {
+      const chip = (event.target as HTMLElement).closest<HTMLElement>(
+        '[data-prompt]',
+      );
+      if (chip?.dataset.prompt) ask(chip.dataset.prompt);
+    });
+  }
+</script>

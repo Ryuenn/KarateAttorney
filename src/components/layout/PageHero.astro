@@ -224,15 +224,20 @@ const lsb = OPTICAL_LSB[firstLetter] ?? 0.075;
   {
     !noImage && (
       <div
+        data-hero-photo
         {/* xl only: height derived from the frame's own width (50vw / 1.78 =
             28.1vw) so the frame IS 16:9 and the photo fills it with nothing
             cropped. Height in vw, not %, so the ratio holds at any window
             height. The overhang shrinks to keep the shorter frame's top edge
             — the cut — from dropping too far down the page. */}
-        class="relative -z-10 mt-10 aspect-[4/3] w-full lg:absolute lg:right-0 lg:-bottom-28 lg:mt-0 lg:aspect-auto lg:h-[calc(46%+7rem)] lg:w-1/2 xl:-bottom-10 xl:h-[28.1vw] 2xl:-bottom-28 2xl:h-[calc(46%+7rem)]"
+        {/* overflow-hidden contains the inner counter-scale of the entrance
+            animation (see [data-hero-photo] in motion.ts) — the photo starts
+            zoomed in and settles, and must not spill past the frame. */}
+        class="relative -z-10 mt-10 aspect-[4/3] w-full overflow-hidden lg:absolute lg:right-0 lg:-bottom-28 lg:mt-0 lg:aspect-auto lg:h-[calc(46%+7rem)] lg:w-1/2 xl:-bottom-10 xl:h-[28.1vw] 2xl:-bottom-28 2xl:h-[calc(46%+7rem)]"
       >
         {image ? (
           <img
+            data-hero-photo-inner
             src={image}
             alt={imageAlt}
             class:list={['h-full w-full object-cover', imagePosition]}

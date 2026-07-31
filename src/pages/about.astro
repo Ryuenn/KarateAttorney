@@ -6,6 +6,7 @@ import PageClosing from '../components/layout/PageClosing.astro';
 import PageFaq from '../components/layout/PageFaq.astro';
 import PageFeature from '../components/layout/PageFeature.astro';
 import PageHero from '../components/layout/PageHero.astro';
+import PageVideo from '../components/layout/PageVideo.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { FIRM_URL } from '../lib/site';
 ---
@@ -57,13 +58,33 @@ import { FIRM_URL } from '../lib/site';
     ]}
   />
 
+  {/* Sits after the three story chapters and before the CTA: the page has
+      just told the story in the third person, so this is where it hands over
+      to Ibrahim telling it himself. Also breaks the paper band + paper cards
+      run with a dark band before the light feature below. */}
+  <PageVideo
+    kicker="Watch"
+    {/* The poster carries its own baked-in title ("My Origin Story"), so the
+        heading says what the image cannot rather than restating it — and
+        steers clear of "story", which the hero wordmark and the poster are
+        both already using on this page. */}
+    heading={'In his own\nwords'}
+    body="Under three minutes on what the title actually means — the discipline behind the black belt, the composure it built, and how both turned up again in a courtroom."
+    meta="The film — 2:46"
+    videoId="_0xNkZq52QM"
+    videoTitle="Who is the Karate Attorney? Attorney Ibrahim J. Awad, Esq."
+    {/* Exactly 16:9, so it fills the frame with no focal-point override. */}
+    poster="/video-thumbnail.png"
+    posterAlt={'Title card reading "My Origin Story" — Ibrahim J. Awad in a waistcoat and tie, with a dojo and the scales of justice behind him'}
+  />
+
   <PageFeature
     heading={'One discipline,\nthree arenas'}
     body="The courtroom, the mat, and the stage were never three separate careers. They are one practice worn three ways, and the habits are identical: prepare past the point of comfort, stay composed when it counts, and finish what you started. If that is the kind of person you want in your corner — or in front of your audience — start here."
     ctaLabel="Book Ibrahim to Speak"
     ctaHref="/speaking"
-    image="/ibrahim-8.png"
-    imageAlt="Ibrahim J. Awad standing where a courtroom, a dojo mat, and a lit stage meet"
+    image="/ibrahim-20.png"
+    imageAlt="Ibrahim J. Awad mid-talk with a headset microphone and presenter clicker, lit against a dark hall"
   />
 
   <PageFaq

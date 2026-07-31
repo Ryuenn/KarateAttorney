@@ -15,7 +15,6 @@ const STATIC_ROUTES = [
   '/speaking',
   '/attorney',
   '/martial-artist',
-  '/faith',
   '/ventures',
   '/content',
 ];

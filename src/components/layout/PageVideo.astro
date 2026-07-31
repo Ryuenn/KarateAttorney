@@ -1,0 +1,243 @@
+---
+/**
+ * Featured-video band — a poster frame that opens the real player in a modal.
+ *
+ * The frame is a local still and the player is <VideoDialog>, which owns the
+ * modal's markup, styling and behaviour (and is shared with the reel wall).
+ * Nothing is requested from YouTube until the visitor clicks play.
+ */
+
+import VideoDialog from './VideoDialog.astro';
+import { videoDialogId, youTubeEmbedSrc } from '../../lib/video';
+
+interface Props {
+  /** Mono eyebrow, rendered in brackets to match the site's kickers. */
+  kicker: string;
+  /** Display heading. "\n" forces a break; still wraps naturally. */
+  heading: string;
+  /** Optional mono paragraph under the heading. */
+  body?: string;
+  /** YouTube video ID (the v= value), NOT a full URL. */
+  videoId: string;
+  /** Small mono meta line shown on the header rule, e.g. venue + runtime. */
+  meta?: string;
+  /** Path under public/ for the poster still. Omit for the placeholder. */
+  poster?: string;
+  posterAlt?: string;
+  /**
+   * Focal point as Tailwind object-position classes, for stills whose ratio
+   * differs from the 16/9 frame. A 3:2 still loses ~16% of its height here,
+   * split top and bottom — enough to take the top off a head. Defaults to
+   * centre, which is correct only for stills that are already 16:9.
+   */
+  posterPosition?: string;
+  /** Names the player for screen readers, and labels the dialog. */
+  videoTitle: string;
+}
+
+const {
+  kicker,
+  heading,
+  body,
+  videoId,
+  meta,
+  poster,
+  posterAlt = '',
+  posterPosition = 'object-center',
+  videoTitle,
+} = Astro.props;
+
+const embedSrc = youTubeEmbedSrc(videoId);
+// Pairs the trigger with its own dialog explicitly.
+const dialogId = videoDialogId(videoId);
+---
+
+<section class="on-dark relative overflow-hidden bg-navy-1000 text-paper">
+  {/* Column guides continue the hero's, inked for the dark band. */}
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <span class="absolute inset-y-0 left-1/4 w-px bg-white/10"></span>
+    <span class="absolute inset-y-0 left-1/2 w-px bg-white/10"></span>
+    <span class="absolute inset-y-0 left-3/4 w-px bg-white/10"></span>
+  </div>
+
+  <div
+    class="relative mx-auto max-w-[84rem] px-(--spacing-gutter) py-24 sm:px-[calc(var(--spacing-gutter)+2rem)] lg:py-36"
+  >
+    {/* Same masthead rule as the reel wall, so the two video sections read
+        as one family across the site. */}
+    <div
+      class="flex flex-col gap-4 border-t border-white/20 pt-5 sm:flex-row sm:items-baseline sm:justify-between"
+      data-reveal
+    >
+      <p
+        class="font-mono text-[0.6875rem] font-normal tracking-[0.25em] text-(--accent-muted) uppercase sm:text-xs"
+      >
+        [{kicker}]
+      </p>
+      {
+        meta && (
+          <p class="font-mono text-[0.6875rem] font-normal tracking-[0.12em] text-paper/60 uppercase sm:text-xs">
+            {meta}
+          </p>
+        )
+      }
+    </div>
+
+    <h2
+      class="mt-10 max-w-[16ch] font-display text-[clamp(2.25rem,6.4vw,5.5rem)] leading-[0.96] font-normal tracking-[-0.03em] whitespace-pre-line uppercase lg:mt-14"
+      data-reveal
+    >
+      {heading}
+    </h2>
+
+    {
+      body && (
+        <p
+          class="mt-8 max-w-[52ch] font-mono text-sm leading-relaxed font-normal text-navy-100 sm:text-base"
+          data-reveal
+        >
+          {body}
+        </p>
+      )
+    }
+
+    {/* The poster frame IS the button — the whole 16:9 area is the target,
+        not just the 88px circle inside it. */}
+    <button
+      type="button"
+      class="ka-video-open group relative mt-14 block aspect-video w-full overflow-hidden bg-panel lg:mt-20"
+      data-video-open={dialogId}
+      aria-label={`Play video: ${videoTitle}`}
+    >
+      {
+        poster ? (
+          <img
+            src={poster}
+            alt={posterAlt}
+            class:list={[
+              'ka-video-poster h-full w-full object-cover',
+              posterPosition,
+            ]}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <span
+            class="grid h-full w-full place-items-center border border-dashed border-paper/25"
+            aria-hidden="true"
+          >
+            <span class="font-mono text-[0.6875rem] tracking-[0.2em] text-paper/40 uppercase">
+              [Placeholder still]
+            </span>
+          </span>
+        )
+      }
+
+      {/* Scrim keeps the play mark legible over a bright still. */}
+      <span
+        class="ka-video-scrim pointer-events-none absolute inset-0 bg-navy-1000/35"
+        aria-hidden="true"></span>
+
+      <span
+        class="pointer-events-none absolute inset-0 grid place-items-center"
+        aria-hidden="true"
+      >
+        <span class="ka-video-play grid place-items-center rounded-full border border-paper/70">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="ml-[0.2em] h-5 w-5 sm:h-6 sm:w-6">
+            <path d="M8 5.5 19 12 8 18.5V5.5Z"></path>
+          </svg>
+        </span>
+      </span>
+
+      {/* Top-left, not bottom-left: posters here are often YouTube thumbnails,
+          and those almost always carry their own type across the lower third.
+          The top corner is the reliably empty one.
+
+          It carries its own dark backing because a poster is arbitrary
+          artwork — pale sky, a white studio wall — and pale-on-pale would
+          leave the label invisible. The 35% scrim alone is not enough to
+          guarantee contrast against every still. */}
+      <span
+        class="pointer-events-none absolute top-3 left-3 bg-navy-1000/75 px-2 py-1 font-mono text-[0.625rem] tracking-[0.2em] text-paper uppercase sm:top-5 sm:left-5 sm:text-xs"
+      >
+        [Play film]
+      </span>
+    </button>
+  </div>
+</section>
+
+{/* Rendered once per band, at the end of the section. In the top layer once
+    opened, so its position in the document does not matter. */}
+<VideoDialog id={dialogId} src={embedSrc} label={videoTitle} />
+
+<style>
+  /* ---- poster frame ---------------------------------------------------- */
+
+  .ka-video-open {
+    cursor: pointer;
+  }
+
+  .ka-video-poster,
+  .ka-video-scrim,
+  .ka-video-play {
+    transition:
+      transform 0.7s var(--ease-smooth),
+      background-color 0.4s var(--ease-smooth),
+      color 0.4s var(--ease-smooth),
+      border-color 0.4s var(--ease-smooth),
+      opacity 0.4s var(--ease-smooth);
+  }
+
+  .ka-video-play {
+    width: 4.5rem;
+    height: 4.5rem;
+    color: var(--color-paper);
+    /* No backdrop-filter: the poster stays sharp behind the button. The
+       translucent fill alone carries enough separation for the glyph. */
+    background-color: rgb(3 6 13 / 0.35);
+  }
+
+  @media (min-width: 640px) {
+    .ka-video-play {
+      width: 5.5rem;
+      height: 5.5rem;
+    }
+  }
+
+  /* Hover AND focus-visible — a keyboard user gets the same affordance. */
+  .ka-video-open:hover .ka-video-poster,
+  .ka-video-open:focus-visible .ka-video-poster {
+    transform: scale(1.03);
+  }
+
+  .ka-video-open:hover .ka-video-scrim,
+  .ka-video-open:focus-visible .ka-video-scrim {
+    opacity: 0.7;
+  }
+
+  .ka-video-open:hover .ka-video-play,
+  .ka-video-open:focus-visible .ka-video-play {
+    transform: scale(1.08);
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* The pop is decoration; the modal must still open instantly and land in
+     the right place without it. */
+  @media (prefers-reduced-motion: reduce) {
+    .ka-video-poster,
+    .ka-video-scrim,
+    .ka-video-play {
+      transition: none;
+    }
+
+    .ka-video-open:hover .ka-video-poster,
+    .ka-video-open:focus-visible .ka-video-poster,
+    .ka-video-open:hover .ka-video-play,
+    .ka-video-open:focus-visible .ka-video-play {
+      transform: none;
+    }
+  }
+</style>
+

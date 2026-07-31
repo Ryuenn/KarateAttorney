@@ -26,6 +26,13 @@ interface Props {
   /** Path under public/. Omit for the placeholder. */
   image?: string;
   imageAlt?: string;
+  /**
+   * Focal point, as Tailwind object-position classes, for photos whose ratio
+   * differs from the 16:9 frame. Defaults to centre, which is right only for
+   * stills that are already 16:9 or have their subject in the middle.
+   * (Matches the same prop on PageCards and PageHero.)
+   */
+  imagePosition?: string;
 }
 
 const {
@@ -36,6 +43,7 @@ const {
   firm = false,
   image,
   imageAlt = '',
+  imagePosition = 'object-center',
 } = Astro.props;
 ---
 
@@ -76,13 +84,18 @@ const {
       </a>
     </div>
 
-    <div class="mt-14 aspect-[3/2] w-full overflow-hidden" data-reveal>
+    {/* 16/9 matches the supplied photography exactly, so object-cover has
+        nothing to crop. The previous 3/2 frame cut ~18% off the width of
+        every 16:9 photo, which pushed off-centre subjects further off and
+        left dead space where the crop landed. Same reasoning as the card
+        frames in PageCards. */}
+    <div class="mt-14 aspect-video w-full overflow-hidden" data-reveal>
       {
         image ? (
           <img
             src={image}
             alt={imageAlt}
-            class="h-full w-full object-cover"
+            class:list={['h-full w-full object-cover', imagePosition]}
             loading="lazy"
             decoding="async"
           />
