@@ -19,7 +19,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     word1="The"
     word2="Stage"
     lede="Where the lessons are shared. TEDx speaker and khateeb — talks on discipline, resilience, and beautiful patience, for masjids, Islamic schools, MSAs, conferences, and companies."
-    actions={[{ label: 'Book Ibrahim to Speak', href: '#', primary: true }]}
+    {/* The speaker-request form is not rendered on this page yet, so every
+        "book"/"request" CTA here routes to /contact, which carries the
+        booking inbox. Repoint them at #request once the form lands. */}
+    actions={[{ label: 'Book Ibrahim to Speak', href: '/contact', primary: true }]}
     image="/Awad5.png"
     imageAlt="Ibrahim J. Awad speaking on stage, mid-gesture, wearing a lapel mic"
     imagePosition="object-[85%_center]"
@@ -36,14 +39,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       {
         title: 'The Topics',
         body: 'Discipline, resilience, and beautiful patience. Faith and perseverance. Ring-to-courtroom lessons on preparation, and know-your-rights talks for a general audience.',
-        href: '#',
+        /* No per-topic pages exist; the ask is the useful next step. */
+        href: '/contact',
+        linkLabel: 'Discuss a topic',
         image: '/thetopics.png',
         imageAlt: 'Ibrahim J. Awad addressing a seated audience, arms folded, beside a lectern',
       },
       {
         title: 'The Audiences',
         body: 'Masjids and Islamic schools, MSAs and university groups, nonprofits and conferences, corporate teams, and legal associations. The talk adapts to the room.',
-        href: '#',
+        href: '/contact',
+        linkLabel: 'Tell us your audience',
         image: '/event1.jpg',
         imageAlt: 'Ibrahim J. Awad with the ATI Physical Therapy team in Marietta, Georgia',
         // 4:3 source in a 16:9 frame: anchor to the top so the ~33% vertical
@@ -65,13 +71,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     heading={'Bring Ibrahim\nto your audience'}
     body="Tell us the organization, the date, the audience, and roughly how long you want him on stage. That is genuinely all it takes to start — the rest gets worked out together. Honorarium is optional to specify, and budget should never be the reason an organization does not ask."
     ctaLabel="Request Ibrahim"
-    ctaHref="#"
+    ctaHref="/contact"
     image="/ibrahimteach.JPG"
     imageAlt="Ibrahim J. Awad presenting on stage with a headset mic, beside a presentation screen"
   />
 
   <PageFaq
     ctaLabel="Request Ibrahim"
+    ctaHref="/contact"
     items={[
       {
         q: 'What does it cost to book Ibrahim?',
@@ -97,7 +104,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <PageClosing
     marquee="Ready to book your speaker?"
     prompt="Send the date and the audience — the rest gets worked out together."
-    primary={{ label: 'Request Ibrahim', href: '#' }}
+    primary={{ label: 'Request Ibrahim', href: '/contact' }}
     secondary={{ label: 'Watch the TEDx Talk', href: '#' }}
     image="/ibrahim-9.png"
     imageAlt="Ibrahim J. Awad, arms folded, in a studio portrait"

@@ -37,21 +37,27 @@ import { FIRM_URL } from '../lib/site';
       {
         title: 'Dalton',
         body: 'Where it started. A hometown in north Georgia, a summa cum laude degree from Dalton State College, and a scholarship he later endowed there for the students coming up behind him.',
-        href: '#',
+        /* No Dalton sub-page exists; the discipline this chapter describes is
+           carried in full on /martial-artist. */
+        href: '/martial-artist',
         image: '/dalton.jpg',
         imageAlt: 'Aerial view of downtown Dalton, Georgia, with the north Georgia hills behind it',
       },
       {
         title: 'The Prosecutor',
         body: 'Before representing the injured, he prosecuted more than 100 felony cases as an assistant district attorney — learning exactly how the other side builds, and breaks, a case.',
-        href: '#',
+        href: '/attorney',
         image: '/ibrahim-7.png',
         imageAlt: 'Ibrahim J. Awad at his desk, law reports and scales of justice behind him',
       },
       {
         title: 'The Firm',
         body: 'The Awad Law Firm, built from nothing and now more than $60 million recovered for clients across Georgia. Injury, medical malpractice, wrongful death, and rideshare claims.',
-        href: '#',
+        /* `firm` tags it for the analytics layer, which counts firm clicks as
+           the site's secondary conversion. */
+        href: FIRM_URL,
+        firm: true,
+        linkLabel: 'Visit the firm',
         image: '/theawadlawfirm.jpg',
         imageAlt: 'The Awad Law Firm team photographed together at a firm event',
       },
