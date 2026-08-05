@@ -28,13 +28,15 @@ export const POST: APIRoute = async ({ request, redirect, clientAddress }) => {
           status: 400,
           headers: { 'content-type': 'application/json' },
         })
-      : redirect(`/contact?error=${encodeURIComponent(code)}#general-form`, 303);
+      : redirect(`/contact?error=${encodeURIComponent(code)}#contact-form`, 303);
   const succeed = () =>
     wantsJson(request)
       ? new Response(JSON.stringify({ ok: true }), {
           headers: { 'content-type': 'application/json' },
         })
-      : redirect('/contact/thanks', 303);
+      : // /contact/thanks was never built — a success used to land on a 404.
+        // The form reads ?sent=1 and renders its own confirmation.
+        redirect('/contact?sent=1#contact-form', 303);
 
   let form: FormData;
   try {

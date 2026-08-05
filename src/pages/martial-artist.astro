@@ -116,7 +116,10 @@ import { FIRM_URL } from '../lib/site';
     marquee="Keep your hands up"
     prompt="Bring the message to your team, your school, or your athletes."
     primary={{ label: 'Book Ibrahim to Speak', href: '/speaking' }}
-    secondary={{ label: 'Meet the Team', href: '/ventures' }}
+    {/* Was "Meet the Team" → /ventures, but Team Karate Attorney moved to
+        this page and /ventures no longer mentions it — the label promised
+        something the destination does not have. */}
+    secondary={{ label: 'See the Ventures', href: '/ventures' }}
     image="/ibrahim-9.png"
     imageAlt="Ibrahim J. Awad, arms folded, in a studio portrait"
   />

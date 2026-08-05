@@ -6,9 +6,8 @@
 import type { APIRoute } from 'astro';
 import { SITE } from '../lib/site';
 
-// The nav's eight areas, minus /contact (not built yet). These currently
-// carry a page hero only — add the remaining routes (/giving, /lawyer
-// redirects) as those pages land.
+// Every built route. Kept in step with NAV in lib/site.ts — add entries here
+// as new pages land.
 const STATIC_ROUTES = [
   '/',
   '/about',
@@ -17,6 +16,7 @@ const STATIC_ROUTES = [
   '/martial-artist',
   '/ventures',
   '/content',
+  '/contact',
 ];
 
 export const GET: APIRoute = async () => {

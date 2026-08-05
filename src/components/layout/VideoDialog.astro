@@ -97,6 +97,10 @@ const { id, src, label, orientation = 'landscape' } = Astro.props;
     position: fixed;
     inset: 0;
     background-color: rgb(3 6 13 / 0.92);
+    /* Unprefixed only: Lightning CSS drops a -webkit- twin from the same
+       rule, so the prefix cannot be added here. Safari below 18 therefore
+       gets no blur — invisible in practice behind a 0.92-alpha fill. A real
+       fix means setting build targets, not editing this line. */
     backdrop-filter: blur(6px);
     opacity: 0;
     transition: opacity 0.35s var(--ease-smooth);

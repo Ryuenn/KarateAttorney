@@ -8,12 +8,12 @@
  * Firm, so the firm is the first column AND the primary CTA. The site's own
  * inbox handles speaking, media, and everything else.
  */
+import ContactForm from '../components/layout/ContactForm.astro';
 import PageClosing from '../components/layout/PageClosing.astro';
-import PageContact from '../components/layout/PageContact.astro';
 import PageFaq from '../components/layout/PageFaq.astro';
 import PageHero from '../components/layout/PageHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { CONTACT, FIRM_URL, OFFICE_HOURS } from '../lib/site';
+import { CONTACT, FIRM_URL } from '../lib/site';
 ---
 
 <BaseLayout
@@ -33,40 +33,16 @@ import { CONTACT, FIRM_URL, OFFICE_HOURS } from '../lib/site';
     ]}
   />
 
-  <PageContact
-    columns={[
-      {
-        title: 'Legal Intake',
-        note: 'Injury, malpractice, and wrongful death cases are handled through The Awad Law Firm. Consultations cost nothing.',
-        lines: CONTACT.address,
-        links: [
-          { label: CONTACT.phone.label, href: CONTACT.phone.href },
-          { label: CONTACT.email.label, href: CONTACT.email.href },
-        ],
-        action: { label: 'Go to the firm', href: FIRM_URL, firm: true },
-      },
-      {
-        title: 'Speaking & Media',
-        note: 'Keynotes, khutbahs, panels, seminars, and press. Send the date, the room, and the audience — the form asks for the rest.',
-        links: [{ label: CONTACT.booking.label, href: CONTACT.booking.href }],
-        action: { label: 'Request Ibrahim', href: '/speaking' },
-      },
-      {
-        title: 'Office Hours',
-        note: 'Applies to every channel above. Messages outside these hours are answered the next working day.',
-        hours: OFFICE_HOURS,
-      },
-    ]}
-  />
+  <ContactForm />
 
   <PageFaq
-    prompt="Don't see your question here? Send it to the inbox above."
+    prompt="Not seeing your question? Send it to the inbox above."
     ctaLabel="Email Ibrahim"
     ctaHref={CONTACT.email.href}
     items={[
       {
         q: 'Who do I contact about an injury case?',
-        a: 'The Awad Law Firm. Intake, practice areas, and case detail all live there, and the consultation costs nothing — this site does not handle case enquiries directly.',
+        a: 'The Awad Law Firm. Intake, practice areas, and case detail all live there, and the consultation costs nothing — this site does not handle case inquiries directly.',
       },
       {
         q: 'How quickly will I hear back?',

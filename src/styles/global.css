@@ -250,6 +250,9 @@
   /* Near-black solid bar (xnrgy reference) once scrolled off the hero. */
   background-color: color-mix(in srgb, var(--color-navy-950) 92%, #000 8%);
   border-bottom-color: color-mix(in srgb, var(--color-navy-100) 10%, transparent);
+  /* NOTE: this is inert — the background-color above is fully opaque, so
+     there is nothing behind the bar to blur. Kept because it becomes live
+     the moment that fill is given any alpha. */
   backdrop-filter: blur(10px);
 }
 

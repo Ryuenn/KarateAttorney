@@ -12,6 +12,9 @@ declare global {
     /** gtag helper, present when the GA4 provider is configured. */
     gtag?: (...args: unknown[]) => void;
     dataLayer?: unknown[];
+    /** Cloudflare Turnstile, present only when PUBLIC_TURNSTILE_SITE_KEY is
+     * set and the widget script has loaded. */
+    turnstile?: { reset?: (widget?: string) => void };
   }
 }
 
